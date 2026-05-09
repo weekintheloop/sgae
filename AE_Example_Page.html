@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#2e7d32">
+  <title>AE - Alimentação Escolar</title>
+  <base target="_top">
+  
+  <!-- Design System AE -->
+  <?!= include('AE_Design_System'); ?>
+  <?!= include('UI_Header_AE'); ?>
+</head>
+<body>
+  <!-- Skip Link para Acessibilidade -->
+  <a href="#main-content" class="ae-skip-link">Pular para conteúdo principal</a>
+  
+  <!-- Header com Navegação -->
+  <!-- O header é incluído via UI_Header_AE.html -->
+  
+  <!-- Conteúdo Principal -->
+  <main id="main-content" class="ae-container ae-mt-6">
+    
+    <!-- Status Cards -->
+    <section class="ae-mb-6">
+      <h2 class="ae-heading-3 ae-mb-4">📊 Visão Geral</h2>
+      <div class="ae-status-grid">
+        <div class="ae-status-card info">
+          <div>
+            <div class="ae-status-value" id="total-nfs">--</div>
+            <div class="ae-status-label">Notas Fiscais</div>
+          </div>
+        </div>
+        <div class="ae-status-card warning">
+          <div>
+            <div class="ae-status-value" id="pendentes">--</div>
+            <div class="ae-status-label">Pendentes</div>
+          </div>
+        </div>
+        <div class="ae-status-card success">
+          <div>
+            <div class="ae-status-value" id="atestadas">--</div>
+            <div class="ae-status-label">Atestadas</div>
+          </div>
+        </div>
+        <div class="ae-status-card error">
+          <div>
+            <div class="ae-status-value" id="problemas">--</div>
+            <div class="ae-status-label">Problemas</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Quick Actions -->
+    <section class="ae-mb-6">
+      <h2 class="ae-heading-3 ae-mb-4">⚡ Ações Rápidas</h2>
+      <div class="ae-quick-actions">
+        <button class="ae-quick-action" onclick="AE.Toast.info('Abrindo formulário...')">
+          <span class="ae-quick-action-icon">➕</span>
+          <span class="ae-quick-action-label">Nova NF</span>
+        </button>
+        <button class="ae-quick-action" onclick="AE.Toast.info('Carregando entregas...')">
+          <span class="ae-quick-action-icon">🚚</span>
+          <span class="ae-quick-action-label">Entregas</span>
+        </button>
+        <button class="ae-quick-action" onclick="AE.Toast.success('Atesto realizado!')">
+          <span class="ae-quick-action-icon">✅</span>
+          <span class="ae-quick-action-label">Atestar</span>
+        </button>
+        <button class="ae-quick-action" onclick="AE.Toast.warning('Atenção!')">
+          <span class="ae-quick-action-icon">📋</span>
+          <span class="ae-quick-action-label">Relatórios</span>
+        </button>
+      </div>
+    </section>
+    
+<!-- Card com Lista -->
+    <section class="ae-mb-6">
+      <div class="ae-card">
+        <div class="ae-card-header">
+          <div>
+            <h3 class="ae-card-title">🔔 Pendências</h3>
+            <p class="ae-card-subtitle">Itens que precisam de atenção</p>
+          </div>
+          <div class="ae-flex ae-gap-2">
+            <button class="ae-btn ae-btn-sm ae-btn-ghost">Todos</button>
+            <button class="ae-btn ae-btn-sm ae-btn-primary">Urgentes</button>
+          </div>
+        </div>
+        <div class="ae-card-body">
+          <!-- Lista de itens -->
+          <div class="ae-list" id="lista-pendencias">
+            <div class="ae-list-item">
+              <div class="ae-list-icon ae-badge-warning">🧾</div>
+              <div class="ae-list-content">
+                <div class="ae-list-title">NF 12345 - ABC Alimentos</div>
+                <div class="ae-list-subtitle">Aguardando conferência</div>
+              </div>
+              <button class="ae-btn ae-btn-sm ae-btn-primary">Conferir</button>
+            </div>
+            <div class="ae-list-item">
+              <div class="ae-list-icon ae-badge-error">⚠️</div>
+              <div class="ae-list-content">
+                <div class="ae-list-title">Entrega atrasada - Escola Municipal</div>
+                <div class="ae-list-subtitle">Prazo: ontem</div>
+              </div>
+              <button class="ae-btn ae-btn-sm ae-btn-danger">Ver</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Exemplo de Formulário -->
+    <section class="ae-mb-6">
+      <div class="ae-card">
+        <div class="ae-card-header">
+          <h3 class="ae-card-title">📝 Exemplo de Formulário</h3>
+        </div>
+        <div class="ae-card-body">
+          <form id="form-exemplo">
+            <div class="ae-grid ae-grid-2">
+              <div class="ae-form-group">
+                <label class="ae-label ae-label-required">Número da NF</label>
+                <input type="text" class="ae-input" placeholder="Ex: 123456">
+              </div>
+              <div class="ae-form-group">
+                <label class="ae-label ae-label-required">Valor</label>
+                <input type="number" class="ae-input" placeholder="0,00" step="0.01">
+              </div>
+            </div>
+            <div class="ae-form-group">
+              <label class="ae-label">Fornecedor</label>
+              <select class="ae-select">
+                <option value="">Selecione...</option>
+                <option value="1">ABC Alimentos</option>
+                <option value="2">XYZ Distribuidora</option>
+              </select>
+            </div>
+            <div class="ae-form-group">
+              <label class="ae-label">Observações</label>
+              <textarea class="ae-textarea" rows="3" placeholder="Observações opcionais..."></textarea>
+            </div>
+            <div class="ae-flex ae-gap-3 ae-justify-end">
+              <button type="button" class="ae-btn ae-btn-secondary">Cancelar</button>
+              <button type="submit" class="ae-btn ae-btn-primary">Salvar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Badges e Alertas -->
+    <section class="ae-mb-6">
+      <div class="ae-card">
+        <div class="ae-card-header">
+          <h3 class="ae-card-title">🏷️ Badges e Alertas</h3>
+        </div>
+        <div class="ae-card-body">
+          <div class="ae-flex ae-gap-2 ae-flex-wrap ae-mb-4">
+            <span class="ae-badge ae-badge-primary">Novo</span>
+            <span class="ae-badge ae-badge-success">Aprovado</span>
+            <span class="ae-badge ae-badge-warning">Pendente</span>
+            <span class="ae-badge ae-badge-error">Recusado</span>
+            <span class="ae-badge ae-badge-info">Info</span>
+            <span class="ae-badge ae-badge-neutral">Neutro</span>
+          </div>
+          
+          <div class="ae-alert ae-alert-success ae-mb-3">
+            <span class="ae-alert-icon">✅</span>
+            <div class="ae-alert-content">
+              <div class="ae-alert-title">Sucesso!</div>
+              Operação realizada com sucesso.
+            </div>
+          </div>
+          
+          <div class="ae-alert ae-alert-warning ae-mb-3">
+            <span class="ae-alert-icon">⚠️</span>
+            <div class="ae-alert-content">
+              <div class="ae-alert-title">Atenção</div>
+              Existem itens pendentes de revisão.
+            </div>
+          </div>
+          
+          <div class="ae-alert ae-alert-error">
+            <span class="ae-alert-icon">❌</span>
+            <div class="ae-alert-content">
+              <div class="ae-alert-title">Erro</div>
+              Não foi possível completar a operação.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+  </main>
+  
+  <!-- Estilos adicionais para lista -->
+  <style>
+    .ae-skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--ae-primary);
+      color: white;
+      padding: var(--ae-space-2) var(--ae-space-4);
+      z-index: 1000;
+      transition: top 0.3s;
+    }
+    .ae-skip-link:focus {
+      top: 0;
+    }
+    
+    .ae-list-item {
+      display: flex;
+      align-items: center;
+      gap: var(--ae-space-3);
+      padding: var(--ae-space-3) 0;
+      border-bottom: 1px solid var(--ae-border-light);
+    }
+    .ae-list-item:last-child {
+      border-bottom: none;
+    }
+    .ae-list-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--ae-radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .ae-list-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .ae-list-title {
+      font-weight: 500;
+      font-size: var(--ae-font-sm);
+    }
+    .ae-list-subtitle {
+      font-size: var(--ae-font-xs);
+      color: var(--ae-text-secondary);
+    }
+  </style>
+  
+  <script>
+    // Exemplo de uso do Design System
+    document.addEventListener('DOMContentLoaded', function() {
+      // Simular carregamento de dados
+      setTimeout(function() {
+        document.getElementById('total-nfs').textContent = '156';
+        document.getElementById('pendentes').textContent = '23';
+        document.getElementById('atestadas').textContent = '128';
+        document.getElementById('problemas').textContent = '5';
+      }, 500);
+      
+      // Form submit
+      document.getElementById('form-exemplo').addEventListener('submit', function(e) {
+        e.preventDefault();
+        AE.Loading.show('Salvando...');
+        setTimeout(function() {
+          AE.Loading.hide();
+          AE.Toast.success('Dados salvos com sucesso!');
+        }, 1500);
+      });
+    });
+  </script>
+</body>
+</html>
