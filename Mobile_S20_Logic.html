@@ -1,0 +1,108 @@
+<script>
+    /**
+     * Mobile S20 Logic Integration
+     * Optimized for Samsung S20 + Lemur Browser
+     * 
+     * NOTA: Este módulo estende MobileS20 definido em Mobile_First_S20.html
+     */
+    (function() {
+        // Verificar se MobileS20 já existe
+        const baseMobile = window.MobileS20 || {};
+        
+        // Extensões para integração com index.html
+        const MobileS20Extension = {
+            // Configuração
+            config: {
+                hapticFeedback: true,
+                vibrationPatterns: {
+                    light: [10],
+                    medium: [20],
+                    success: [10, 50, 10],
+                    error: [50, 30, 50]
+                }
+            },
+
+            init() {
+                this.checkMobile();
+                window.addEventListener('resize', () => this.checkMobile());
+                this.interceptNavigation();
+                this.initHaptics();
+                console.log('📱 Mobile S20 Integration Active');
+            },
+
+            checkMobile() {
+                const isMobile = window.innerWidth <= 768;
+                const mHeader = document.querySelector('.m-header');
+                const mNav = document.querySelector('.m-bottom-nav');
+
+                if (isMobile) {
+                    if (mHeader) mHeader.style.display = 'flex';
+                    if (mNav) mNav.style.display = 'flex';
+                    document.body.classList.add('mobile-mode');
+                    document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+                } else {
+                    if (mHeader) mHeader.style.display = 'none';
+                    if (mNav) mNav.style.display = 'none';
+                    document.body.classList.remove('mobile-mode');
+                }
+            },
+
+            interceptNavigation() {
+                const originalNavigateTo = window.navigateTo;
+
+                window.navigateTo = (pageId) => {
+                    this.haptic('light');
+                    if (originalNavigateTo) originalNavigateTo(pageId);
+                    this.updateActiveNav(pageId);
+                    this.updateTitle(pageId);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                };
+            },
+
+            updateActiveNav(pageId) {
+                document.querySelectorAll('.m-nav-item').forEach(item => {
+                    const page = item.getAttribute('data-page');
+                    item.classList.toggle('active', page === pageId);
+                });
+            },
+
+            updateTitle(pageId) {
+                const titleMap = {
+                    'dashboard': 'Dashboard',
+                    'notas': 'Notas Fiscais',
+                    'entregas': 'Entregas',
+                    'recusas': 'Recusas',
+                    'glosas': 'Glosas',
+                    'alunos': 'Alunos',
+                    'cardapios': 'Cardápios',
+                    'relatorios': 'Relatórios'
+                };
+
+                const title = titleMap[pageId] || 'UNIAE';
+                const titleEl = document.getElementById('mPageTitle');
+                if (titleEl) titleEl.textContent = title;
+            },
+
+            haptic(type = 'light') {
+                if (!this.config.hapticFeedback || !('vibrate' in navigator)) return;
+                navigator.vibrate(this.config.vibrationPatterns[type] || this.config.vibrationPatterns.light);
+            },
+
+            initHaptics() {
+                document.querySelectorAll('.m-nav-item').forEach(el => {
+                    el.addEventListener('click', () => this.haptic('light'));
+                });
+            }
+        };
+
+        // Mesclar com MobileS20 existente ou criar novo
+        window.MobileS20 = Object.assign({}, baseMobile, MobileS20Extension);
+
+        // Inicializar quando DOM estiver pronto
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => window.MobileS20.init());
+        } else {
+            window.MobileS20.init();
+        }
+    })();
+</script>

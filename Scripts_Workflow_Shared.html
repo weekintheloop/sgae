@@ -1,0 +1,163 @@
+<!--
+  UNIAE - Scripts Compartilhados para Workflows
+  Inclua este arquivo em seus HTMLs com: <?!= include('Scripts_Workflow_Shared'); ?>
+-->
+<script>
+/**
+ * UNIAE Workflow Utils - Funções utilitárias compartilhadas
+ */
+var WF = (function() {
+  'use strict';
+  
+  // ============================================================================
+  // FORMATAÇÃO
+  // ============================================================================
+  
+  function formatMoney(value, decimals) {
+    decimals = decimals !== undefined ? decimals : 2;
+    return (value || 0).toLocaleString('pt-BR', {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    });
+  }
+  
+  function formatQtd(value, unit, decimals) {
+    decimals = decimals !== undefined ? decimals : 3;
+    return formatMoney(value, decimals) + ' ' + (unit || '');
+  }
+  
+  function formatCNPJ(value) {
+    return (value || '').replace(/\D/g, '').substring(0, 14);
+  }
+  
+  function formatDate(dateStr) {
+    if (!dateStr) return '-';
+    var d = new Date(dateStr);
+    return d.toLocaleDateString('pt-BR');
+  }
+  
+  // ============================================================================
+  // ALERTAS E FEEDBACK
+  // ============================================================================
+  
+  function showAlert(msg, type, duration) {
+    type = type || 'info';
+    duration = duration || 4000;
+    var box = document.getElementById('alertBox');
+    if (!box) return;
+    var icons = { error: '⚠️', success: '✅', warning: '⚡', info: 'ℹ️' };
+    box.innerHTML = (icons[type] || 'ℹ️') + ' ' + msg;
+    box.className = 'wf-alert wf-alert-' + type;
+    box.classList.remove('hidden');
+    window.scrollTo(0, 0);
+    setTimeout(function() { box.classList.add('hidden'); }, duration);
+  }
+  
+  function showModal(modalId) {
+    var modal = document.getElementById(modalId);
+    if (modal) modal.classList.remove('hidden');
+  }
+  
+  function hideModal(modalId) {
+    var modal = document.getElementById(modalId);
+    if (modal) modal.classList.add('hidden');
+  }
+  
+  // ============================================================================
+  // BOTÕES E LOADING
+  // ============================================================================
+  
+  function setBtnLoading(btnId, loading, loadingText) {
+    var btn = document.getElementById(btnId);
+    if (!btn) return;
+    var originalText = btn.dataset.originalText || btn.innerHTML;
+    if (!btn.dataset.originalText) btn.dataset.originalText = originalText;
+    btn.disabled = loading;
+    btn.innerHTML = loading 
+      ? '<span class="wf-loading"></span> ' + (loadingText || 'Processando...')
+      : originalText;
+  }
+  
+  function resetBtn(btnId) { setBtnLoading(btnId, false); }
+  
+  // ============================================================================
+  // VALIDAÇÃO
+  // ============================================================================
+  
+  function validateRequired(value, fieldName) {
+    var valid = value !== null && value !== undefined && String(value).trim() !== '';
+    if (!valid && fieldName) showAlert(fieldName + ' é obrigatório', 'error');
+    return valid;
+  }
+  
+  function validatePositive(value, fieldName) {
+    var num = parseFloat(value);
+    var valid = !isNaN(num) && num > 0;
+    if (!valid && fieldName) showAlert(fieldName + ' deve ser maior que zero', 'error');
+    return valid;
+  }
+  
+  function validateChaveNFe(chave) {
+    return ((chave || '').replace(/\D/g, '')).length === 44;
+  }
+  
+  function setFieldState(inputId, state) {
+    var input = document.getElementById(inputId);
+    if (!input) return;
+    input.classList.remove('valid', 'error');
+    if (state === 'valid') input.classList.add('valid');
+    else if (state === 'error') input.classList.add('error');
+    var group = input.closest('.wf-form-group');
+    if (group) group.classList.toggle('has-error', state === 'error');
+  }
+  
+  // ============================================================================
+  // CÁLCULOS CONTÁBEIS
+  // ============================================================================
+  
+  function calcularContabil(qtdNF, qtdRecebida, valorUnitario) {
+    var diferenca = Math.max(0, qtdNF - qtdRecebida);
+    var valorGlosa = Math.round(diferenca * valorUnitario * 100) / 100;
+    var valorNF = Math.round(qtdNF * valorUnitario * 100) / 100;
+    var valorAprovado = Math.round((valorNF - valorGlosa) * 100) / 100;
+    var percentualGlosa = valorNF > 0 ? Math.round((valorGlosa / valorNF) * 10000) / 100 : 0;
+    return {
+      qtdNF: qtdNF, qtdRecebida: qtdRecebida, diferenca: diferenca,
+      valorNF: valorNF, valorGlosa: valorGlosa, valorAprovado: valorAprovado,
+      percentualGlosa: percentualGlosa,
+      valido: Math.abs((valorAprovado + valorGlosa) - valorNF) < 0.01
+    };
+  }
+  
+  // ============================================================================
+  // UTILITÁRIOS DOM
+  // ============================================================================
+  
+  function getValue(id) { var el = document.getElementById(id); return el ? el.value : ''; }
+  function setValue(id, value) { var el = document.getElementById(id); if (el) el.value = value; }
+  function setText(id, text) { var el = document.getElementById(id); if (el) el.textContent = text; }
+  function setHTML(id, html) { var el = document.getElementById(id); if (el) el.innerHTML = html; }
+  function toggleVisible(id, visible) { var el = document.getElementById(id); if (el) el.classList.toggle('hidden', !visible); }
+  function getTodayISO() { return new Date().toISOString().split('T')[0]; }
+  function getNowTime() { return new Date().toTimeString().slice(0, 5); }
+  
+  // ============================================================================
+  // API PÚBLICA
+  // ============================================================================
+  
+  return {
+    formatMoney: formatMoney, formatQtd: formatQtd, formatCNPJ: formatCNPJ, formatDate: formatDate,
+    showAlert: showAlert, showModal: showModal, hideModal: hideModal,
+    setBtnLoading: setBtnLoading, resetBtn: resetBtn,
+    validateRequired: validateRequired, validatePositive: validatePositive,
+    validateChaveNFe: validateChaveNFe, setFieldState: setFieldState,
+    calcularContabil: calcularContabil,
+    getValue: getValue, setValue: setValue, setText: setText, setHTML: setHTML,
+    toggleVisible: toggleVisible, getTodayISO: getTodayISO, getNowTime: getNowTime
+  };
+})();
+
+// Aliases globais para compatibilidade
+var mostrarAlerta = WF.showAlert;
+var formatarMoeda = WF.formatMoney;
+</script>

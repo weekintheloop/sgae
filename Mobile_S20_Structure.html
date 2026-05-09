@@ -1,0 +1,78 @@
+<style>
+    .m-shell-hidden {
+        display: none;
+    }
+
+    .m-shell-icon-btn {
+        color: white;
+        background: none;
+        border: none;
+    }
+
+    .m-shell-icon-btn-offset {
+        margin-left: 8px;
+    }
+
+    .m-shell-nav-accent {
+        color: var(--m-primary);
+    }
+
+    .m-shell-nav-action {
+        background: var(--m-primary-light);
+        border-radius: 9999px;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .m-shell-nav-action .m-nav-icon {
+        font-size: 28px;
+    }
+</style>
+
+<!-- Mobile Header -->
+<header class="m-header m-shell-hidden">
+    <div class="m-header-title" id="mPageTitle">UNIAE</div>
+    <div class="m-header-actions">
+        <button class="m-icon-btn m-shell-icon-btn" onclick="refreshData()">
+            <span class="material-symbols-outlined">refresh</span>
+        </button>
+        <button class="m-icon-btn m-shell-icon-btn m-shell-icon-btn-offset" onclick="handleLogout()">
+            <span class="material-symbols-outlined">logout</span>
+        </button>
+    </div>
+</header>
+
+<!-- Bottom Navigation -->
+<nav class="m-bottom-nav m-shell-hidden">
+    <button class="m-nav-item active" onclick="navigateTo('dashboard')" data-page="dashboard">
+        <span class="material-symbols-outlined m-nav-icon">dashboard</span>
+        <span class="m-nav-label">Início</span>
+    </button>
+
+    <button class="m-nav-item" onclick="navigateTo('notas')" data-page="notas">
+        <span class="material-symbols-outlined m-nav-icon">receipt_long</span>
+        <span class="m-nav-label">Notas</span>
+    </button>
+
+    <button class="m-nav-item m-shell-nav-accent" onclick="openQuickAction()">
+        <div class="m-shell-nav-action">
+            <span class="material-symbols-outlined m-nav-icon">add</span>
+        </div>
+    </button>
+
+    <button class="m-nav-item" onclick="navigateTo('entregas')" data-page="entregas">
+        <span class="material-symbols-outlined m-nav-icon">local_shipping</span>
+        <span class="m-nav-label">Entregas</span>
+    </button>
+
+    <button class="m-nav-item" onclick="navigateTo('relatorios')" data-page="relatorios">
+        <span class="material-symbols-outlined m-nav-icon">analytics</span>
+        <span class="m-nav-label">Relat.</span>
+    </button>
+</nav>
+
+<!-- Mobile FAB (Optional, for specific actions) -->
+<div id="mFabContainer"></div>

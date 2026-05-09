@@ -1,0 +1,215 @@
+<style>
+    /* ========================================
+   MOBILE S20 CSS FRAMEWORK
+   Samsung S20: 360x800 CSS pixels
+   
+   NOTA: Variáveis CSS definidas em Mobile_First_S20.html
+   Este arquivo contém apenas overrides para o index.html
+   ======================================== */
+
+    /* Mobile Layout - Only active on small screens */
+    @media (max-width: 768px) {
+
+        /* Hide Desktop Elements */
+        .sidebar,
+        .header,
+        .skip-link {
+            display: none !important;
+        }
+
+        /* Adjust Main Content for Mobile */
+        .app-container {
+            flex-direction: column;
+            padding: 0;
+            background: var(--m-bg);
+        }
+
+        .main-content {
+            margin-left: 0 !important;
+            padding: 0 !important;
+            padding-top: calc(var(--m-header-height) + var(--m-safe-top)) !important;
+            padding-bottom: calc(var(--m-bottom-nav-height) + var(--m-safe-bottom)) !important;
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            width: 100%;
+        }
+
+        .content {
+            padding: var(--m-space-md) !important;
+        }
+
+        /* Mobile Header */
+        .m-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: calc(var(--m-header-height) + var(--m-safe-top));
+            padding-top: var(--m-safe-top);
+            background: var(--m-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            padding-left: var(--m-space-md);
+            padding-right: var(--m-space-md);
+            z-index: 1000;
+            box-shadow: var(--m-shadow-md);
+        }
+
+        .m-header-title {
+            font-size: 18px;
+            font-weight: 600;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Bottom Navigation */
+        .m-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: calc(var(--m-bottom-nav-height) + var(--m-safe-bottom));
+            padding-bottom: var(--m-safe-bottom);
+            background: var(--m-bg-card);
+            border-top: 1px solid var(--m-border);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .m-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 48px;
+            min-height: 48px;
+            color: var(--m-text-secondary);
+            background: none;
+            border: none;
+            padding: 4px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .m-nav-item.active {
+            color: var(--m-primary);
+        }
+        
+        .m-nav-item:active {
+            opacity: 0.7;
+        }
+
+        .m-nav-icon {
+            font-size: 24px;
+            margin-bottom: 2px;
+        }
+
+        .m-nav-label {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Mobile Components Overrides */
+        .stats-grid {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 12px !important;
+        }
+
+        .stat-card {
+            padding: 16px !important;
+            border-radius: 12px !important;
+        }
+
+        .stat-value {
+            font-size: 24px !important;
+        }
+
+        .quick-actions {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 12px !important;
+        }
+
+        /* Toast Mobile Position */
+        .toast-container {
+            bottom: calc(var(--m-bottom-nav-height, 64px) + var(--m-safe-bottom, 0px) + 16px) !important;
+            left: 16px !important;
+            right: 16px !important;
+            top: auto !important;
+            transform: none !important;
+            width: auto !important;
+        }
+
+        /* Modal Mobile Full Screen */
+        .modal {
+            width: 100% !important;
+            height: auto !important;
+            max-width: none !important;
+            max-height: 90vh !important;
+            border-radius: 20px 20px 0 0 !important;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .modal-content {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Forms Mobile */
+        .form-group {
+            margin-bottom: 16px !important;
+        }
+        
+        input, select, textarea {
+            min-height: 48px !important;
+            font-size: 16px !important;
+            padding: 12px 16px !important;
+            border-radius: 12px !important;
+        }
+        
+        button, .btn {
+            min-height: 48px !important;
+            font-size: 15px !important;
+            border-radius: 12px !important;
+        }
+    }
+    
+    /* Extra small screens (360px - Samsung S20) */
+    @media (max-width: 380px) {
+        .m-header-title {
+            font-size: 16px;
+        }
+        
+        .m-nav-icon {
+            font-size: 22px;
+        }
+        
+        .m-nav-label {
+            font-size: 10px;
+        }
+        
+        .stats-grid {
+            gap: 10px !important;
+        }
+        
+        .stat-card {
+            padding: 14px !important;
+        }
+        
+        .stat-value {
+            font-size: 22px !important;
+        }
+    }
+</style>

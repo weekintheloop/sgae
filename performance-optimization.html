@@ -1,0 +1,156 @@
+<script>
+  /**
+   * Performance Optimization Utilities
+   * Client-side performance monitoring and optimization
+   * @version 1.0.0
+   */
+
+  (function () {
+    'use strict';
+
+    // Debounce function for input handlers
+    window.debounce = function (func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    };
+
+    // Throttle function for scroll/resize handlers
+    window.throttle = function (func, limit) {
+      let inThrottle;
+      return function (...args) {
+        if (!inThrottle) {
+          func.apply(this, args);
+          inThrottle = true;
+          setTimeout(() => inThrottle = false, limit);
+        }
+      };
+    };
+
+    // Lazy load images
+    window.lazyLoadImages = function () {
+      const images = document.querySelectorAll('img[data-src]');
+      const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            img.src = img.dataset.src;
+            img.removeAttribute('data-src');
+            observer.unobserve(img);
+          }
+        });
+      });
+
+      images.forEach(img => imageObserver.observe(img));
+    };
+
+    // Performance monitoring
+    window.performanceMonitor = {
+      marks: {},
+
+      start: function (label) {
+        this.marks[label] = performance.now();
+      },
+
+      end: function (label) {
+        if (this.marks[label]) {
+          const duration = performance.now() - this.marks[label];
+          console.log(`⏱️ ${label}: ${duration.toFixed(2)}ms`);
+          delete this.marks[label];
+          return duration;
+        }
+      },
+
+      measure: function (label, callback) {
+        this.start(label);
+        const result = callback();
+        this.end(label);
+        return result;
+      }
+    };
+
+    // Request queue for batch operations
+    window.requestQueue = {
+      queue: [],
+      processing: false,
+      batchSize: 10,
+      delay: 100,
+
+      add: function (request) {
+        this.queue.push(request);
+        if (!this.processing) {
+          this.process();
+        }
+      },
+
+      process: function () {
+        if (this.queue.length === 0) {
+          this.processing = false;
+          return;
+        }
+
+        this.processing = true;
+        const batch = this.queue.splice(0, this.batchSize);
+
+        Promise.all(batch.map(req => req()))
+          .then(() => {
+            setTimeout(() => this.process(), this.delay);
+          })
+          .catch(err => {
+            console.error('Batch processing error:', err);
+            setTimeout(() => this.process(), this.delay);
+          });
+      }
+    };
+
+    // Cache manager
+    window.cacheManager = {
+      cache: new Map(),
+      maxAge: 5 * 60 * 1000, // 5 minutes
+
+      set: function (key, value, maxAge) {
+        this.cache.set(key, {
+          value: value,
+          timestamp: Date.now(),
+          maxAge: maxAge || this.maxAge
+        });
+      },
+
+      get: function (key) {
+        const item = this.cache.get(key);
+        if (!item) return null;
+
+        if (Date.now() - item.timestamp > item.maxAge) {
+          this.cache.delete(key);
+          return null;
+        }
+
+        return item.value;
+      },
+
+      clear: function () {
+        this.cache.clear();
+      },
+
+      cleanup: function () {
+        const now = Date.now();
+        for (const [key, item] of this.cache.entries()) {
+          if (now - item.timestamp > item.maxAge) {
+            this.cache.delete(key);
+          }
+        }
+      }
+    };
+
+    // Auto cleanup cache every 5 minutes
+    setInterval(() => window.cacheManager.cleanup(), 5 * 60 * 1000);
+
+    console.log('✅ Performance optimization utilities loaded');
+  })();
+</script>

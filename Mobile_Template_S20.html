@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <base target="_top">
+  <?!= include('Mobile_First_S20'); ?>
+  <title>UNIAE Mobile</title>
+  <style>
+    .m-section-title {
+      font-size: 14px;
+      color: var(--m-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .m-profile-avatar-hero {
+      font-size: 64px;
+      margin-bottom: 8px;
+    }
+
+    .m-profile-name {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .m-profile-role {
+      font-size: 14px;
+      color: var(--m-text-muted);
+    }
+
+    .m-btn-danger-text {
+      color: var(--m-error);
+    }
+  </style>
+</head>
+<body>
+  <div class="m-app">
+    <!-- Header -->
+    <header class="m-header">
+      <button class="m-icon-btn" onclick="MobileS20.openSheet('Menu', menuContent())">
+        <span class="icon">☰</span>
+      </button>
+      <h1 class="m-header-title">UNIAE</h1>
+      <div class="m-header-actions">
+        <button class="m-icon-btn" onclick="buscar()">
+          <span class="icon">🔍</span>
+        </button>
+        <button class="m-icon-btn" onclick="MobileS20.openSheet('Perfil', perfilContent())">
+          <span class="icon">👤</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="m-content" id="mainContent">
+      <!-- Boas-vindas -->
+      <div class="m-card m-slide-up">
+        <div class="m-card-header">
+          <span class="m-card-icon">👋</span>
+          <h2 class="m-card-title">Bem-vindo!</h2>
+        </div>
+        <p class="m-card-body">Sistema de Gestão de Alimentação Escolar</p>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="m-stats-grid">
+        <div class="m-stat-card">
+          <div class="m-stat-icon">📋</div>
+          <div class="m-stat-value" id="statNFs">0</div>
+          <div class="m-stat-label">Notas Fiscais</div>
+        </div>
+        <div class="m-stat-card">
+          <div class="m-stat-icon">🚚</div>
+          <div class="m-stat-value" id="statEntregas">0</div>
+          <div class="m-stat-label">Entregas</div>
+        </div>
+        <div class="m-stat-card">
+          <div class="m-stat-icon">⏳</div>
+          <div class="m-stat-value" id="statPendentes">0</div>
+          <div class="m-stat-label">Pendentes</div>
+        </div>
+        <div class="m-stat-card">
+          <div class="m-stat-icon">✅</div>
+          <div class="m-stat-value" id="statAtestadas">0</div>
+          <div class="m-stat-label">Atestadas</div>
+        </div>
+      </div>
+
+      <!-- Menu Grid -->
+      <h3 class="m-mb-md m-section-title">
+        Ações Rápidas
+      </h3>
+      <div class="m-menu-grid m-mb-lg">
+        <button class="m-menu-item" onclick="navegarPara('notas')">
+          <span class="m-menu-icon">📄</span>
+          <span class="m-menu-label">Notas Fiscais</span>
+        </button>
+        <button class="m-menu-item" onclick="navegarPara('entregas')">
+          <span class="m-menu-icon">🚚</span>
+          <span class="m-menu-label">Entregas</span>
+        </button>
+        <button class="m-menu-item" onclick="navegarPara('fornecedores')">
+          <span class="m-menu-icon">🏢</span>
+          <span class="m-menu-label">Fornecedores</span>
+        </button>
+        <button class="m-menu-item" onclick="navegarPara('relatorios')">
+          <span class="m-menu-icon">📊</span>
+          <span class="m-menu-label">Relatórios</span>
+        </button>
+      </div>
+
+      <!-- Lista Recentes -->
+      <h3 class="m-mb-md m-section-title">
+        Atividade Recente
+      </h3>
+      <ul class="m-list" id="listaRecentes">
+        <li class="m-list-item" onclick="verDetalhe('NF-001')">
+          <span class="m-list-icon">📄</span>
+          <div class="m-list-content">
+            <div class="m-list-title">NF 12345 - Fornecedor ABC</div>
+            <div class="m-list-subtitle">Há 2 horas • R$ 1.250,00</div>
+          </div>
+          <span class="m-badge m-badge-success">Atestada</span>
+        </li>
+        <li class="m-list-item" onclick="verDetalhe('NF-002')">
+          <span class="m-list-icon">🚚</span>
+          <div class="m-list-content">
+            <div class="m-list-title">Entrega - EC 01 Cruzeiro</div>
+            <div class="m-list-subtitle">Há 4 horas • 15 itens</div>
+          </div>
+          <span class="m-badge m-badge-warning">Pendente</span>
+        </li>
+        <li class="m-list-item" onclick="verDetalhe('NF-003')">
+          <span class="m-list-icon">📄</span>
+          <div class="m-list-content">
+            <div class="m-list-title">NF 12344 - Fornecedor XYZ</div>
+            <div class="m-list-subtitle">Ontem • R$ 3.450,00</div>
+          </div>
+          <span class="m-badge m-badge-primary">Em análise</span>
+        </li>
+      </ul>
+    </main>
+
+    <!-- FAB -->
+    <button class="m-fab" onclick="novaAcao()">
+      <span>+</span>
+    </button>
+
+    <!-- Bottom Navigation -->
+    <nav class="m-bottom-nav">
+      <button class="m-nav-item active" data-nav="home" onclick="navegarPara('home')">
+        <span class="m-nav-icon">🏠</span>
+        <span class="m-nav-label">Início</span>
+      </button>
+      <button class="m-nav-item" data-nav="notas" onclick="navegarPara('notas')">
+        <span class="m-nav-icon">📋</span>
+        <span class="m-nav-label">Notas</span>
+      </button>
+      <button class="m-nav-item" data-nav="entregas" onclick="navegarPara('entregas')">
+        <span class="m-nav-icon">🚚</span>
+        <span class="m-nav-label">Entregas</span>
+      </button>
+      <button class="m-nav-item" data-nav="mais" onclick="MobileS20.openSheet('Mais Opções', maisContent())">
+        <span class="m-nav-icon">⋯</span>
+        <span class="m-nav-label">Mais</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    // Conteúdo do Menu
+    function menuContent() {
+      return `
+        <ul class="m-list">
+          <li class="m-list-item" onclick="navegarPara('dashboard');MobileS20.closeSheet();">
+            <span class="m-list-icon">📊</span>
+            <div class="m-list-content"><div class="m-list-title">Dashboard</div></div>
+          </li>
+          <li class="m-list-item" onclick="navegarPara('notas');MobileS20.closeSheet();">
+            <span class="m-list-icon">📄</span>
+            <div class="m-list-content"><div class="m-list-title">Notas Fiscais</div></div>
+          </li>
+          <li class="m-list-item" onclick="navegarPara('entregas');MobileS20.closeSheet();">
+            <span class="m-list-icon">🚚</span>
+            <div class="m-list-content"><div class="m-list-title">Entregas</div></div>
+          </li>
+          <li class="m-list-item" onclick="navegarPara('fornecedores');MobileS20.closeSheet();">
+            <span class="m-list-icon">🏢</span>
+            <div class="m-list-content"><div class="m-list-title">Fornecedores</div></div>
+          </li>
+          <li class="m-list-item" onclick="navegarPara('relatorios');MobileS20.closeSheet();">
+            <span class="m-list-icon">📈</span>
+            <div class="m-list-content"><div class="m-list-title">Relatórios</div></div>
+          </li>
+          <li class="m-list-item" onclick="navegarPara('config');MobileS20.closeSheet();">
+            <span class="m-list-icon">⚙️</span>
+            <div class="m-list-content"><div class="m-list-title">Configurações</div></div>
+          </li>
+        </ul>
+      `;
+    }
+    
+    // Conteúdo do Perfil
+    function perfilContent() {
+      const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+      return `
+        <div class="m-text-center m-mb-lg">
+          <div class="m-profile-avatar-hero">👤</div>
+          <div class="m-profile-name">${usuario.nome || 'Usuário'}</div>
+          <div class="m-profile-role">${usuario.tipo || 'Analista'}</div>
+        </div>
+        <button class="m-btn m-btn-secondary m-btn-block m-mb-sm" onclick="alterarSenha()">
+          🔐 Alterar Senha
+        </button>
+        <button class="m-btn m-btn-secondary m-btn-block m-btn-danger-text" onclick="fazerLogout()">
+          🚪 Sair
+        </button>
+      `;
+    }
+    
+    // Conteúdo Mais Opções
+    function maisContent() {
+      return `
+        <ul class="m-list">
+          <li class="m-list-item" onclick="navegarPara('fornecedores');MobileS20.closeSheet();">
+            <span class="m-list-icon">🏢</span>
+            <div class="m-list-content"><div class="m-list-title">Fornecedores</div></div>
+          </li>
+          <li class="m-list-item" onclick="navegarPara('relatorios');MobileS20.closeSheet();">
+            <span class="m-list-icon">📈</span>
+            <div class="m-list-content"><div class="m-list-title">Relatórios</div></div>
+          </li>
+          <li class="m-list-item" onclick="navegarPara('config');MobileS20.closeSheet();">
+            <span class="m-list-icon">⚙️</span>
+            <div class="m-list-content"><div class="m-list-title">Configurações</div></div>
+          </li>
+          <li class="m-list-item" onclick="navegarPara('ajuda');MobileS20.closeSheet();">
+            <span class="m-list-icon">❓</span>
+            <div class="m-list-content"><div class="m-list-title">Ajuda</div></div>
+          </li>
+        </ul>
+      `;
+    }
+    
+    // Navegação
+    function navegarPara(pagina) {
+      MobileS20.setActiveNav(pagina);
+      MobileS20.toast('Navegando para ' + pagina);
+      // Implementar navegação real aqui
+    }
+    
+    // Nova Ação (FAB)
+    function novaAcao() {
+      MobileS20.openSheet('Nova Ação', `
+        <div class="m-menu-grid">
+          <button class="m-menu-item" onclick="novaNF();MobileS20.closeSheet();">
+            <span class="m-menu-icon">📄</span>
+            <span class="m-menu-label">Nova NF</span>
+          </button>
+          <button class="m-menu-item" onclick="novaEntrega();MobileS20.closeSheet();">
+            <span class="m-menu-icon">🚚</span>
+            <span class="m-menu-label">Nova Entrega</span>
+          </button>
+          <button class="m-menu-item" onclick="novoAtesto();MobileS20.closeSheet();">
+            <span class="m-menu-icon">✅</span>
+            <span class="m-menu-label">Novo Atesto</span>
+          </button>
+          <button class="m-menu-item" onclick="buscar();MobileS20.closeSheet();">
+            <span class="m-menu-icon">🔍</span>
+            <span class="m-menu-label">Buscar</span>
+          </button>
+        </div>
+      `);
+    }
+    
+    function novaNF() { MobileS20.toast('Abrindo formulário de NF...'); }
+    function novaEntrega() { MobileS20.toast('Abrindo registro de entrega...'); }
+    function novoAtesto() { MobileS20.toast('Abrindo atesto...'); }
+    function buscar() { MobileS20.toast('Abrindo busca...'); }
+    function verDetalhe(id) { MobileS20.toast('Abrindo ' + id); }
+    function alterarSenha() { MobileS20.toast('Alterar senha'); MobileS20.closeSheet(); }
+    
+    function fazerLogout() {
+      if (confirm('Deseja realmente sair?')) {
+        localStorage.clear();
+        MobileS20.toast('Saindo...');
+        // Redirecionar para login
+      }
+    }
+    
+    // Carregar dados
+    async function carregarDados() {
+      try {
+        // Simular carregamento
+        document.getElementById('statNFs').textContent = '24';
+        document.getElementById('statEntregas').textContent = '18';
+        document.getElementById('statPendentes').textContent = '5';
+        document.getElementById('statAtestadas').textContent = '19';
+      } catch (e) {
+        MobileS20.error('Erro ao carregar dados');
+      }
+    }
+    
+    // Pull to Refresh
+    MobileS20.initPullToRefresh(async () => {
+      await carregarDados();
+      MobileS20.success('Atualizado!');
+    });
+    
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', carregarDados);
+  </script>
+</body>
+</html>
