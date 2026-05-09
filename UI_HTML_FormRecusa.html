@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 24px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: #d32f2f;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: var(--font-sm);
+      margin-bottom: var(--space-6);
+    }
+
+    .form-section {
+      margin-bottom: var(--space-6);
+      padding-bottom: 24px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .form-section:last-child {
+      border-bottom: none;
+    }
+
+    .section-title {
+      font-size: var(--font-base);
+      font-weight: 600;
+      color: #333;
+      margin-bottom: var(--space-4);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group {
+      margin-bottom: var(--space-4);
+    }
+
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: #333;
+      font-size: var(--font-sm);
+    }
+
+    label .required {
+      color: #d32f2f;
+      margin-left: 2px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: var(--font-sm);
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #1976d2;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 4px;
+      font-size: var(--font-sm);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #d32f2f;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #b71c1c;
+    }
+
+    .btn-secondary {
+      background: #e0e0e0;
+      color: #333;
+      margin-left: 8px;
+    }
+
+    .btn-secondary:hover {
+      background: #bdbdbd;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: var(--space-6);
+      padding-top: 24px;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 4px;
+      margin-bottom: var(--space-4);
+      display: none;
+    }
+
+    .alert-success {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border-left: 4px solid #4caf50;
+    }
+
+    .alert-error {
+      background: #ffebee;
+      color: #c62828;
+      border-left: 4px solid #f44336;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #d32f2f;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 12px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .help-text {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: var(--space-1);
+    }
+  </style>
+  <link rel="stylesheet" href="design-system.css">
+</head>
+<body>
+  <div class="container">
+    <h2>❌ Registrar Recusa de Produto</h2>
+    <p class="subtitle">Conforme Manual de Análise Processual - Seção 3.2</p>
+
+    <div id="alertSuccess" class="alert alert-success"></div>
+    <div id="alertError" class="alert alert-error"></div>
+
+    <div id="loadingDiv" class="loading">
+      <div class="spinner"></div>
+      <p>Registrando recusa...</p>
+    </div>
+
+    <form id="formRecusa" onsubmit="submitForm(event)">
+
+      <!-- Seção 1: Identificação da Entrega -->
+      <div class="form-section">
+        <div class="section-title">📍 Identificação da Entrega</div>
+
+        <div class="form-group">
+          <label>Unidade Escolar <span class="required">*</span></label>
+          <input type="text" id="unidadeEscolar" required placeholder="Ex: EC 01 do Plano Piloto">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Fornecedor <span class="required">*</span></label>
+            <input type="text" id="fornecedor" required placeholder="Ex: Contrigo Alimentos">
+          </div>
+
+          <div class="form-group">
+            <label>CNPJ Fornecedor</label>
+            <input type="text" id="cnpjFornecedor" placeholder="00.000.000/0000-00">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nota Fiscal</label>
+            <input type="text" id="notaFiscal" placeholder="Ex: 16221">
+          </div>
+
+          <div class="form-group">
+            <label>Termo de Recebimento</label>
+            <input type="text" id="termoRecebimento" placeholder="Ex: TR-2025-001">
+          </div>
+        </div>
+      </div>
+
+      <!-- Seção 2: Produto Recusado -->
+      <div class="form-section">
+        <div class="section-title">📦 Produto Recusado</div>
+
+        <div class="form-group">
+          <label>Produto <span class="required">*</span></label>
+          <input type="text" id="produto" required placeholder="Ex: Carne bovina moída">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Quantidade <span class="required">*</span></label>
+            <input type="number" id="quantidade" required step="0.01" placeholder="Ex: 50">
+          </div>
+
+          <div class="form-group">
+            <label>Unidade de Medida <span class="required">*</span></label>
+            <select id="unidadeMedida" required>
+              <option value="kg">kg (quilograma)</option>
+              <option value="g">g (grama)</option>
+              <option value="L">L (litro)</option>
+              <option value="mL">mL (mililitro)</option>
+              <option value="un">un (unidade)</option>
+              <option value="cx">cx (caixa)</option>
+              <option value="pct">pct (pacote)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Lote</label>
+            <input type="text" id="lote" placeholder="Ex: L20250104">
+          </div>
+
+          <div class="form-group">
+            <label>Validade</label>
+            <input type="date" id="validade">
+          </div>
+        </div>
+      </div>
+
+      <!-- Seção 3: Motivo da Recusa -->
+      <div class="form-section">
+        <div class="section-title">⚠️ Motivo da Recusa</div>
+
+        <div class="form-group">
+          <label>Categoria do Motivo <span class="required">*</span></label>
+          <select id="categoriaMotivo" required onchange="atualizarMotivosDetalhados()">
+            <option value="">Selecione...</option>
+            <option value="Documentação">1. Documentação</option>
+            <option value="Transporte">2. Transporte</option>
+            <option value="Embalagens">3. Embalagens</option>
+            <option value="Rotulagem">4. Rotulagem</option>
+            <option value="Características Sensoriais">5. Características Sensoriais</option>
+            <option value="Temperatura">6. Temperatura (Crítico)</option>
+            <option value="Inscrição Obrigatória">7. Inscrição Obrigatória</option>
+          </select>
+          <p class="help-text">Conforme Checklist - Tabela 1 do Manual</p>
+        </div>
+
+        <div class="form-group">
+          <label>Motivo Detalhado <span class="required">*</span></label>
+          <select id="motivoDetalhado" required>
+            <option value="">Selecione a categoria primeiro...</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Observações Adicionais</label>
+          <textarea id="observacoes" placeholder="Descreva detalhes adicionais sobre a recusa..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Link da Foto (Google Drive)</label>
+          <input type="url" id="linkFoto" placeholder="https://drive.google.com/...">
+          <p class="help-text">Cole o link de compartilhamento da foto do produto recusado</p>
+        </div>
+      </div>
+
+      <!-- Seção 4: Responsável -->
+      <div class="form-section">
+        <div class="section-title">👤 Responsável pela Recusa</div>
+
+        <div class="form-group">
+          <label>Nome Completo <span class="required">*</span></label>
+          <input type="text" id="responsavelRecusa" required placeholder="Ex: Maria Silva Santos">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Matrícula <span class="required">*</span></label>
+            <input type="text" id="matriculaResponsavel" required placeholder="Ex: 123456">
+          </div>
+
+          <div class="form-group">
+            <label>Cargo <span class="required">*</span></label>
+            <select id="cargoResponsavel" required>
+              <option value="Diretor">Diretor</option>
+              <option value="Vice-Diretor">Vice-Diretor</option>
+              <option value="Supervisor">Supervisor</option>
+              <option value="Secretário Escolar">Secretário Escolar</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seção 5: Impacto -->
+      <div class="form-section">
+        <div class="section-title">📊 Impacto e Ações</div>
+
+        <div class="form-group">
+          <label>Houve impacto na alimentação dos estudantes?</label>
+          <select id="impactoAlimentacao">
+            <option value="Não">Não</option>
+            <option value="Sim">Sim</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Ação Imediata Tomada</label>
+          <textarea id="acaoImediata" placeholder="Ex: Utilizado estoque de emergência, cardápio alternativo, etc."></textarea>
+        </div>
+      </div>
+
+      <!-- Ações -->
+      <div class="actions">
+        <button type="button" class="btn btn-secondary" onclick="google.script.host.close()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" id="btnSubmit">Registrar Recusa</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Motivos detalhados por categoria
+    const motivosDetalhados = {
+      'Documentação': [
+        'Nota Fiscal não corresponde aos produtos entregues',
+        'Termo de Recebimento não preenchido',
+        'Documentação incompleta'
+      ],
+      'Transporte': [
+        'Veículo sujo ou em mau estado',
+        'Veículo sem refrigeração ativa',
+        'Entregador sem uniforme limpo',
+        'Más práticas de higiene'
+      ],
+      'Embalagens': [
+        'Embalagem violada ou danificada',
+        'Embalagem suja ou molhada',
+        'Lata amassada, enferrujada ou estufada',
+        'Embalagem não íntegra'
+      ],
+      'Rotulagem': [
+        'Rótulo ilegível',
+        'Falta data de validade',
+        'Falta informações do fabricante',
+        'Falta selo de inspeção (SIF)',
+        'Produto vencido ou próximo ao vencimento'
+      ],
+      'Características Sensoriais': [
+        'Presença de mofo',
+        'Manchas ou coloração estranha',
+        'Cheiro azedo ou rançoso',
+        'Textura alterada',
+        'Produto deteriorado',
+        'Presença de pragas'
+      ],
+      'Temperatura': [
+        'Congelado acima de -12°C',
+        'Carne resfriada acima de +7°C',
+        'Pescado resfriado acima de +3°C',
+        'Refrigerado acima de +10°C',
+        'Produto descongelado'
+      ],
+      'Inscrição Obrigatória': [
+        'Falta inscrição "PRODUTO INSTITUCIONAL - PROIBIDA A VENDA"',
+        'Inscrição ilegível ou apagada'
+      ]
+    };
+
+    function atualizarMotivosDetalhados() {
+      const categoria = document.getElementById('categoriaMotivo').value;
+      const selectMotivo = document.getElementById('motivoDetalhado');
+
+      selectMotivo.innerHTML = '<option value="">Selecione...</option>';
+
+      if (categoria && motivosDetalhados[categoria]) {
+        motivosDetalhados[categoria].forEach(function(motivo) {
+          const option = document.createElement('option');
+          option.value = motivo;
+          option.textContent = motivo;
+          selectMotivo.appendChild(option);
+        });
+      }
+    }
+
+    function showAlert(type, message) {
+      const alertSuccess = document.getElementById('alertSuccess');
+      const alertError = document.getElementById('alertError');
+
+      alertSuccess.style.display = 'none';
+      alertError.style.display = 'none';
+
+      if (type === 'success') {
+        alertSuccess.textContent = message;
+        alertSuccess.style.display = 'block';
+      } else {
+        alertError.textContent = message;
+        alertError.style.display = 'block';
+      }
+
+      // Scroll to top
+      window.scrollTo(0, 0);
+    }
+
+    function submitForm(event) {
+      event.preventDefault();
+
+      const btnSubmit = document.getElementById('btnSubmit');
+      const loadingDiv = document.getElementById('loadingDiv');
+      const form = document.getElementById('formRecusa');
+
+      // Desabilita botão e mostra loading
+      btnSubmit.disabled = true;
+      loadingDiv.style.display = 'block';
+      form.style.display = 'none';
+
+      // Coleta dados
+      const dados = {
+        unidadeEscolar: document.getElementById('unidadeEscolar').value,
+        fornecedor: document.getElementById('fornecedor').value,
+        cnpjFornecedor: document.getElementById('cnpjFornecedor').value,
+        notaFiscal: document.getElementById('notaFiscal').value,
+        termoRecebimento: document.getElementById('termoRecebimento').value,
+        produto: document.getElementById('produto').value,
+        quantidade: parseFloat(document.getElementById('quantidade').value),
+        unidadeMedida: document.getElementById('unidadeMedida').value,
+        lote: document.getElementById('lote').value,
+        validade: document.getElementById('validade').value,
+        categoriaMotivo: document.getElementById('categoriaMotivo').value,
+        motivoDetalhado: document.getElementById('motivoDetalhado').value,
+        observacoes: document.getElementById('observacoes').value,
+        linkFoto: document.getElementById('linkFoto').value,
+        responsavelRecusa: document.getElementById('responsavelRecusa').value,
+        matriculaResponsavel: document.getElementById('matriculaResponsavel').value,
+        cargoResponsavel: document.getElementById('cargoResponsavel').value,
+        impactoAlimentacao: document.getElementById('impactoAlimentacao').value,
+        acaoImediata: document.getElementById('acaoImediata').value
+      };
+
+      // Envia para o servidor
+      google.script.run
+        .withSuccessHandler(function(resultado) {
+          loadingDiv.style.display = 'none';
+
+          if (resultado.sucesso) {
+            showAlert('success',
+              '✅ Recusa registrada com sucesso!\n\n' +
+              'ID: ' + resultado.id + '\n' +
+              'Prazo para substituição: ' + resultado.prazoSubstituicao + '\n' +
+              'Data limite: ' + new Date(resultado.dataLimite).toLocaleString('pt-BR')
+            );
+
+            // Fecha após 3 segundos
+            setTimeout(function() {
+              google.script.host.close();
+            }, 3000);
+          } else {
+            form.style.display = 'block';
+            btnSubmit.disabled = false;
+            showAlert('error', '❌ Erro: ' + (resultado.erro || resultado.mensagem));
+          }
+        })
+        .withFailureHandler(function(erro) {
+          loadingDiv.style.display = 'none';
+          form.style.display = 'block';
+          btnSubmit.disabled = false;
+          showAlert('error', '❌ Erro ao registrar recusa: ' + erro.message);
+        })
+        .processarFormularioRecusa(dados);
+    }
+  </script>
+</body>
+</html>

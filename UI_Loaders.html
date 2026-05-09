@@ -1,0 +1,773 @@
+<!--
+  ========================================
+  LOADERS & SKELETON SCREENS
+  ALIMENTAÇÃO ESCOLAR CRE-PP
+  ========================================
+  
+  Componentes de loading para melhorar a percepção
+  de velocidade durante carregamento de dados
+  
+  Uso: <?!= include('UI_Loaders'); ?>
+-->
+
+<style>
+/* ========================================
+   1. SPINNER LOADERS
+   ======================================== */
+.ae-spinner {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--ae-gray-200, #EEEEEE);
+  border-top-color: var(--ae-primary, #2E7D32);
+  border-radius: 50%;
+  animation: ae-spin 0.8s linear infinite;
+}
+
+.ae-spinner-sm { width: 24px; height: 24px; border-width: 2px; }
+.ae-spinner-lg { width: 56px; height: 56px; border-width: 4px; }
+
+.ae-spinner-secondary {
+  border-top-color: var(--ae-secondary, #EF6C00);
+}
+
+.ae-spinner-white {
+  border-color: rgba(255,255,255,0.3);
+  border-top-color: white;
+}
+
+@keyframes ae-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Dots loader */
+.ae-dots-loader {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+}
+
+.ae-dots-loader span {
+  width: 10px;
+  height: 10px;
+  background: var(--ae-primary, #2E7D32);
+  border-radius: 50%;
+  animation: ae-dots-bounce 1.4s ease-in-out infinite both;
+}
+
+.ae-dots-loader span:nth-child(1) { animation-delay: -0.32s; }
+.ae-dots-loader span:nth-child(2) { animation-delay: -0.16s; }
+.ae-dots-loader span:nth-child(3) { animation-delay: 0s; }
+
+@keyframes ae-dots-bounce {
+  0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+/* Pulse loader */
+.ae-pulse-loader {
+  width: 40px;
+  height: 40px;
+  background: var(--ae-primary, #2E7D32);
+  border-radius: 50%;
+  animation: ae-pulse-scale 1.2s ease-in-out infinite;
+}
+
+@keyframes ae-pulse-scale {
+  0% { transform: scale(0); opacity: 1; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+/* Bar loader */
+.ae-bar-loader {
+  width: 100%;
+  height: 4px;
+  background: var(--ae-gray-200, #EEEEEE);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.ae-bar-loader-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--ae-primary, #2E7D32), var(--ae-primary-light, #4CAF50));
+  border-radius: 2px;
+  animation: ae-bar-progress 1.5s ease-in-out infinite;
+}
+
+@keyframes ae-bar-progress {
+  0% { width: 0%; margin-left: 0; }
+  50% { width: 50%; margin-left: 25%; }
+  100% { width: 0%; margin-left: 100%; }
+}
+
+/* ========================================
+   2. FULL PAGE LOADER
+   ======================================== */
+.ae-page-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--ae-bg-main, #F1F8E9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.ae-page-loader.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ae-page-loader-logo {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--ae-primary, #2E7D32);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ae-page-loader-logo span {
+  font-size: 2.5rem;
+}
+
+.ae-page-loader-text {
+  font-size: 0.9rem;
+  color: var(--ae-text-secondary, #546E7A);
+  margin-top: 16px;
+}
+
+/* ========================================
+   3. OVERLAY LOADER
+   ======================================== */
+.ae-overlay-loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  border-radius: inherit;
+  backdrop-filter: blur(2px);
+}
+
+.ae-overlay-loader-text {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: var(--ae-text-secondary, #546E7A);
+}
+
+/* ========================================
+   4. SKELETON SCREENS BASE
+   ======================================== */
+.ae-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--ae-gray-200, #EEEEEE) 0%,
+    var(--ae-gray-100, #F5F5F5) 50%,
+    var(--ae-gray-200, #EEEEEE) 100%
+  );
+  background-size: 200% 100%;
+  animation: ae-skeleton-shimmer 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+@keyframes ae-skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Skeleton shapes */
+.ae-skeleton-text {
+  height: 14px;
+  margin-bottom: 8px;
+}
+
+.ae-skeleton-text.title {
+  height: 20px;
+  width: 60%;
+}
+
+.ae-skeleton-text.subtitle {
+  height: 12px;
+  width: 40%;
+}
+
+.ae-skeleton-text.short { width: 30%; }
+.ae-skeleton-text.medium { width: 60%; }
+.ae-skeleton-text.long { width: 90%; }
+.ae-skeleton-text.full { width: 100%; }
+
+.ae-skeleton-circle {
+  border-radius: 50%;
+}
+
+.ae-skeleton-avatar-sm { width: 32px; height: 32px; }
+.ae-skeleton-avatar-md { width: 48px; height: 48px; }
+.ae-skeleton-avatar-lg { width: 64px; height: 64px; }
+
+.ae-skeleton-rect {
+  border-radius: 8px;
+}
+
+.ae-skeleton-button {
+  height: 44px;
+  width: 120px;
+  border-radius: 8px;
+}
+
+.ae-skeleton-image {
+  aspect-ratio: 16/9;
+  border-radius: 12px;
+}
+
+/* ========================================
+   5. SKELETON CARD
+   ======================================== */
+.ae-skeleton-card {
+  background: var(--ae-bg-card, #FFFFFF);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: var(--ae-shadow-sm, 0 1px 3px rgba(0,0,0,0.1));
+}
+
+.ae-skeleton-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.ae-skeleton-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ae-skeleton-card-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--ae-gray-200, #EEEEEE);
+}
+
+/* ========================================
+   6. SKELETON TABLE
+   ======================================== */
+.ae-skeleton-table {
+  width: 100%;
+}
+
+.ae-skeleton-table-header {
+  display: flex;
+  gap: 16px;
+  padding: 12px 16px;
+  background: var(--ae-gray-50, #FAFAFA);
+  border-bottom: 1px solid var(--ae-gray-200, #EEEEEE);
+}
+
+.ae-skeleton-table-row {
+  display: flex;
+  gap: 16px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--ae-gray-200, #EEEEEE);
+}
+
+.ae-skeleton-table-cell {
+  flex: 1;
+}
+
+.ae-skeleton-table-cell.small { flex: 0.5; }
+.ae-skeleton-table-cell.large { flex: 2; }
+
+/* ========================================
+   7. SKELETON LIST
+   ======================================== */
+.ae-skeleton-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ae-skeleton-list-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--ae-bg-card, #FFFFFF);
+  border-radius: 10px;
+  border: 1px solid var(--ae-gray-200, #EEEEEE);
+}
+
+.ae-skeleton-list-item-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ========================================
+   8. SKELETON FORM
+   ======================================== */
+.ae-skeleton-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ae-skeleton-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ae-skeleton-label {
+  height: 12px;
+  width: 100px;
+}
+
+.ae-skeleton-input {
+  height: 48px;
+  border-radius: 10px;
+}
+
+.ae-skeleton-form-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 640px) {
+  .ae-skeleton-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========================================
+   9. SKELETON DASHBOARD
+   ======================================== */
+.ae-skeleton-dashboard {
+  display: grid;
+  gap: 16px;
+}
+
+.ae-skeleton-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .ae-skeleton-stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.ae-skeleton-stat-card {
+  background: var(--ae-bg-card, #FFFFFF);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: var(--ae-shadow-sm, 0 1px 3px rgba(0,0,0,0.1));
+}
+
+.ae-skeleton-stat-value {
+  height: 32px;
+  width: 80%;
+  margin-bottom: 8px;
+}
+
+.ae-skeleton-stat-label {
+  height: 12px;
+  width: 60%;
+}
+
+.ae-skeleton-chart {
+  background: var(--ae-bg-card, #FFFFFF);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--ae-shadow-sm, 0 1px 3px rgba(0,0,0,0.1));
+}
+
+.ae-skeleton-chart-title {
+  height: 18px;
+  width: 150px;
+  margin-bottom: 20px;
+}
+
+.ae-skeleton-chart-area {
+  height: 200px;
+  border-radius: 8px;
+}
+
+/* ========================================
+   10. SKELETON MENU GRID
+   ======================================== */
+.ae-skeleton-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (min-width: 640px) {
+  .ae-skeleton-menu-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .ae-skeleton-menu-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+.ae-skeleton-menu-item {
+  background: var(--ae-bg-card, #FFFFFF);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  box-shadow: var(--ae-shadow-sm, 0 1px 3px rgba(0,0,0,0.1));
+}
+
+.ae-skeleton-menu-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+}
+
+.ae-skeleton-menu-label {
+  height: 12px;
+  width: 70%;
+}
+
+/* ========================================
+   11. CONTENT PLACEHOLDER
+   ======================================== */
+.ae-content-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.ae-content-placeholder-icon {
+  font-size: 64px;
+  color: var(--ae-gray-300, #E0E0E0);
+  margin-bottom: 16px;
+}
+
+.ae-content-placeholder-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ae-text-primary, #263238);
+  margin-bottom: 8px;
+}
+
+.ae-content-placeholder-desc {
+  font-size: 0.875rem;
+  color: var(--ae-text-secondary, #546E7A);
+  max-width: 300px;
+}
+
+.ae-content-placeholder-action {
+  margin-top: 20px;
+}
+
+/* ========================================
+   12. BUTTON LOADING STATE
+   ======================================== */
+.ae-btn-loading {
+  position: relative;
+  color: transparent !important;
+  pointer-events: none;
+}
+
+.ae-btn-loading::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  left: 50%;
+  margin: -10px 0 0 -10px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: ae-spin 0.8s linear infinite;
+}
+
+.ae-btn-loading.ae-btn-outline::after,
+.ae-btn-loading.ae-btn-ghost::after {
+  border-color: rgba(46, 125, 50, 0.3);
+  border-top-color: var(--ae-primary, #2E7D32);
+}
+</style>
+
+<script>
+/**
+ * ========================================
+ * AE LOADERS - SKELETON SCREENS & LOADING
+ * ========================================
+ */
+const AELoaders = {
+  // Criar skeleton de card
+  skeletonCard(count = 1) {
+    return Array(count).fill(`
+      <div class="ae-skeleton-card">
+        <div class="ae-skeleton-card-header">
+          <div class="ae-skeleton ae-skeleton-circle ae-skeleton-avatar-md"></div>
+          <div style="flex:1">
+            <div class="ae-skeleton ae-skeleton-text title"></div>
+            <div class="ae-skeleton ae-skeleton-text subtitle"></div>
+          </div>
+        </div>
+        <div class="ae-skeleton-card-body">
+          <div class="ae-skeleton ae-skeleton-text long"></div>
+          <div class="ae-skeleton ae-skeleton-text medium"></div>
+          <div class="ae-skeleton ae-skeleton-text short"></div>
+        </div>
+        <div class="ae-skeleton-card-footer">
+          <div class="ae-skeleton ae-skeleton-button" style="width:80px"></div>
+          <div class="ae-skeleton ae-skeleton-button" style="width:100px"></div>
+        </div>
+      </div>
+    `).join('');
+  },
+
+  // Criar skeleton de tabela
+  skeletonTable(rows = 5, cols = 4) {
+    const headerCells = Array(cols).fill('<div class="ae-skeleton-table-cell"><div class="ae-skeleton ae-skeleton-text" style="height:12px"></div></div>').join('');
+    const bodyRows = Array(rows).fill(`
+      <div class="ae-skeleton-table-row">
+        ${Array(cols).fill('<div class="ae-skeleton-table-cell"><div class="ae-skeleton ae-skeleton-text"></div></div>').join('')}
+      </div>
+    `).join('');
+
+    return `
+      <div class="ae-skeleton-table">
+        <div class="ae-skeleton-table-header">${headerCells}</div>
+        ${bodyRows}
+      </div>
+    `;
+  },
+
+  // Criar skeleton de lista
+  skeletonList(count = 5) {
+    return `
+      <div class="ae-skeleton-list">
+        ${Array(count).fill(`
+          <div class="ae-skeleton-list-item">
+            <div class="ae-skeleton ae-skeleton-circle ae-skeleton-avatar-md"></div>
+            <div class="ae-skeleton-list-item-content">
+              <div class="ae-skeleton ae-skeleton-text medium"></div>
+              <div class="ae-skeleton ae-skeleton-text short"></div>
+            </div>
+            <div class="ae-skeleton ae-skeleton-rect" style="width:60px;height:24px"></div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  },
+
+  // Criar skeleton de formulário
+  skeletonForm(fields = 4) {
+    return `
+      <div class="ae-skeleton-form">
+        ${Array(Math.ceil(fields / 2)).fill(`
+          <div class="ae-skeleton-form-row">
+            <div class="ae-skeleton-field">
+              <div class="ae-skeleton ae-skeleton-label"></div>
+              <div class="ae-skeleton ae-skeleton-input"></div>
+            </div>
+            <div class="ae-skeleton-field">
+              <div class="ae-skeleton ae-skeleton-label"></div>
+              <div class="ae-skeleton ae-skeleton-input"></div>
+            </div>
+          </div>
+        `).join('')}
+        <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:16px">
+          <div class="ae-skeleton ae-skeleton-button"></div>
+          <div class="ae-skeleton ae-skeleton-button" style="width:140px"></div>
+        </div>
+      </div>
+    `;
+  },
+
+  // Criar skeleton de dashboard
+  skeletonDashboard() {
+    return `
+      <div class="ae-skeleton-dashboard">
+        <div class="ae-skeleton-stats">
+          ${Array(4).fill(`
+            <div class="ae-skeleton-stat-card">
+              <div class="ae-skeleton ae-skeleton-stat-value"></div>
+              <div class="ae-skeleton ae-skeleton-stat-label"></div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="ae-skeleton-chart">
+          <div class="ae-skeleton ae-skeleton-chart-title"></div>
+          <div class="ae-skeleton ae-skeleton-chart-area"></div>
+        </div>
+      </div>
+    `;
+  },
+
+  // Criar skeleton de menu grid
+  skeletonMenuGrid(count = 12) {
+    return `
+      <div class="ae-skeleton-menu-grid">
+        ${Array(count).fill(`
+          <div class="ae-skeleton-menu-item">
+            <div class="ae-skeleton ae-skeleton-menu-icon"></div>
+            <div class="ae-skeleton ae-skeleton-menu-label"></div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  },
+
+  // Mostrar loader de página
+  showPageLoader(text = 'Carregando...') {
+    let loader = document.getElementById('aePageLoader');
+    if (!loader) {
+      loader = document.createElement('div');
+      loader.id = 'aePageLoader';
+      loader.className = 'ae-page-loader';
+      loader.innerHTML = `
+        <div class="ae-page-loader-logo">
+          <span>🍎</span> AE
+        </div>
+        <div class="ae-spinner ae-spinner-lg"></div>
+        <div class="ae-page-loader-text">${text}</div>
+      `;
+      document.body.appendChild(loader);
+    }
+    loader.classList.remove('fade-out');
+    loader.querySelector('.ae-page-loader-text').textContent = text;
+  },
+
+  // Esconder loader de página
+  hidePageLoader() {
+    const loader = document.getElementById('aePageLoader');
+    if (loader) {
+      loader.classList.add('fade-out');
+      setTimeout(() => loader.remove(), 300);
+    }
+  },
+
+  // Mostrar overlay loader em um elemento
+  showOverlay(element, text = '') {
+    const el = typeof element === 'string' ? document.querySelector(element) : element;
+    if (!el) return;
+
+    el.style.position = 'relative';
+    
+    let overlay = el.querySelector('.ae-overlay-loader');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.className = 'ae-overlay-loader';
+      overlay.innerHTML = `
+        <div class="ae-spinner"></div>
+        ${text ? `<div class="ae-overlay-loader-text">${text}</div>` : ''}
+      `;
+      el.appendChild(overlay);
+    }
+  },
+
+  // Esconder overlay loader
+  hideOverlay(element) {
+    const el = typeof element === 'string' ? document.querySelector(element) : element;
+    if (!el) return;
+
+    const overlay = el.querySelector('.ae-overlay-loader');
+    if (overlay) overlay.remove();
+  },
+
+  // Adicionar loading state a um botão
+  setButtonLoading(button, loading = true) {
+    const btn = typeof button === 'string' ? document.querySelector(button) : button;
+    if (!btn) return;
+
+    if (loading) {
+      btn.classList.add('ae-btn-loading');
+      btn.disabled = true;
+      btn.dataset.originalText = btn.textContent;
+    } else {
+      btn.classList.remove('ae-btn-loading');
+      btn.disabled = false;
+      if (btn.dataset.originalText) {
+        btn.textContent = btn.dataset.originalText;
+      }
+    }
+  },
+
+  // Renderizar skeleton em um container
+  renderSkeleton(container, type, options = {}) {
+    const el = typeof container === 'string' ? document.querySelector(container) : container;
+    if (!el) return;
+
+    const skeletons = {
+      card: () => this.skeletonCard(options.count || 3),
+      table: () => this.skeletonTable(options.rows || 5, options.cols || 4),
+      list: () => this.skeletonList(options.count || 5),
+      form: () => this.skeletonForm(options.fields || 6),
+      dashboard: () => this.skeletonDashboard(),
+      menu: () => this.skeletonMenuGrid(options.count || 12)
+    };
+
+    el.innerHTML = skeletons[type] ? skeletons[type]() : '';
+  },
+
+  // Placeholder de conteúdo vazio
+  emptyPlaceholder(icon, title, description, actionText, actionCallback) {
+    return `
+      <div class="ae-content-placeholder">
+        <div class="ae-content-placeholder-icon">
+          <span class="material-symbols-outlined" style="font-size:inherit">${icon}</span>
+        </div>
+        <div class="ae-content-placeholder-title">${title}</div>
+        <div class="ae-content-placeholder-desc">${description}</div>
+        ${actionText ? `
+          <div class="ae-content-placeholder-action">
+            <button class="ae-btn ae-btn-primary" onclick="${actionCallback || ''}">
+              ${actionText}
+            </button>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }
+};
+
+// Expor globalmente
+window.AELoaders = AELoaders;
+
+// Exemplo de uso com google.script.run
+window.withLoading = async (element, asyncFn) => {
+  AELoaders.showOverlay(element);
+  try {
+    return await asyncFn();
+  } finally {
+    AELoaders.hideOverlay(element);
+  }
+};
+</script>

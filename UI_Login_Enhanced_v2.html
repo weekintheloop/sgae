@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - UNIAE v2 (Com Validação Robusta)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+  <!-- Incluir utilitários -->
+  <?!= include('GAS_validation-utils'); ?>
+  <?!= include('GAS_error-handling'); ?>
+
+  <style>
+    /* Estilos do UI_Login_Enhanced.html mantidos */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-container {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 440px;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+      animation: slideUp 0.5s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .login-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 48px 40px;
+      text-align: center;
+    }
+
+    .logo-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+
+    .login-header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .login-body {
+      padding: 40px;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      color: #374151;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9ca3af;
+      font-size: 20px;
+      z-index: 1;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 14px 16px 14px 48px;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      font-size: 15px;
+      transition: all 0.3s;
+      background: #f9fafb;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-input.error {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+
+    .form-input.success {
+      border-color: #10b981;
+      background: #f0fdf4;
+    }
+
+    .form-error {
+      display: none;
+      color: #ef4444;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .form-error.show {
+      display: block;
+    }
+
+    .form-success {
+      display: none;
+      color: #10b981;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .form-success.show {
+      display: block;
+    }
+
+    .password-strength {
+      margin-top: 8px;
+      display: none;
+    }
+
+    .password-strength.show {
+      display: block;
+    }
+
+    .strength-bar {
+      height: 4px;
+      background: #e5e7eb;
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+
+    .strength-fill {
+      height: 100%;
+      transition: width 0.3s, background 0.3s;
+      border-radius: 2px;
+    }
+
+    .strength-label {
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #9ca3af;
+      transition: color 0.3s;
+      z-index: 2;
+    }
+
+    .password-toggle:hover {
+      color: #667eea;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="login-container">
+    <div class="login-header">
+      <div class="logo-icon">🎓</div>
+      <h1>UNIAE v2</h1>
+      <p>Sistema com Validação Robusta</p>
+    </div>
+
+    <div class="login-body">
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <div class="input-wrapper">
+            <span class="material-symbols-outlined input-icon">mail</span>
+            <input type="email" class="form-input" id="loginEmail" required placeholder="seu@email.com"
+              onblur="validateEmailField()" oninput="clearError('loginEmail')">
+          </div>
+          <div class="form-error" id="loginEmailError"></div>
+          <div class="form-success" id="loginEmailSuccess"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Senha</label>
+          <div class="input-wrapper">
+            <span class="material-symbols-outlined input-icon">lock</span>
+            <input type="password" class="form-input" id="loginSenha" required placeholder="••••••••"
+              onblur="validateSenhaField()" oninput="clearError('loginSenha')">
+            <span class="material-symbols-outlined password-toggle"
+              onclick="togglePassword('loginSenha')">visibility</span>
+          </div>
+          <div class="form-error" id="loginSenhaError"></div>
+          <div class="password-strength" id="loginSenhaStrength">
+            <div class="strength-bar">
+              <div class="strength-fill" id="loginSenhaStrengthFill"></div>
+            </div>
+            <div class="strength-label" id="loginSenhaStrengthLabel"></div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="loginBtn">
+          <span>Entrar</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // ============================================================================
+    // VALIDAÇÃO EM TEMPO REAL
+    // ============================================================================
+
+    function validateEmailField() {
+      const input = document.getElementById('loginEmail');
+      const error = document.getElementById('loginEmailError');
+      const success = document.getElementById('loginEmailSuccess');
+      const value = input.value.trim();
+
+      if (!value) {
+        clearError('loginEmail');
+        return;
+      }
+
+      const result = ValidationUtils.validateEmail(value);
+
+      if (!result.valid) {
+        input.classList.add('error');
+        input.classList.remove('success');
+        error.textContent = result.message;
+        error.classList.add('show');
+        success.classList.remove('show');
+
+        // Mostrar sugestão se houver
+        if (result.suggestion) {
+          feedback.showInfo('Sugestão', `Você quis dizer ${result.suggestion}?`);
+        }
+      } else {
+        input.classList.remove('error');
+        input.classList.add('success');
+        error.classList.remove('show');
+        success.textContent = '✓ Email válido';
+        success.classList.add('show');
+      }
+    }
+
+    function validateSenhaField() {
+      const input = document.getElementById('loginSenha');
+      const error = document.getElementById('loginSenhaError');
+      const strengthDiv = document.getElementById('loginSenhaStrength');
+      const strengthFill = document.getElementById('loginSenhaStrengthFill');
+      const strengthLabel = document.getElementById('loginSenhaStrengthLabel');
+      const value = input.value;
+
+      if (!value) {
+        clearError('loginSenha');
+        strengthDiv.classList.remove('show');
+        return;
+      }
+
+      const result = ValidationUtils.validatePassword(value);
+
+      // Mostrar força da senha
+      strengthDiv.classList.add('show');
+      strengthFill.style.width = result.strength + '%';
+      strengthLabel.textContent = result.strengthLabel;
+
+      // Cores baseadas na força
+      if (result.strength >= 80) {
+        strengthFill.style.background = '#10b981';
+        strengthLabel.style.color = '#10b981';
+      } else if (result.strength >= 60) {
+        strengthFill.style.background = '#3b82f6';
+        strengthLabel.style.color = '#3b82f6';
+      } else if (result.strength >= 40) {
+        strengthFill.style.background = '#f59e0b';
+        strengthLabel.style.color = '#f59e0b';
+      } else {
+        strengthFill.style.background = '#ef4444';
+        strengthLabel.style.color = '#ef4444';
+      }
+
+      if (!result.valid) {
+        input.classList.add('error');
+        error.textContent = result.message;
+        error.classList.add('show');
+      } else {
+        input.classList.remove('error');
+        error.classList.remove('show');
+
+        // Mostrar warnings
+        if (result.warnings.length > 0) {
+          error.textContent = result.warnings.join(', ');
+          error.style.color = '#f59e0b';
+          error.classList.add('show');
+        }
+      }
+    }
+
+    function clearError(fieldId) {
+      const input = document.getElementById(fieldId);
+      const error = document.getElementById(fieldId + 'Error');
+      const success = document.getElementById(fieldId + 'Success');
+
+      input.classList.remove('error', 'success');
+      if (error) error.classList.remove('show');
+      if (success) success.classList.remove('show');
+    }
+
+    function togglePassword(inputId) {
+      const input = document.getElementById(inputId);
+      const icon = input.parentElement.querySelector('.password-toggle');
+
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.textContent = 'visibility_off';
+      } else {
+        input.type = 'password';
+        icon.textContent = 'visibility';
+      }
+    }
+
+    // ============================================================================
+    // SUBMIT COM VALIDAÇÃO E RETRY
+    // ============================================================================
+
+    async function handleLogin(event) {
+      event.preventDefault();
+
+      const email = document.getElementById('loginEmail').value.trim();
+      const senha = document.getElementById('loginSenha').value;
+
+      // Validar email
+      const emailValidation = ValidationUtils.validateEmail(email);
+      if (!emailValidation.valid) {
+        feedback.showError(new Error(emailValidation.message));
+        document.getElementById('loginEmail').focus();
+        return;
+      }
+
+      // Validar senha
+      const senhaValidation = ValidationUtils.validatePassword(senha);
+      if (!senhaValidation.valid) {
+        feedback.showError(new Error(senhaValidation.message));
+        document.getElementById('loginSenha').focus();
+        return;
+      }
+
+      // Sanitizar inputs
+      const sanitizedEmail = ValidationUtils.sanitizeInput(email);
+
+      // Executar login com feedback e retry
+      try {
+        const result = await ErrorHandling.withFeedback(
+          async () => {
+            return await ErrorHandling.safeGoogleScriptRunWithRetry(
+              'api_auth_login',
+              sanitizedEmail,
+              senha
+            );
+          },
+          {
+            loadingMessage: 'Fazendo login...',
+            successMessage: `Bem-vindo(a)!`,
+            showSuccess: false // Vamos mostrar mensagem customizada
+          }
+        );
+
+        if (result.success) {
+          const firstName = result.session.nome.split(' ')[0];
+          feedback.showSuccess(
+            'Login realizado!',
+            `Bem-vindo(a), ${firstName}! Redirecionando...`
+          );
+
+          setTimeout(() => {
+            // Se estiver em um modal/sidebar, tenta fechar
+            try {
+              google.script.host.close();
+            } catch (e) {
+              // Não está em modal/sidebar - comportamento esperado em Web App
+              console.debug('Não está em modal/sidebar, continuando com reload');
+            }
+
+            // Se estiver no Web App, recarrega para entrar no Dashboard
+            // O doGet irá detectar a sessão e servir o Dashboard
+            window.top.location.reload();
+          }, 1500);
+        } else {
+          feedback.showError(new Error(result.error || 'Credenciais inválidas'));
+        }
+      } catch (error) {
+        // Erro já foi mostrado pelo withFeedback
+        console.error('Login failed:', error);
+      }
+    }
+
+    // ============================================================================
+    // INICIALIZAÇÃO
+    // ============================================================================
+
+    // Adicionar listeners para validação em tempo real
+    document.getElementById('loginEmail').addEventListener('input', () => {
+      const value = document.getElementById('loginEmail').value;
+      if (value.length > 0) {
+        // Validar após 500ms de inatividade
+        clearTimeout(window.emailValidationTimeout);
+        window.emailValidationTimeout = setTimeout(validateEmailField, 500);
+      }
+    });
+
+    document.getElementById('loginSenha').addEventListener('input', () => {
+      const value = document.getElementById('loginSenha').value;
+      if (value.length > 0) {
+        // Validar após 500ms de inatividade
+        clearTimeout(window.senhaValidationTimeout);
+        window.senhaValidationTimeout = setTimeout(validateSenhaField, 500);
+      }
+    });
+
+    // Mensagem de boas-vindas
+    setTimeout(() => {
+      feedback.showInfo(
+        'Sistema Aprimorado',
+        'Agora com validação robusta e tratamento de erros!'
+      );
+    }, 1000);
+  </script>
+</body>
+
+</html>

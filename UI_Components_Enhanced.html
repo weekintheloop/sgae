@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* ============================================
+       DESIGN SYSTEM - COMPONENTES APRIMORADOS
+       ============================================ */
+    
+    :root {
+      /* Cores principais */
+      --primary: #1a73e8;
+      --primary-dark: #1557b0;
+      --primary-light: #e8f0fe;
+      --secondary: #5f6368;
+      --success: #1e8e3e;
+      --success-light: #e6f4ea;
+      --warning: #f9ab00;
+      --warning-light: #fef7e0;
+      --error: #d93025;
+      --error-light: #fce8e6;
+      --info: #1a73e8;
+      --info-light: #e8f0fe;
+      
+      /* Neutros */
+      --white: #ffffff;
+      --gray-50: #f8f9fa;
+      --gray-100: #f1f3f4;
+      --gray-200: #e8eaed;
+      --gray-300: #dadce0;
+      --gray-400: #bdc1c6;
+      --gray-500: #9aa0a6;
+      --gray-600: #80868b;
+      --gray-700: #5f6368;
+      --gray-800: #3c4043;
+      --gray-900: #202124;
+      
+      /* Tipografia */
+      --font-family: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-size-xs: 0.75rem;
+      --font-size-sm: 0.875rem;
+      --font-size-base: 1rem;
+      --font-size-lg: 1.125rem;
+      --font-size-xl: 1.25rem;
+      --font-size-2xl: 1.5rem;
+      
+      /* Espaçamento */
+      --spacing-xs: 0.25rem;
+      --spacing-sm: 0.5rem;
+      --spacing-md: 1rem;
+      --spacing-lg: 1.5rem;
+      --spacing-xl: 2rem;
+      
+      /* Bordas */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-full: 9999px;
+      
+      /* Sombras */
+      --shadow-sm: 0 1px 2px rgba(60, 64, 67, 0.1);
+      --shadow-md: 0 2px 6px rgba(60, 64, 67, 0.15);
+      --shadow-lg: 0 4px 12px rgba(60, 64, 67, 0.2);
+      
+      /* Transições */
+      --transition-fast: 150ms ease;
+      --transition-normal: 250ms ease;
+    }
+    
+    /* Reset básico */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: var(--font-family);
+      font-size: var(--font-size-base);
+      color: var(--gray-800);
+      background: var(--gray-50);
+      line-height: 1.5;
+    }
+    
+    /* ============================================
+       BOTÕES
+       ============================================ */
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
+      font-family: inherit;
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      line-height: 1.5;
+      text-decoration: none;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+    }
+    
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: var(--white);
+    }
+    
+    .btn-primary:hover:not(:disabled) {
+      background: var(--primary-dark);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .btn-secondary {
+      background: var(--white);
+      color: var(--primary);
+      border: 1px solid var(--gray-300);
+    }
+    
+    .btn-secondary:hover:not(:disabled) {
+      background: var(--primary-light);
+      border-color: var(--primary);
+    }
+    
+    .btn-success {
+      background: var(--success);
+      color: var(--white);
+    }
+    
+    .btn-danger {
+      background: var(--error);
+      color: var(--white);
+    }
+    
+    .btn-ghost {
+      background: transparent;
+      color: var(--gray-700);
+    }
+    
+    .btn-ghost:hover:not(:disabled) {
+      background: var(--gray-100);
+    }
+    
+    .btn-sm {
+      padding: var(--spacing-xs) var(--spacing-sm);
+      font-size: var(--font-size-xs);
+    }
+    
+    .btn-lg {
+      padding: var(--spacing-md) var(--spacing-lg);
+      font-size: var(--font-size-base);
+    }
+    
+    .btn-icon {
+      padding: var(--spacing-sm);
+      border-radius: var(--radius-full);
+    }
+    
+    /* ============================================
+       FORMULÁRIOS
+       ============================================ */
+    
+    .form-group {
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: var(--spacing-xs);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: var(--gray-700);
+    }
+    
+    .form-label.required::after {
+      content: ' *';
+      color: var(--error);
+    }
+    
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      padding: var(--spacing-sm) var(--spacing-md);
+      font-family: inherit;
+      font-size: var(--font-size-base);
+      color: var(--gray-800);
+      background: var(--white);
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius-sm);
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+    
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-light);
+    }
+    
+    .form-input.error,
+    .form-select.error,
+    .form-textarea.error {
+      border-color: var(--error);
+    }
+    
+    .form-input.error:focus,
+    .form-select.error:focus,
+    .form-textarea.error:focus {
+      box-shadow: 0 0 0 2px var(--error-light);
+    }
+    
+    .form-error {
+      margin-top: var(--spacing-xs);
+      font-size: var(--font-size-xs);
+      color: var(--error);
+    }
+    
+    .form-hint {
+      margin-top: var(--spacing-xs);
+      font-size: var(--font-size-xs);
+      color: var(--gray-600);
+    }
+    
+    .form-textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    
+    /* ============================================
+       CARDS
+       ============================================ */
+    
+    .card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+    
+    .card-header {
+      padding: var(--spacing-md) var(--spacing-lg);
+      border-bottom: 1px solid var(--gray-200);
+    }
+    
+    .card-title {
+      font-size: var(--font-size-lg);
+      font-weight: 500;
+      color: var(--gray-900);
+    }
+    
+    .card-body {
+      padding: var(--spacing-lg);
+    }
+    
+    .card-footer {
+      padding: var(--spacing-md) var(--spacing-lg);
+      border-top: 1px solid var(--gray-200);
+      background: var(--gray-50);
+    }
+    
+    /* ============================================
+       ALERTAS
+       ============================================ */
+    
+    .alert {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-md);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-sm);
+    }
+    
+    .alert-success {
+      background: var(--success-light);
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
+    
+    .alert-warning {
+      background: var(--warning-light);
+      color: #b45309;
+      border: 1px solid var(--warning);
+    }
+    
+    .alert-error {
+      background: var(--error-light);
+      color: var(--error);
+      border: 1px solid var(--error);
+    }
+    
+    .alert-info {
+      background: var(--info-light);
+      color: var(--info);
+      border: 1px solid var(--info);
+    }
+    
+    .alert-icon {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+    }
+    
+    .alert-content {
+      flex: 1;
+    }
+    
+    .alert-title {
+      font-weight: 500;
+      margin-bottom: var(--spacing-xs);
+    }
+    
+    .alert-dismiss {
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+    
+    .alert-dismiss:hover {
+      opacity: 1;
+    }
+    
+    /* ============================================
+       TABELAS
+       ============================================ */
+    
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--white);
+    }
+    
+    .table th,
+    .table td {
+      padding: var(--spacing-sm) var(--spacing-md);
+      text-align: left;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    
+    .table th {
+      font-weight: 500;
+      color: var(--gray-700);
+      background: var(--gray-50);
+      white-space: nowrap;
+    }
+    
+    .table tbody tr:hover {
+      background: var(--gray-50);
+    }
+    
+    .table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .table-sortable th {
+      cursor: pointer;
+      user-select: none;
+    }
+    
+    .table-sortable th:hover {
+      background: var(--gray-100);
+    }
+    
+    /* ============================================
+       BADGES
+       ============================================ */
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      font-size: var(--font-size-xs);
+      font-weight: 500;
+      border-radius: var(--radius-full);
+    }
+    
+    .badge-primary {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+    
+    .badge-success {
+      background: var(--success-light);
+      color: var(--success);
+    }
+    
+    .badge-warning {
+      background: var(--warning-light);
+      color: #b45309;
+    }
+    
+    .badge-error {
+      background: var(--error-light);
+      color: var(--error);
+    }
+    
+    .badge-gray {
+      background: var(--gray-200);
+      color: var(--gray-700);
+    }
+    
+    /* ============================================
+       LOADING / SPINNER
+       ============================================ */
+    
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--gray-300);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    .spinner-sm {
+      width: 16px;
+      height: 16px;
+    }
+    
+    .spinner-lg {
+      width: 32px;
+      height: 32px;
+      border-width: 3px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.9);
+      z-index: 1000;
+    }
+    
+    .loading-content {
+      text-align: center;
+    }
+    
+    .loading-text {
+      margin-top: var(--spacing-md);
+      color: var(--gray-600);
+    }
+    
+    /* ============================================
+       MODAL
+       ============================================ */
+    
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all var(--transition-normal);
+    }
+    
+    .modal-backdrop.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .modal {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow: hidden;
+      transform: scale(0.9);
+      transition: transform var(--transition-normal);
+    }
+    
+    .modal-backdrop.active .modal {
+      transform: scale(1);
+    }
+    
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--spacing-md) var(--spacing-lg);
+      border-bottom: 1px solid var(--gray-200);
+    }
+    
+    .modal-title {
+      font-size: var(--font-size-lg);
+      font-weight: 500;
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--gray-500);
+      line-height: 1;
+    }
+    
+    .modal-close:hover {
+      color: var(--gray-800);
+    }
+    
+    .modal-body {
+      padding: var(--spacing-lg);
+      overflow-y: auto;
+      max-height: 60vh;
+    }
+    
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-md) var(--spacing-lg);
+      border-top: 1px solid var(--gray-200);
+      background: var(--gray-50);
+    }
+    
+    /* ============================================
+       TOAST NOTIFICATIONS
+       ============================================ */
+    
+    .toast-container {
+      position: fixed;
+      top: var(--spacing-lg);
+      right: var(--spacing-lg);
+      z-index: 1100;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+    
+    .toast {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-md);
+      background: var(--white);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      min-width: 300px;
+      max-width: 400px;
+      animation: slideIn 0.3s ease;
+    }
+    
+    .toast.removing {
+      animation: slideOut 0.3s ease forwards;
+    }
+    
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes slideOut {
+      to {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+    
+    .toast-icon {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+    }
+    
+    .toast-success .toast-icon { color: var(--success); }
+    .toast-error .toast-icon { color: var(--error); }
+    .toast-warning .toast-icon { color: var(--warning); }
+    .toast-info .toast-icon { color: var(--info); }
+    
+    .toast-content {
+      flex: 1;
+    }
+    
+    .toast-title {
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+    
+    .toast-message {
+      font-size: var(--font-size-sm);
+      color: var(--gray-600);
+    }
+    
+    /* ============================================
+       PAGINAÇÃO
+       ============================================ */
+    
+    .pagination {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+    
+    .pagination-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 32px;
+      padding: 0 var(--spacing-sm);
+      background: var(--white);
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-sm);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    .pagination-btn:hover:not(:disabled) {
+      background: var(--gray-100);
+      border-color: var(--gray-400);
+    }
+    
+    .pagination-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: var(--white);
+    }
+    
+    .pagination-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .pagination-info {
+      font-size: var(--font-size-sm);
+      color: var(--gray-600);
+      margin: 0 var(--spacing-sm);
+    }
+    
+    /* ============================================
+       UTILITÁRIOS
+       ============================================ */
+    
+    .text-center { text-align: center; }
+    .text-right { text-align: right; }
+    .text-muted { color: var(--gray-600); }
+    .text-success { color: var(--success); }
+    .text-error { color: var(--error); }
+    .text-warning { color: var(--warning); }
+    
+    .mt-1 { margin-top: var(--spacing-xs); }
+    .mt-2 { margin-top: var(--spacing-sm); }
+    .mt-3 { margin-top: var(--spacing-md); }
+    .mt-4 { margin-top: var(--spacing-lg); }
+    
+    .mb-1 { margin-bottom: var(--spacing-xs); }
+    .mb-2 { margin-bottom: var(--spacing-sm); }
+    .mb-3 { margin-bottom: var(--spacing-md); }
+    .mb-4 { margin-bottom: var(--spacing-lg); }
+    
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .justify-end { justify-content: flex-end; }
+    .gap-2 { gap: var(--spacing-sm); }
+    .gap-3 { gap: var(--spacing-md); }
+    
+    .hidden { display: none !important; }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Container para Toasts -->
+  <div id="toast-container" class="toast-container"></div>
+  
+  <!-- Template de Loading -->
+  <template id="loading-template">
+    <div class="loading-overlay">
+      <div class="loading-content">
+        <div class="spinner spinner-lg"></div>
+        <p class="loading-text">Carregando...</p>
+      </div>
+    </div>
+  </template>
+
+  
+  <script>
+    /**
+     * Sistema de Componentes UI Aprimorado
+     * @namespace UIComponents
+     */
+    var UIComponents = (function() {
+      
+      // ============================================
+      // TOAST NOTIFICATIONS
+      // ============================================
+      
+      var toastContainer = null;
+      
+      function initToastContainer() {
+        if (!toastContainer) {
+          toastContainer = document.getElementById('toast-container');
+          if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'toast-container';
+            toastContainer.className = 'toast-container';
+            document.body.appendChild(toastContainer);
+          }
+        }
+        return toastContainer;
+      }
+      
+      /**
+       * Exibe uma notificação toast
+       * @param {Object} options - Opções do toast
+       * @param {string} options.type - Tipo: success, error, warning, info
+       * @param {string} options.title - Título
+       * @param {string} options.message - Mensagem
+       * @param {number} [options.duration=5000] - Duração em ms
+       */
+      function showToast(options) {
+        var container = initToastContainer();
+        
+        var icons = {
+          success: '✓',
+          error: '✕',
+          warning: '⚠',
+          info: 'ℹ'
+        };
+        
+        var toast = document.createElement('div');
+        toast.className = 'toast toast-' + (options.type || 'info');
+        toast.innerHTML = 
+          '<span class="toast-icon">' + (icons[options.type] || icons.info) + '</span>' +
+          '<div class="toast-content">' +
+            (options.title ? '<div class="toast-title">' + escapeHtml(options.title) + '</div>' : '') +
+            '<div class="toast-message">' + escapeHtml(options.message || '') + '</div>' +
+          '</div>' +
+          '<button class="alert-dismiss" onclick="this.parentElement.remove()">×</button>';
+        
+        container.appendChild(toast);
+        
+        // Auto-remove
+        var duration = options.duration || 5000;
+        setTimeout(function() {
+          toast.classList.add('removing');
+          setTimeout(function() {
+            if (toast.parentElement) {
+              toast.remove();
+            }
+          }, 300);
+        }, duration);
+        
+        return toast;
+      }
+      
+      // Atalhos
+      function toastSuccess(message, title) {
+        return showToast({ type: 'success', title: title || 'Sucesso', message: message });
+      }
+      
+      function toastError(message, title) {
+        return showToast({ type: 'error', title: title || 'Erro', message: message, duration: 8000 });
+      }
+      
+      function toastWarning(message, title) {
+        return showToast({ type: 'warning', title: title || 'Atenção', message: message });
+      }
+      
+      function toastInfo(message, title) {
+        return showToast({ type: 'info', title: title, message: message });
+      }
+      
+      // ============================================
+      // LOADING
+      // ============================================
+      
+      var loadingOverlay = null;
+      
+      /**
+       * Exibe overlay de loading
+       * @param {string} [message] - Mensagem opcional
+       */
+      function showLoading(message) {
+        if (loadingOverlay) return;
+        
+        loadingOverlay = document.createElement('div');
+        loadingOverlay.className = 'loading-overlay';
+        loadingOverlay.innerHTML = 
+          '<div class="loading-content">' +
+            '<div class="spinner spinner-lg"></div>' +
+            '<p class="loading-text">' + escapeHtml(message || 'Carregando...') + '</p>' +
+          '</div>';
+        
+        document.body.appendChild(loadingOverlay);
+        
+        // Fade in
+        requestAnimationFrame(function() {
+          loadingOverlay.style.opacity = '1';
+        });
+      }
+      
+      /**
+       * Esconde overlay de loading
+       */
+      function hideLoading() {
+        if (!loadingOverlay) return;
+        
+        loadingOverlay.style.opacity = '0';
+        setTimeout(function() {
+          if (loadingOverlay && loadingOverlay.parentElement) {
+            loadingOverlay.remove();
+          }
+          loadingOverlay = null;
+        }, 200);
+      }
+      
+      // ============================================
+      // MODAL
+      // ============================================
+      
+      var activeModal = null;
+      
+      /**
+       * Exibe um modal
+       * @param {Object} options - Opções do modal
+       * @param {string} options.title - Título
+       * @param {string} options.content - Conteúdo HTML
+       * @param {Array} [options.buttons] - Botões do footer
+       * @param {Function} [options.onClose] - Callback ao fechar
+       */
+      function showModal(options) {
+        closeModal(); // Fecha modal anterior se existir
+        
+        var backdrop = document.createElement('div');
+        backdrop.className = 'modal-backdrop';
+        
+        var buttonsHtml = '';
+        if (options.buttons && options.buttons.length > 0) {
+          buttonsHtml = '<div class="modal-footer">';
+          options.buttons.forEach(function(btn, index) {
+            buttonsHtml += '<button class="btn ' + (btn.class || 'btn-secondary') + '" data-btn-index="' + index + '">' + 
+              escapeHtml(btn.text) + '</button>';
+          });
+          buttonsHtml += '</div>';
+        }
+        
+        backdrop.innerHTML = 
+          '<div class="modal">' +
+            '<div class="modal-header">' +
+              '<h3 class="modal-title">' + escapeHtml(options.title || '') + '</h3>' +
+              '<button class="modal-close" data-close>&times;</button>' +
+            '</div>' +
+            '<div class="modal-body">' + (options.content || '') + '</div>' +
+            buttonsHtml +
+          '</div>';
+        
+        document.body.appendChild(backdrop);
+        
+        // Event listeners
+        backdrop.querySelector('[data-close]').addEventListener('click', closeModal);
+        backdrop.addEventListener('click', function(e) {
+          if (e.target === backdrop) closeModal();
+        });
+        
+        // Button handlers
+        if (options.buttons) {
+          options.buttons.forEach(function(btn, index) {
+            var btnEl = backdrop.querySelector('[data-btn-index="' + index + '"]');
+            if (btnEl && btn.onClick) {
+              btnEl.addEventListener('click', function() {
+                btn.onClick(closeModal);
+              });
+            }
+          });
+        }
+        
+        // Keyboard
+        document.addEventListener('keydown', handleModalKeydown);
+        
+        // Animate in
+        requestAnimationFrame(function() {
+          backdrop.classList.add('active');
+        });
+        
+        activeModal = { backdrop: backdrop, onClose: options.onClose };
+        
+        return backdrop;
+      }
+      
+      function handleModalKeydown(e) {
+        if (e.key === 'Escape') {
+          closeModal();
+        }
+      }
+      
+      /**
+       * Fecha o modal ativo
+       */
+      function closeModal() {
+        if (!activeModal) return;
+        
+        document.removeEventListener('keydown', handleModalKeydown);
+        
+        activeModal.backdrop.classList.remove('active');
+        
+        setTimeout(function() {
+          if (activeModal && activeModal.backdrop.parentElement) {
+            activeModal.backdrop.remove();
+          }
+          if (activeModal && activeModal.onClose) {
+            activeModal.onClose();
+          }
+          activeModal = null;
+        }, 250);
+      }
+      
+      /**
+       * Modal de confirmação
+       */
+      function confirm(message, options) {
+        options = options || {};
+        
+        return new Promise(function(resolve) {
+          showModal({
+            title: options.title || 'Confirmação',
+            content: '<p>' + escapeHtml(message) + '</p>',
+            buttons: [
+              {
+                text: options.cancelText || 'Cancelar',
+                class: 'btn-secondary',
+                onClick: function(close) {
+                  close();
+                  resolve(false);
+                }
+              },
+              {
+                text: options.confirmText || 'Confirmar',
+                class: options.danger ? 'btn-danger' : 'btn-primary',
+                onClick: function(close) {
+                  close();
+                  resolve(true);
+                }
+              }
+            ]
+          });
+        });
+      }
+      
+      /**
+       * Modal de alerta
+       */
+      function alert(message, options) {
+        options = options || {};
+        
+        return new Promise(function(resolve) {
+          showModal({
+            title: options.title || 'Aviso',
+            content: '<p>' + escapeHtml(message) + '</p>',
+            buttons: [
+              {
+                text: 'OK',
+                class: 'btn-primary',
+                onClick: function(close) {
+                  close();
+                  resolve();
+                }
+              }
+            ]
+          });
+        });
+      }
+      
+      // ============================================
+      // FORMULÁRIOS
+      // ============================================
+      
+      /**
+       * Valida um formulário
+       * @param {HTMLFormElement} form - Elemento do formulário
+       * @returns {Object} { valid: boolean, errors: Object, data: Object }
+       */
+      function validateForm(form) {
+        var data = {};
+        var errors = {};
+        var valid = true;
+        
+        // Limpa erros anteriores
+        form.querySelectorAll('.form-error').forEach(function(el) {
+          el.remove();
+        });
+        form.querySelectorAll('.error').forEach(function(el) {
+          el.classList.remove('error');
+        });
+        
+        // Coleta e valida campos
+        var inputs = form.querySelectorAll('input, select, textarea');
+        inputs.forEach(function(input) {
+          var name = input.name || input.id;
+          if (!name) return;
+          
+          var value = input.type === 'checkbox' ? input.checked : input.value.trim();
+          data[name] = value;
+          
+          // Validação required
+          if (input.required && !value) {
+            errors[name] = 'Campo obrigatório';
+            valid = false;
+            showFieldError(input, errors[name]);
+            return;
+          }
+          
+          // Validação de tipo
+          if (value) {
+            if (input.type === 'email' && !isValidEmail(value)) {
+              errors[name] = 'Email inválido';
+              valid = false;
+              showFieldError(input, errors[name]);
+            } else if (input.dataset.validate === 'cnpj' && !isValidCNPJ(value)) {
+              errors[name] = 'CNPJ inválido';
+              valid = false;
+              showFieldError(input, errors[name]);
+            } else if (input.minLength && value.length < input.minLength) {
+              errors[name] = 'Mínimo ' + input.minLength + ' caracteres';
+              valid = false;
+              showFieldError(input, errors[name]);
+            }
+          }
+        });
+        
+        return { valid: valid, errors: errors, data: data };
+      }
+      
+      function showFieldError(input, message) {
+        input.classList.add('error');
+        var errorEl = document.createElement('div');
+        errorEl.className = 'form-error';
+        errorEl.textContent = message;
+        input.parentElement.appendChild(errorEl);
+      }
+      
+      function isValidEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      }
+      
+      function isValidCNPJ(cnpj) {
+        cnpj = cnpj.replace(/[^\d]/g, '');
+        return cnpj.length === 14;
+      }
+      
+      // ============================================
+      // TABELA DINÂMICA
+      // ============================================
+      
+      /**
+       * Cria uma tabela dinâmica com dados
+       * @param {Object} options - Opções da tabela
+       * @param {Array} options.columns - Definição das colunas
+       * @param {Array} options.data - Dados
+       * @param {Function} [options.onRowClick] - Callback ao clicar em linha
+       */
+      function createTable(options) {
+        var table = document.createElement('table');
+        table.className = 'table' + (options.sortable ? ' table-sortable' : '');
+        
+        // Header
+        var thead = document.createElement('thead');
+        var headerRow = document.createElement('tr');
+        
+        options.columns.forEach(function(col) {
+          var th = document.createElement('th');
+          th.textContent = col.label || col.field;
+          th.dataset.field = col.field;
+          if (col.width) th.style.width = col.width;
+          headerRow.appendChild(th);
+        });
+        
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+        
+        // Body
+        var tbody = document.createElement('tbody');
+        
+        options.data.forEach(function(row, rowIndex) {
+          var tr = document.createElement('tr');
+          tr.dataset.index = rowIndex;
+          
+          options.columns.forEach(function(col) {
+            var td = document.createElement('td');
+            var value = row[col.field];
+            
+            if (col.render) {
+              td.innerHTML = col.render(value, row, rowIndex);
+            } else if (col.type === 'date' && value) {
+              td.textContent = formatDate(value);
+            } else if (col.type === 'currency' && value !== undefined) {
+              td.textContent = formatCurrency(value);
+            } else if (col.type === 'badge') {
+              td.innerHTML = '<span class="badge badge-' + (col.badgeClass ? col.badgeClass(value) : 'gray') + '">' + 
+                escapeHtml(value || '') + '</span>';
+            } else {
+              td.textContent = value !== undefined && value !== null ? value : '';
+            }
+            
+            tr.appendChild(td);
+          });
+          
+          if (options.onRowClick) {
+            tr.style.cursor = 'pointer';
+            tr.addEventListener('click', function() {
+              options.onRowClick(row, rowIndex);
+            });
+          }
+          
+          tbody.appendChild(tr);
+        });
+        
+        table.appendChild(tbody);
+        
+        return table;
+      }
+      
+      // ============================================
+      // PAGINAÇÃO
+      // ============================================
+      
+      /**
+       * Cria controles de paginação
+       * @param {Object} options - Opções
+       * @param {number} options.currentPage - Página atual
+       * @param {number} options.totalPages - Total de páginas
+       * @param {Function} options.onPageChange - Callback de mudança
+       */
+      function createPagination(options) {
+        var container = document.createElement('div');
+        container.className = 'pagination';
+        
+        // Botão anterior
+        var prevBtn = document.createElement('button');
+        prevBtn.className = 'pagination-btn';
+        prevBtn.innerHTML = '&laquo;';
+        prevBtn.disabled = options.currentPage <= 1;
+        prevBtn.addEventListener('click', function() {
+          if (options.currentPage > 1) {
+            options.onPageChange(options.currentPage - 1);
+          }
+        });
+        container.appendChild(prevBtn);
+        
+        // Números de página
+        var startPage = Math.max(1, options.currentPage - 2);
+        var endPage = Math.min(options.totalPages, startPage + 4);
+        
+        for (var i = startPage; i <= endPage; i++) {
+          var pageBtn = document.createElement('button');
+          pageBtn.className = 'pagination-btn' + (i === options.currentPage ? ' active' : '');
+          pageBtn.textContent = i;
+          pageBtn.dataset.page = i;
+          pageBtn.addEventListener('click', function() {
+            options.onPageChange(parseInt(this.dataset.page));
+          });
+          container.appendChild(pageBtn);
+        }
+        
+        // Botão próximo
+        var nextBtn = document.createElement('button');
+        nextBtn.className = 'pagination-btn';
+        nextBtn.innerHTML = '&raquo;';
+        nextBtn.disabled = options.currentPage >= options.totalPages;
+        nextBtn.addEventListener('click', function() {
+          if (options.currentPage < options.totalPages) {
+            options.onPageChange(options.currentPage + 1);
+          }
+        });
+        container.appendChild(nextBtn);
+        
+        return container;
+      }
+      
+      // ============================================
+      // UTILITÁRIOS
+      // ============================================
+      
+      function escapeHtml(text) {
+        if (!text) return '';
+        var div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+      
+      function formatDate(date) {
+        if (!date) return '';
+        var d = new Date(date);
+        if (isNaN(d.getTime())) return '';
+        return d.toLocaleDateString('pt-BR');
+      }
+      
+      function formatCurrency(value) {
+        return new Intl.NumberFormat('pt-BR', {
+          style: 'currency',
+          currency: 'BRL'
+        }).format(value || 0);
+      }
+      
+      // ============================================
+      // API PÚBLICA
+      // ============================================
+      
+      return {
+        // Toasts
+        showToast: showToast,
+        toastSuccess: toastSuccess,
+        toastError: toastError,
+        toastWarning: toastWarning,
+        toastInfo: toastInfo,
+        
+        // Loading
+        showLoading: showLoading,
+        hideLoading: hideLoading,
+        
+        // Modal
+        showModal: showModal,
+        closeModal: closeModal,
+        confirm: confirm,
+        alert: alert,
+        
+        // Formulários
+        validateForm: validateForm,
+        
+        // Tabela
+        createTable: createTable,
+        createPagination: createPagination,
+        
+        // Utilitários
+        escapeHtml: escapeHtml,
+        formatDate: formatDate,
+        formatCurrency: formatCurrency
+      };
+      
+    })();
+    
+    // Aliases globais
+    var UI = UIComponents;
+  </script>
+</body>
+</html>

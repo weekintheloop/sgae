@@ -1,0 +1,1472 @@
+<!--
+  UX COMPONENTS LIBRARY - UNIAE
+  Gerado automaticamente em 2025-12-03 17:26
+
+  Componentes otimizados para:
+  ✅ Acessibilidade (WCAG 2.1 AA)
+  ✅ Usabilidade (menos cliques, feedback imediato)
+  ✅ Performance (lazy loading, otimizações)
+  ✅ Mobile-first (touch-friendly)
+-->
+<style>
+  /* ========== VARIÁVEIS DO DESIGN SYSTEM ========== */
+  :root {
+    --primary: #667eea;
+    --primary-dark: #5a67d8;
+    --success: #48bb78;
+    --warning: #ed8936;
+    --danger: #f56565;
+    --gray-50: #f7fafc;
+    --gray-100: #edf2f7;
+    --gray-200: #e2e8f0;
+    --gray-500: #a0aec0;
+    --gray-700: #4a5568;
+    --gray-900: #1a202c;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow: 0 4px 6px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+    --radius: 8px;
+    --radius-lg: 12px;
+    --transition: all 0.2s ease;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  /* ========== RESET ACESSÍVEL ========== */
+  *, *::before, *::after { box-sizing: border-box; }
+
+  /* Focus visível para acessibilidade */
+  :focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  /* Reduzir movimento para usuários sensíveis */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+
+
+<!-- ========== SMART-FORM ========== -->
+
+<style>
+  .smart-form { max-width: 500px; }
+  .smart-form .field { margin-bottom: 20px; position: relative; }
+  .smart-form label {
+    display: block; font-size: 14px; font-weight: 500;
+    color: var(--gray-700); margin-bottom: 6px;
+  }
+  .smart-form label .required { color: var(--danger); margin-left: 2px; }
+  .smart-form input, .smart-form select, .smart-form textarea {
+    width: 100%; padding: 12px 16px; border: 2px solid var(--gray-200);
+    border-radius: var(--radius); font-size: 16px; transition: var(--transition);
+    font-family: var(--font-sans);
+  }
+  .smart-form input:focus, .smart-form select:focus, .smart-form textarea:focus {
+    border-color: var(--primary); box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+  }
+  .smart-form input.error { border-color: var(--danger); }
+  .smart-form input.success { border-color: var(--success); }
+  .smart-form .field-hint { font-size: 12px; color: var(--gray-500); margin-top: 4px; }
+  .smart-form .field-error { font-size: 12px; color: var(--danger); margin-top: 4px; display: none; }
+  .smart-form .field-error.show { display: block; }
+  .smart-form .field-success {
+    position: absolute; right: 12px; top: 38px;
+    color: var(--success); font-size: 18px; display: none;
+  }
+  .smart-form .field-success.show { display: block; }
+
+  /* Botões do formulário */
+  .smart-form .form-actions { display: flex; gap: 12px; margin-top: 24px; }
+  .smart-form .btn-submit {
+    flex: 1; padding: 14px 24px; background: var(--primary); color: white;
+    border: none; border-radius: var(--radius); font-size: 16px; font-weight: 600;
+    cursor: pointer; transition: var(--transition);
+  }
+  .smart-form .btn-submit:hover:not(:disabled) { background: var(--primary-dark); transform: translateY(-1px); }
+  .smart-form .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+  .smart-form .btn-cancel {
+    padding: 14px 24px; background: var(--gray-100); color: var(--gray-700);
+    border: none; border-radius: var(--radius); font-size: 16px; cursor: pointer;
+  }
+
+  /* Progress indicator */
+  .smart-form .form-progress {
+    display: flex; gap: 8px; margin-bottom: 24px;
+  }
+  .smart-form .progress-step {
+    flex: 1; height: 4px; background: var(--gray-200); border-radius: 2px;
+    transition: var(--transition);
+  }
+  .smart-form .progress-step.complete { background: var(--success); }
+  .smart-form .progress-step.current { background: var(--primary); }
+</style>
+
+<form class="smart-form" id="smartForm" novalidate>
+  <!-- Progress indicator -->
+  <div class="form-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+    <div class="progress-step" data-step="1"></div>
+    <div class="progress-step" data-step="2"></div>
+    <div class="progress-step" data-step="3"></div>
+  </div>
+
+  <div class="field">
+    <label for="sf_nome">Nome <span class="required" aria-hidden="true">*</span></label>
+    <input type="text" id="sf_nome" name="nome" required
+           aria-required="true" aria-describedby="sf_nome_hint sf_nome_error"
+           placeholder="Digite seu nome completo">
+    <span class="field-success" aria-hidden="true">✓</span>
+    <div class="field-hint" id="sf_nome_hint">Mínimo 3 caracteres</div>
+    <div class="field-error" id="sf_nome_error" role="alert"></div>
+  </div>
+
+  <div class="field">
+    <label for="sf_email">Email <span class="required" aria-hidden="true">*</span></label>
+    <input type="email" id="sf_email" name="email" required
+           aria-required="true" aria-describedby="sf_email_error"
+           placeholder="seu@email.com">
+    <span class="field-success" aria-hidden="true">✓</span>
+    <div class="field-error" id="sf_email_error" role="alert"></div>
+  </div>
+
+  <div class="field">
+    <label for="sf_valor">Valor (R$)</label>
+    <input type="number" id="sf_valor" name="valor" step="0.01" min="0"
+           aria-describedby="sf_valor_hint"
+           placeholder="0,00">
+    <div class="field-hint" id="sf_valor_hint">Opcional</div>
+  </div>
+
+  <div class="form-actions">
+    <button type="button" class="btn-cancel">Cancelar</button>
+    <button type="submit" class="btn-submit" id="sf_submit">
+      <span class="btn-text">Salvar</span>
+      <span class="btn-loading" style="display:none;">Salvando...</span>
+    </button>
+  </div>
+</form>
+
+<script>
+(function() {
+  const form = document.getElementById('smartForm');
+  if (!form) return;
+
+  const fields = form.querySelectorAll('input[required]');
+  const submitBtn = form.querySelector('.btn-submit');
+  const progressSteps = form.querySelectorAll('.progress-step');
+
+  // Validação em tempo real
+  fields.forEach((field, index) => {
+    field.addEventListener('blur', () => validateField(field));
+    field.addEventListener('input', debounce(() => validateField(field), 300));
+  });
+
+  function validateField(field) {
+    const errorEl = document.getElementById(field.id + '_error');
+    const successEl = field.parentElement.querySelector('.field-success');
+    let isValid = true;
+    let errorMsg = '';
+
+    // Validações
+    if (field.required && !field.value.trim()) {
+      isValid = false;
+      errorMsg = 'Este campo é obrigatório';
+    } else if (field.type === 'email' && field.value && !isValidEmail(field.value)) {
+      isValid = false;
+      errorMsg = 'Digite um email válido';
+    } else if (field.minLength && field.value.length < field.minLength) {
+      isValid = false;
+      errorMsg = `Mínimo ${field.minLength} caracteres`;
+    }
+
+    // Atualizar UI
+    field.classList.toggle('error', !isValid && field.value);
+    field.classList.toggle('success', isValid && field.value);
+    if (errorEl) {
+      errorEl.textContent = errorMsg;
+      errorEl.classList.toggle('show', !isValid);
+    }
+    if (successEl) {
+      successEl.classList.toggle('show', isValid && field.value);
+    }
+
+    updateProgress();
+    return isValid;
+  }
+
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  function updateProgress() {
+    const validFields = Array.from(fields).filter(f => f.classList.contains('success')).length;
+    const progress = Math.round((validFields / fields.length) * 100);
+
+    progressSteps.forEach((step, i) => {
+      const stepProgress = ((i + 1) / progressSteps.length) * 100;
+      step.classList.toggle('complete', progress >= stepProgress);
+      step.classList.toggle('current', progress < stepProgress && progress >= stepProgress - 33);
+    });
+
+    form.querySelector('.form-progress').setAttribute('aria-valuenow', progress);
+  }
+
+  // Submit com loading
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Validar todos
+    let allValid = true;
+    fields.forEach(f => { if (!validateField(f)) allValid = false; });
+
+    if (!allValid) {
+      const firstError = form.querySelector('.error');
+      if (firstError) firstError.focus();
+      announceToScreenReader('Formulário contém erros. Verifique os campos.');
+      return;
+    }
+
+    // Loading state
+    submitBtn.disabled = true;
+    submitBtn.querySelector('.btn-text').style.display = 'none';
+    submitBtn.querySelector('.btn-loading').style.display = 'inline';
+
+    // Simular envio (substituir por chamada real)
+    try {
+      // await submitForm(new FormData(form));
+      announceToScreenReader('Formulário enviado com sucesso!');
+    } catch (err) {
+      announceToScreenReader('Erro ao enviar formulário.');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.querySelector('.btn-text').style.display = 'inline';
+      submitBtn.querySelector('.btn-loading').style.display = 'none';
+    }
+  });
+})();
+</script>
+
+
+<!-- ========== QUICK-ACTION-BAR ========== -->
+
+<style>
+  .quick-action-bar {
+    display: flex; gap: 12px; padding: 16px;
+    background: white; border-radius: var(--radius-lg);
+    box-shadow: var(--shadow); flex-wrap: wrap;
+  }
+  .quick-action {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 20px; background: var(--gray-50);
+    border: 2px solid transparent; border-radius: var(--radius);
+    cursor: pointer; transition: var(--transition);
+    font-size: 14px; font-weight: 500; color: var(--gray-700);
+  }
+  .quick-action:hover {
+    border-color: var(--primary); background: white;
+    transform: translateY(-2px); box-shadow: var(--shadow);
+  }
+  .quick-action:active { transform: scale(0.98); }
+  .quick-action .icon { font-size: 20px; }
+  .quick-action.primary {
+    background: var(--primary); color: white;
+    border-color: var(--primary);
+  }
+  .quick-action.primary:hover { background: var(--primary-dark); }
+
+  /* Badge de notificação */
+  .quick-action .badge {
+    background: var(--danger); color: white;
+    font-size: 11px; font-weight: 600;
+    padding: 2px 6px; border-radius: 10px;
+    min-width: 18px; text-align: center;
+  }
+
+  /* Atalho de teclado */
+  .quick-action .shortcut {
+    font-size: 11px; color: var(--gray-500);
+    background: var(--gray-100); padding: 2px 6px;
+    border-radius: 4px; margin-left: auto;
+  }
+  .quick-action.primary .shortcut { background: rgba(255,255,255,0.2); color: white; }
+</style>
+
+<div class="quick-action-bar" role="toolbar" aria-label="Ações rápidas">
+  <button class="quick-action primary" onclick="quickAction('nova-nf')" aria-keyshortcuts="Alt+N">
+    <span class="icon">➕</span>
+    <span>Nova NF</span>
+    <span class="shortcut">Alt+N</span>
+  </button>
+
+  <button class="quick-action" onclick="quickAction('entrega')" aria-keyshortcuts="Alt+E">
+    <span class="icon">🚚</span>
+    <span>Entrega</span>
+    <span class="badge" id="badge-entregas" style="display:none;">0</span>
+    <span class="shortcut">Alt+E</span>
+  </button>
+
+  <button class="quick-action" onclick="quickAction('atestar')" aria-keyshortcuts="Alt+A">
+    <span class="icon">✅</span>
+    <span>Atestar</span>
+    <span class="badge" id="badge-atestar" style="display:none;">0</span>
+    <span class="shortcut">Alt+A</span>
+  </button>
+
+  <button class="quick-action" onclick="quickAction('buscar')" aria-keyshortcuts="Alt+B">
+    <span class="icon">🔍</span>
+    <span>Buscar</span>
+    <span class="shortcut">Alt+B</span>
+  </button>
+</div>
+
+<script>
+// Atalhos de teclado
+document.addEventListener('keydown', (e) => {
+  if (e.altKey) {
+    switch(e.key.toLowerCase()) {
+      case 'n': e.preventDefault(); quickAction('nova-nf'); break;
+      case 'e': e.preventDefault(); quickAction('entrega'); break;
+      case 'a': e.preventDefault(); quickAction('atestar'); break;
+      case 'b': e.preventDefault(); quickAction('buscar'); break;
+    }
+  }
+});
+
+function quickAction(action) {
+  console.log('Ação:', action);
+  // Implementar ações
+}
+
+// Atualizar badges
+function updateBadge(id, count) {
+  const badge = document.getElementById('badge-' + id);
+  if (badge) {
+    badge.textContent = count;
+    badge.style.display = count > 0 ? 'inline' : 'none';
+  }
+}
+</script>
+
+
+<!-- ========== FEEDBACK-TOAST ========== -->
+
+<style>
+  .toast-container {
+    position: fixed; bottom: 24px; right: 24px;
+    display: flex; flex-direction: column; gap: 12px;
+    z-index: 9999; pointer-events: none;
+  }
+  .toast {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 20px; background: var(--gray-900); color: white;
+    border-radius: var(--radius); box-shadow: var(--shadow-lg);
+    animation: toastIn 0.3s ease; pointer-events: auto;
+    max-width: 400px;
+  }
+  .toast.success { background: var(--success); }
+  .toast.error { background: var(--danger); }
+  .toast.warning { background: var(--warning); color: var(--gray-900); }
+  .toast.info { background: var(--primary); }
+
+  .toast .icon { font-size: 20px; flex-shrink: 0; }
+  .toast .message { flex: 1; font-size: 14px; line-height: 1.4; }
+  .toast .close {
+    background: none; border: none; color: inherit;
+    opacity: 0.7; cursor: pointer; font-size: 18px;
+    padding: 0; margin-left: 8px;
+  }
+  .toast .close:hover { opacity: 1; }
+
+  .toast .action {
+    background: rgba(255,255,255,0.2); border: none;
+    color: inherit; padding: 6px 12px; border-radius: 4px;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    margin-left: 8px;
+  }
+  .toast .action:hover { background: rgba(255,255,255,0.3); }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateX(100%); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes toastOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(100%); }
+  }
+
+  /* Mobile */
+  @media (max-width: 480px) {
+    .toast-container { left: 16px; right: 16px; bottom: 16px; }
+    .toast { max-width: none; }
+  }
+</style>
+
+<div class="toast-container" id="toastContainer" role="region" aria-label="Notificações"></div>
+
+<script>
+const Toast = {
+  container: null,
+
+  init() {
+    this.container = document.getElementById('toastContainer');
+    if (!this.container) {
+      this.container = document.createElement('div');
+      this.container.id = 'toastContainer';
+      this.container.className = 'toast-container';
+      this.container.setAttribute('role', 'region');
+      this.container.setAttribute('aria-label', 'Notificações');
+      document.body.appendChild(this.container);
+    }
+  },
+
+  show(message, type = 'info', options = {}) {
+    this.init();
+
+    const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+    const duration = options.duration || 5000;
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
+
+    toast.innerHTML = `
+      <span class="icon">${icons[type] || icons.info}</span>
+      <span class="message">${message}</span>
+      ${options.action ? `<button class="action" onclick="${options.action.callback}">${options.action.label}</button>` : ''}
+      <button class="close" onclick="this.parentElement.remove()" aria-label="Fechar">×</button>
+    `;
+
+    this.container.appendChild(toast);
+
+    // Auto-remove
+    if (duration > 0) {
+      setTimeout(() => {
+        toast.style.animation = 'toastOut 0.3s ease forwards';
+        setTimeout(() => toast.remove(), 300);
+      }, duration);
+    }
+
+    return toast;
+  },
+
+  success(message, options) { return this.show(message, 'success', options); },
+  error(message, options) { return this.show(message, 'error', { duration: 8000, ...options }); },
+  warning(message, options) { return this.show(message, 'warning', options); },
+  info(message, options) { return this.show(message, 'info', options); }
+};
+
+// Exemplo de uso:
+// Toast.success('NF cadastrada com sucesso!');
+// Toast.error('Erro ao salvar. Tente novamente.');
+// Toast.warning('Atenção: prazo vencendo em 2 dias');
+// Toast.info('Dica: use Ctrl+S para salvar rapidamente', { action: { label: 'Entendi', callback: 'Toast.dismiss()' } });
+</script>
+
+
+<!-- ========== LOADING-SKELETON ========== -->
+
+<style>
+  .skeleton {
+    background: linear-gradient(90deg, var(--gray-100) 25%, var(--gray-50) 50%, var(--gray-100) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: var(--radius);
+  }
+  @keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  .skeleton-text { height: 16px; margin-bottom: 8px; }
+  .skeleton-text.short { width: 40%; }
+  .skeleton-text.medium { width: 70%; }
+  .skeleton-text.long { width: 100%; }
+
+  .skeleton-title { height: 24px; width: 50%; margin-bottom: 16px; }
+  .skeleton-avatar { width: 48px; height: 48px; border-radius: 50%; }
+  .skeleton-button { height: 40px; width: 120px; }
+  .skeleton-card { height: 120px; margin-bottom: 16px; }
+  .skeleton-image { height: 200px; }
+
+  /* Skeleton para tabela */
+  .skeleton-table { width: 100%; }
+  .skeleton-row { display: flex; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--gray-100); }
+  .skeleton-cell { flex: 1; height: 20px; }
+  .skeleton-cell.small { flex: 0.5; }
+  .skeleton-cell.large { flex: 2; }
+
+  /* Skeleton para cards */
+  .skeleton-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+  .skeleton-card-item { padding: 20px; background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
+</style>
+
+<!-- Skeleton para lista/tabela -->
+<div class="skeleton-table" aria-busy="true" aria-label="Carregando dados...">
+  <div class="skeleton-row">
+    <div class="skeleton skeleton-cell small"></div>
+    <div class="skeleton skeleton-cell large"></div>
+    <div class="skeleton skeleton-cell"></div>
+    <div class="skeleton skeleton-cell small"></div>
+  </div>
+  <div class="skeleton-row">
+    <div class="skeleton skeleton-cell small"></div>
+    <div class="skeleton skeleton-cell large"></div>
+    <div class="skeleton skeleton-cell"></div>
+    <div class="skeleton skeleton-cell small"></div>
+  </div>
+  <div class="skeleton-row">
+    <div class="skeleton skeleton-cell small"></div>
+    <div class="skeleton skeleton-cell large"></div>
+    <div class="skeleton skeleton-cell"></div>
+    <div class="skeleton skeleton-cell small"></div>
+  </div>
+</div>
+
+<!-- Skeleton para cards -->
+<div class="skeleton-card-grid" aria-busy="true" aria-label="Carregando cards...">
+  <div class="skeleton-card-item">
+    <div class="skeleton skeleton-title"></div>
+    <div class="skeleton skeleton-text long"></div>
+    <div class="skeleton skeleton-text medium"></div>
+    <div class="skeleton skeleton-text short"></div>
+  </div>
+  <div class="skeleton-card-item">
+    <div class="skeleton skeleton-title"></div>
+    <div class="skeleton skeleton-text long"></div>
+    <div class="skeleton skeleton-text medium"></div>
+    <div class="skeleton skeleton-text short"></div>
+  </div>
+</div>
+
+<script>
+// Helper para mostrar/esconder skeleton
+function showSkeleton(containerId) {
+  const container = document.getElementById(containerId);
+  if (container) {
+    container.setAttribute('aria-busy', 'true');
+    container.style.display = 'block';
+  }
+}
+
+function hideSkeleton(containerId) {
+  const container = document.getElementById(containerId);
+  if (container) {
+    container.setAttribute('aria-busy', 'false');
+    container.style.display = 'none';
+  }
+}
+</script>
+
+
+<!-- ========== EMPTY-STATE ========== -->
+
+<style>
+  .empty-state {
+    text-align: center; padding: 60px 24px;
+    background: var(--gray-50); border-radius: var(--radius-lg);
+  }
+  .empty-state .illustration { font-size: 64px; margin-bottom: 16px; }
+  .empty-state h3 { font-size: 20px; color: var(--gray-900); margin-bottom: 8px; }
+  .empty-state p { font-size: 14px; color: var(--gray-500); margin-bottom: 24px; max-width: 400px; margin-left: auto; margin-right: auto; }
+  .empty-state .action {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 24px; background: var(--primary); color: white;
+    border: none; border-radius: var(--radius); font-size: 14px;
+    font-weight: 500; cursor: pointer; transition: var(--transition);
+  }
+  .empty-state .action:hover { background: var(--primary-dark); transform: translateY(-2px); }
+
+  /* Variações */
+  .empty-state.compact { padding: 40px 20px; }
+  .empty-state.compact .illustration { font-size: 48px; }
+  .empty-state.compact h3 { font-size: 16px; }
+</style>
+
+<!-- Empty state padrão -->
+<div class="empty-state" role="status">
+  <div class="illustration">📋</div>
+  <h3>Nenhuma nota fiscal encontrada</h3>
+  <p>Comece cadastrando sua primeira nota fiscal ou importe de um arquivo.</p>
+  <button class="action" onclick="novaNF()">
+    <span>➕</span> Cadastrar NF
+  </button>
+</div>
+
+<!-- Empty state de busca -->
+<div class="empty-state compact" role="status" style="display:none;" id="emptySearch">
+  <div class="illustration">🔍</div>
+  <h3>Nenhum resultado encontrado</h3>
+  <p>Tente ajustar os filtros ou usar termos diferentes.</p>
+  <button class="action" onclick="limparFiltros()" style="background: var(--gray-200); color: var(--gray-700);">
+    Limpar filtros
+  </button>
+</div>
+
+<!-- Empty state de erro -->
+<div class="empty-state" role="alert" style="display:none;" id="emptyError">
+  <div class="illustration">😕</div>
+  <h3>Ops! Algo deu errado</h3>
+  <p>Não foi possível carregar os dados. Verifique sua conexão e tente novamente.</p>
+  <button class="action" onclick="recarregar()">
+    <span>🔄</span> Tentar novamente
+  </button>
+</div>
+
+
+<!-- ========== CONFIRMATION-MODAL ========== -->
+
+<style>
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 10000; opacity: 0; visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    padding: 20px;
+  }
+  .modal-overlay.active { opacity: 1; visibility: visible; }
+
+  .modal-confirm {
+    background: white; border-radius: var(--radius-lg);
+    max-width: 400px; width: 100%; padding: 24px;
+    box-shadow: var(--shadow-lg); transform: scale(0.9);
+    transition: transform 0.2s;
+  }
+  .modal-overlay.active .modal-confirm { transform: scale(1); }
+
+  .modal-confirm .icon {
+    width: 56px; height: 56px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; margin: 0 auto 16px;
+  }
+  .modal-confirm .icon.danger { background: #fee2e2; }
+  .modal-confirm .icon.warning { background: #fef3c7; }
+  .modal-confirm .icon.info { background: #dbeafe; }
+
+  .modal-confirm h3 { text-align: center; font-size: 18px; margin-bottom: 8px; color: var(--gray-900); }
+  .modal-confirm p { text-align: center; font-size: 14px; color: var(--gray-500); margin-bottom: 24px; line-height: 1.5; }
+
+  .modal-confirm .actions { display: flex; gap: 12px; }
+  .modal-confirm .btn {
+    flex: 1; padding: 12px 20px; border: none; border-radius: var(--radius);
+    font-size: 14px; font-weight: 500; cursor: pointer; transition: var(--transition);
+  }
+  .modal-confirm .btn-cancel { background: var(--gray-100); color: var(--gray-700); }
+  .modal-confirm .btn-cancel:hover { background: var(--gray-200); }
+  .modal-confirm .btn-danger { background: var(--danger); color: white; }
+  .modal-confirm .btn-danger:hover { background: #e53e3e; }
+  .modal-confirm .btn-primary { background: var(--primary); color: white; }
+  .modal-confirm .btn-primary:hover { background: var(--primary-dark); }
+</style>
+
+<div class="modal-overlay" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+  <div class="modal-confirm">
+    <div class="icon danger" id="confirmIcon">⚠️</div>
+    <h3 id="confirmTitle">Confirmar exclusão?</h3>
+    <p id="confirmMessage">Esta ação não pode ser desfeita. Tem certeza que deseja continuar?</p>
+    <div class="actions">
+      <button class="btn btn-cancel" onclick="closeConfirm()">Cancelar</button>
+      <button class="btn btn-danger" id="confirmAction" onclick="executeConfirm()">Excluir</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ConfirmModal = {
+  callback: null,
+
+  show(options) {
+    const modal = document.getElementById('confirmModal');
+    const icon = document.getElementById('confirmIcon');
+    const title = document.getElementById('confirmTitle');
+    const message = document.getElementById('confirmMessage');
+    const actionBtn = document.getElementById('confirmAction');
+
+    // Configurar conteúdo
+    title.textContent = options.title || 'Confirmar ação?';
+    message.textContent = options.message || 'Tem certeza que deseja continuar?';
+    actionBtn.textContent = options.actionText || 'Confirmar';
+
+    // Tipo (danger, warning, info)
+    icon.className = 'icon ' + (options.type || 'danger');
+    icon.textContent = options.type === 'warning' ? '⚠️' : options.type === 'info' ? 'ℹ️' : '🗑️';
+
+    actionBtn.className = 'btn btn-' + (options.type === 'info' ? 'primary' : options.type || 'danger');
+
+    this.callback = options.onConfirm;
+
+    // Mostrar modal
+    modal.classList.add('active');
+    actionBtn.focus();
+
+    // Trap focus
+    trapFocus(modal.querySelector('.modal-confirm'));
+
+    // Fechar com ESC
+    const escHandler = (e) => {
+      if (e.key === 'Escape') {
+        this.close();
+        document.removeEventListener('keydown', escHandler);
+      }
+    };
+    document.addEventListener('keydown', escHandler);
+  },
+
+  close() {
+    document.getElementById('confirmModal').classList.remove('active');
+    this.callback = null;
+  },
+
+  execute() {
+    if (this.callback) this.callback();
+    this.close();
+  }
+};
+
+function closeConfirm() { ConfirmModal.close(); }
+function executeConfirm() { ConfirmModal.execute(); }
+
+// Exemplo de uso:
+// ConfirmModal.show({
+//   title: 'Excluir nota fiscal?',
+//   message: 'A NF #12345 será excluída permanentemente.',
+//   type: 'danger',
+//   actionText: 'Sim, excluir',
+//   onConfirm: () => deleteNF(12345)
+// });
+</script>
+
+
+<!-- ========== PROGRESS-STEPPER ========== -->
+
+<style>
+  .stepper {
+    display: flex; justify-content: space-between;
+    position: relative; margin-bottom: 32px;
+  }
+  .stepper::before {
+    content: ''; position: absolute;
+    top: 20px; left: 40px; right: 40px;
+    height: 3px; background: var(--gray-200);
+  }
+
+  .step {
+    display: flex; flex-direction: column; align-items: center;
+    position: relative; z-index: 1; flex: 1;
+  }
+  .step-circle {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--gray-200); color: var(--gray-500);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 14px;
+    transition: var(--transition);
+  }
+  .step.completed .step-circle { background: var(--success); color: white; }
+  .step.active .step-circle {
+    background: var(--primary); color: white;
+    box-shadow: 0 0 0 4px rgba(102,126,234,0.2);
+  }
+
+  .step-label {
+    margin-top: 8px; font-size: 12px; color: var(--gray-500);
+    text-align: center; max-width: 100px;
+  }
+  .step.active .step-label { color: var(--primary); font-weight: 500; }
+  .step.completed .step-label { color: var(--success); }
+
+  /* Linha de progresso */
+  .stepper-progress {
+    position: absolute; top: 20px; left: 40px;
+    height: 3px; background: var(--success);
+    transition: width 0.3s ease;
+  }
+
+  /* Mobile */
+  @media (max-width: 480px) {
+    .step-label { font-size: 10px; max-width: 60px; }
+    .step-circle { width: 32px; height: 32px; font-size: 12px; }
+  }
+</style>
+
+<div class="stepper" role="navigation" aria-label="Progresso do processo">
+  <div class="stepper-progress" id="stepperProgress" style="width: 0%;"></div>
+
+  <div class="step completed" data-step="1">
+    <div class="step-circle" aria-current="false">✓</div>
+    <div class="step-label">Recebimento</div>
+  </div>
+
+  <div class="step active" data-step="2">
+    <div class="step-circle" aria-current="step">2</div>
+    <div class="step-label">Conferência</div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-circle">3</div>
+    <div class="step-label">Análise</div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-circle">4</div>
+    <div class="step-label">Atesto</div>
+  </div>
+</div>
+
+<script>
+const Stepper = {
+  currentStep: 2,
+  totalSteps: 4,
+
+  goTo(step) {
+    if (step < 1 || step > this.totalSteps) return;
+
+    const steps = document.querySelectorAll('.step');
+    const progress = document.getElementById('stepperProgress');
+
+    steps.forEach((el, i) => {
+      const stepNum = i + 1;
+      el.classList.remove('completed', 'active');
+      el.querySelector('.step-circle').setAttribute('aria-current', 'false');
+
+      if (stepNum < step) {
+        el.classList.add('completed');
+        el.querySelector('.step-circle').textContent = '✓';
+      } else if (stepNum === step) {
+        el.classList.add('active');
+        el.querySelector('.step-circle').textContent = stepNum;
+        el.querySelector('.step-circle').setAttribute('aria-current', 'step');
+      } else {
+        el.querySelector('.step-circle').textContent = stepNum;
+      }
+    });
+
+    // Atualizar barra de progresso
+    const progressPercent = ((step - 1) / (this.totalSteps - 1)) * 100;
+    progress.style.width = progressPercent + '%';
+
+    this.currentStep = step;
+    announceToScreenReader(`Etapa ${step} de ${this.totalSteps}`);
+  },
+
+  next() { this.goTo(this.currentStep + 1); },
+  prev() { this.goTo(this.currentStep - 1); }
+};
+</script>
+
+
+<!-- ========== SEARCH-FILTER ========== -->
+
+<style>
+  .search-filter-bar {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    padding: 16px; background: white;
+    border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
+    margin-bottom: 20px;
+  }
+
+  .search-box {
+    flex: 1; min-width: 250px; position: relative;
+  }
+  .search-box input {
+    width: 100%; padding: 12px 16px 12px 44px;
+    border: 2px solid var(--gray-200); border-radius: var(--radius);
+    font-size: 14px; transition: var(--transition);
+  }
+  .search-box input:focus { border-color: var(--primary); }
+  .search-box .icon {
+    position: absolute; left: 14px; top: 50%;
+    transform: translateY(-50%); color: var(--gray-500);
+  }
+  .search-box .clear {
+    position: absolute; right: 12px; top: 50%;
+    transform: translateY(-50%); background: none;
+    border: none; color: var(--gray-500); cursor: pointer;
+    display: none; font-size: 18px;
+  }
+  .search-box input:not(:placeholder-shown) + .clear { display: block; }
+
+  .filter-chips {
+    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  }
+  .filter-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 14px; background: var(--gray-100);
+    border: none; border-radius: 20px; font-size: 13px;
+    cursor: pointer; transition: var(--transition);
+  }
+  .filter-chip:hover { background: var(--gray-200); }
+  .filter-chip.active { background: var(--primary); color: white; }
+  .filter-chip .count {
+    background: rgba(0,0,0,0.1); padding: 2px 6px;
+    border-radius: 10px; font-size: 11px;
+  }
+  .filter-chip.active .count { background: rgba(255,255,255,0.2); }
+
+  .filter-dropdown {
+    position: relative;
+  }
+  .filter-dropdown select {
+    padding: 10px 36px 10px 14px; border: 2px solid var(--gray-200);
+    border-radius: var(--radius); font-size: 13px;
+    background: white; cursor: pointer; appearance: none;
+  }
+  .filter-dropdown::after {
+    content: '▼'; position: absolute; right: 12px; top: 50%;
+    transform: translateY(-50%); font-size: 10px; color: var(--gray-500);
+    pointer-events: none;
+  }
+
+  /* Filtros ativos */
+  .active-filters {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    padding: 12px 16px; background: var(--gray-50);
+    border-radius: var(--radius); margin-bottom: 16px;
+  }
+  .active-filter {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; background: white;
+    border: 1px solid var(--gray-200); border-radius: 16px;
+    font-size: 12px;
+  }
+  .active-filter .remove {
+    background: none; border: none; color: var(--gray-500);
+    cursor: pointer; font-size: 14px; padding: 0;
+  }
+  .active-filter .remove:hover { color: var(--danger); }
+  .clear-all {
+    background: none; border: none; color: var(--primary);
+    font-size: 12px; cursor: pointer; margin-left: auto;
+  }
+</style>
+
+<div class="search-filter-bar" role="search">
+  <div class="search-box">
+    <span class="icon">🔍</span>
+    <input type="search" id="searchInput" placeholder="Buscar por NF, fornecedor..."
+           aria-label="Buscar" autocomplete="off">
+    <button class="clear" onclick="clearSearch()" aria-label="Limpar busca">×</button>
+  </div>
+
+  <div class="filter-chips" role="group" aria-label="Filtros rápidos">
+    <button class="filter-chip active" data-filter="todos">
+      Todos <span class="count" id="count-todos">0</span>
+    </button>
+    <button class="filter-chip" data-filter="pendentes">
+      Pendentes <span class="count" id="count-pendentes">0</span>
+    </button>
+    <button class="filter-chip" data-filter="atestadas">
+      Atestadas <span class="count" id="count-atestadas">0</span>
+    </button>
+  </div>
+
+  <div class="filter-dropdown">
+    <select id="filterPeriodo" aria-label="Filtrar por período">
+      <option value="">Período</option>
+      <option value="hoje">Hoje</option>
+      <option value="semana">Esta semana</option>
+      <option value="mes">Este mês</option>
+      <option value="custom">Personalizado</option>
+    </select>
+  </div>
+</div>
+
+<!-- Filtros ativos -->
+<div class="active-filters" id="activeFilters" style="display:none;">
+  <span style="color:var(--gray-500);font-size:12px;">Filtros:</span>
+  <div id="filterTags"></div>
+  <button class="clear-all" onclick="clearAllFilters()">Limpar todos</button>
+</div>
+
+<script>
+const SearchFilter = {
+  filters: {},
+
+  init() {
+    // Busca com debounce
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', debounce((e) => {
+      this.setFilter('search', e.target.value);
+    }, 300));
+
+    // Chips de filtro
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        this.setFilter('status', chip.dataset.filter);
+      });
+    });
+
+    // Dropdown de período
+    document.getElementById('filterPeriodo').addEventListener('change', (e) => {
+      this.setFilter('periodo', e.target.value);
+    });
+  },
+
+  setFilter(key, value) {
+    if (value) {
+      this.filters[key] = value;
+    } else {
+      delete this.filters[key];
+    }
+    this.updateUI();
+    this.apply();
+  },
+
+  updateUI() {
+    const container = document.getElementById('activeFilters');
+    const tags = document.getElementById('filterTags');
+
+    const activeFilters = Object.entries(this.filters).filter(([k, v]) => v && k !== 'status');
+
+    if (activeFilters.length > 0) {
+      container.style.display = 'flex';
+      tags.innerHTML = activeFilters.map(([key, value]) => `
+        <span class="active-filter">
+          ${key}: ${value}
+          <button class="remove" onclick="SearchFilter.removeFilter('${key}')">×</button>
+        </span>
+      `).join('');
+    } else {
+      container.style.display = 'none';
+    }
+  },
+
+  removeFilter(key) {
+    delete this.filters[key];
+    if (key === 'search') document.getElementById('searchInput').value = '';
+    if (key === 'periodo') document.getElementById('filterPeriodo').value = '';
+    this.updateUI();
+    this.apply();
+  },
+
+  apply() {
+    console.log('Aplicando filtros:', this.filters);
+    // Implementar lógica de filtro
+    announceToScreenReader('Filtros aplicados');
+  }
+};
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  SearchFilter.removeFilter('search');
+}
+
+function clearAllFilters() {
+  SearchFilter.filters = {};
+  document.getElementById('searchInput').value = '';
+  document.getElementById('filterPeriodo').value = '';
+  document.querySelectorAll('.filter-chip').forEach((c, i) => {
+    c.classList.toggle('active', i === 0);
+  });
+  SearchFilter.updateUI();
+  SearchFilter.apply();
+}
+
+// Inicializar
+document.addEventListener('DOMContentLoaded', () => SearchFilter.init());
+</script>
+
+
+<!-- ========== DATA-CARD ========== -->
+
+<style>
+  .data-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  .data-card {
+    background: white; border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm); overflow: hidden;
+    transition: var(--transition);
+  }
+  .data-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+
+  .data-card-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding: 16px 16px 0;
+  }
+  .data-card-badge {
+    padding: 4px 10px; border-radius: 12px;
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+  }
+  .data-card-badge.success { background: #d1fae5; color: #065f46; }
+  .data-card-badge.warning { background: #fef3c7; color: #92400e; }
+  .data-card-badge.danger { background: #fee2e2; color: #991b1b; }
+  .data-card-badge.info { background: #dbeafe; color: #1e40af; }
+
+  .data-card-menu {
+    position: relative;
+  }
+  .data-card-menu button {
+    background: none; border: none; padding: 4px 8px;
+    cursor: pointer; font-size: 18px; color: var(--gray-500);
+    border-radius: 4px;
+  }
+  .data-card-menu button:hover { background: var(--gray-100); }
+  .data-card-menu .dropdown {
+    position: absolute; right: 0; top: 100%;
+    background: white; border-radius: var(--radius);
+    box-shadow: var(--shadow-lg); min-width: 150px;
+    display: none; z-index: 10;
+  }
+  .data-card-menu.open .dropdown { display: block; }
+  .data-card-menu .dropdown button {
+    display: block; width: 100%; text-align: left;
+    padding: 10px 16px; font-size: 13px;
+  }
+  .data-card-menu .dropdown button:hover { background: var(--gray-50); }
+
+  .data-card-body { padding: 16px; }
+  .data-card-title {
+    font-size: 16px; font-weight: 600; color: var(--gray-900);
+    margin-bottom: 4px;
+  }
+  .data-card-subtitle {
+    font-size: 13px; color: var(--gray-500); margin-bottom: 12px;
+  }
+
+  .data-card-info {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .data-card-info-item label {
+    display: block; font-size: 11px; color: var(--gray-500);
+    text-transform: uppercase; margin-bottom: 2px;
+  }
+  .data-card-info-item span {
+    font-size: 14px; font-weight: 500; color: var(--gray-900);
+  }
+
+  .data-card-footer {
+    display: flex; gap: 8px; padding: 12px 16px;
+    background: var(--gray-50); border-top: 1px solid var(--gray-100);
+  }
+  .data-card-footer button {
+    flex: 1; padding: 8px 12px; border: none;
+    border-radius: var(--radius); font-size: 13px;
+    font-weight: 500; cursor: pointer; transition: var(--transition);
+  }
+  .data-card-footer .btn-primary {
+    background: var(--primary); color: white;
+  }
+  .data-card-footer .btn-primary:hover { background: var(--primary-dark); }
+  .data-card-footer .btn-secondary {
+    background: white; color: var(--gray-700);
+    border: 1px solid var(--gray-200);
+  }
+  .data-card-footer .btn-secondary:hover { background: var(--gray-100); }
+</style>
+
+<div class="data-card-grid">
+  <!-- Card exemplo -->
+  <article class="data-card" aria-labelledby="card-title-1">
+    <div class="data-card-header">
+      <span class="data-card-badge warning">Pendente</span>
+      <div class="data-card-menu">
+        <button onclick="toggleCardMenu(this)" aria-label="Mais opções">⋮</button>
+        <div class="dropdown">
+          <button onclick="editCard(1)">✏️ Editar</button>
+          <button onclick="duplicateCard(1)">📋 Duplicar</button>
+          <button onclick="deleteCard(1)" style="color:var(--danger);">🗑️ Excluir</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="data-card-body">
+      <h3 class="data-card-title" id="card-title-1">NF 123456</h3>
+      <p class="data-card-subtitle">Fornecedor ABC Ltda</p>
+
+      <div class="data-card-info">
+        <div class="data-card-info-item">
+          <label>Valor</label>
+          <span>R$ 1.250,00</span>
+        </div>
+        <div class="data-card-info-item">
+          <label>Data</label>
+          <span>15/11/2024</span>
+        </div>
+        <div class="data-card-info-item">
+          <label>Empenho</label>
+          <span>2024NE00123</span>
+        </div>
+        <div class="data-card-info-item">
+          <label>Prazo</label>
+          <span style="color:var(--warning);">2 dias</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="data-card-footer">
+      <button class="btn-secondary" onclick="viewDetails(1)">Ver detalhes</button>
+      <button class="btn-primary" onclick="processCard(1)">Conferir</button>
+    </div>
+  </article>
+</div>
+
+<script>
+function toggleCardMenu(btn) {
+  const menu = btn.parentElement;
+  document.querySelectorAll('.data-card-menu.open').forEach(m => {
+    if (m !== menu) m.classList.remove('open');
+  });
+  menu.classList.toggle('open');
+}
+
+// Fechar menus ao clicar fora
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.data-card-menu')) {
+    document.querySelectorAll('.data-card-menu.open').forEach(m => m.classList.remove('open'));
+  }
+});
+
+function editCard(id) { console.log('Editar:', id); }
+function duplicateCard(id) { console.log('Duplicar:', id); }
+function deleteCard(id) {
+  ConfirmModal.show({
+    title: 'Excluir este item?',
+    message: 'Esta ação não pode ser desfeita.',
+    type: 'danger',
+    actionText: 'Excluir',
+    onConfirm: () => console.log('Excluído:', id)
+  });
+}
+function viewDetails(id) { console.log('Detalhes:', id); }
+function processCard(id) { console.log('Processar:', id); }
+</script>
+
+
+<!-- ========== ACCESSIBLE-TABLE ========== -->
+
+<style>
+  .accessible-table-container {
+    background: white; border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm); overflow: hidden;
+  }
+
+  .accessible-table {
+    width: 100%; border-collapse: collapse;
+  }
+
+  .accessible-table thead {
+    background: var(--gray-50);
+  }
+  .accessible-table th {
+    padding: 14px 16px; text-align: left;
+    font-size: 12px; font-weight: 600;
+    color: var(--gray-500); text-transform: uppercase;
+    letter-spacing: 0.5px; border-bottom: 2px solid var(--gray-200);
+  }
+  .accessible-table th.sortable {
+    cursor: pointer; user-select: none;
+  }
+  .accessible-table th.sortable:hover { color: var(--gray-700); }
+  .accessible-table th .sort-icon { margin-left: 4px; opacity: 0.5; }
+  .accessible-table th.sorted .sort-icon { opacity: 1; color: var(--primary); }
+
+  .accessible-table td {
+    padding: 14px 16px; font-size: 14px;
+    border-bottom: 1px solid var(--gray-100);
+    vertical-align: middle;
+  }
+
+  .accessible-table tbody tr {
+    transition: background 0.15s;
+  }
+  .accessible-table tbody tr:hover { background: var(--gray-50); }
+  .accessible-table tbody tr:focus-within {
+    outline: 2px solid var(--primary);
+    outline-offset: -2px;
+  }
+
+  /* Checkbox de seleção */
+  .accessible-table .checkbox {
+    width: 18px; height: 18px; cursor: pointer;
+  }
+
+  /* Ações da linha */
+  .row-actions {
+    display: flex; gap: 4px; opacity: 0;
+    transition: opacity 0.15s;
+  }
+  tr:hover .row-actions, tr:focus-within .row-actions { opacity: 1; }
+  .row-actions button {
+    padding: 6px 10px; background: var(--gray-100);
+    border: none; border-radius: 4px; cursor: pointer;
+    font-size: 12px; transition: var(--transition);
+  }
+  .row-actions button:hover { background: var(--gray-200); }
+  .row-actions button.primary { background: var(--primary); color: white; }
+
+  /* Paginação */
+  .table-pagination {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 16px; border-top: 1px solid var(--gray-100);
+  }
+  .table-pagination .info { font-size: 13px; color: var(--gray-500); }
+  .table-pagination .pages { display: flex; gap: 4px; }
+  .table-pagination .page-btn {
+    padding: 8px 12px; background: white;
+    border: 1px solid var(--gray-200); border-radius: 4px;
+    cursor: pointer; font-size: 13px;
+  }
+  .table-pagination .page-btn:hover { background: var(--gray-50); }
+  .table-pagination .page-btn.active {
+    background: var(--primary); color: white;
+    border-color: var(--primary);
+  }
+  .table-pagination .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+</style>
+
+<div class="accessible-table-container">
+  <table class="accessible-table" role="grid" aria-label="Lista de notas fiscais">
+    <thead>
+      <tr>
+        <th scope="col" style="width:40px;">
+          <input type="checkbox" class="checkbox" aria-label="Selecionar todos"
+                 onchange="toggleAllRows(this)">
+        </th>
+        <th scope="col" class="sortable" onclick="sortTable('nf')" aria-sort="none">
+          NF <span class="sort-icon">↕</span>
+        </th>
+        <th scope="col" class="sortable" onclick="sortTable('fornecedor')">
+          Fornecedor <span class="sort-icon">↕</span>
+        </th>
+        <th scope="col" class="sortable sorted" onclick="sortTable('valor')" aria-sort="descending">
+          Valor <span class="sort-icon">↓</span>
+        </th>
+        <th scope="col">Status</th>
+        <th scope="col" style="width:120px;">Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr tabindex="0">
+        <td><input type="checkbox" class="checkbox row-checkbox" aria-label="Selecionar NF 123456"></td>
+        <td><strong>123456</strong></td>
+        <td>Fornecedor ABC Ltda</td>
+        <td>R$ 1.250,00</td>
+        <td><span class="data-card-badge warning">Pendente</span></td>
+        <td>
+          <div class="row-actions">
+            <button onclick="viewRow(1)" aria-label="Ver detalhes">👁️</button>
+            <button class="primary" onclick="processRow(1)">Conferir</button>
+          </div>
+        </td>
+      </tr>
+      <tr tabindex="0">
+        <td><input type="checkbox" class="checkbox row-checkbox" aria-label="Selecionar NF 123457"></td>
+        <td><strong>123457</strong></td>
+        <td>Distribuidora XYZ</td>
+        <td>R$ 3.500,00</td>
+        <td><span class="data-card-badge success">Atestada</span></td>
+        <td>
+          <div class="row-actions">
+            <button onclick="viewRow(2)" aria-label="Ver detalhes">👁️</button>
+            <button onclick="printRow(2)">🖨️</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="table-pagination">
+    <div class="info">Mostrando 1-10 de 45 itens</div>
+    <div class="pages">
+      <button class="page-btn" disabled>← Anterior</button>
+      <button class="page-btn active">1</button>
+      <button class="page-btn">2</button>
+      <button class="page-btn">3</button>
+      <button class="page-btn">Próximo →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleAllRows(checkbox) {
+  document.querySelectorAll('.row-checkbox').forEach(cb => {
+    cb.checked = checkbox.checked;
+  });
+  updateBulkActions();
+}
+
+function updateBulkActions() {
+  const selected = document.querySelectorAll('.row-checkbox:checked').length;
+  console.log('Selecionados:', selected);
+  // Mostrar/esconder ações em lote
+}
+
+function sortTable(column) {
+  console.log('Ordenar por:', column);
+  // Implementar ordenação
+}
+
+function viewRow(id) { console.log('Ver:', id); }
+function processRow(id) { console.log('Processar:', id); }
+function printRow(id) { console.log('Imprimir:', id); }
+
+// Navegação por teclado na tabela
+document.querySelector('.accessible-table tbody').addEventListener('keydown', (e) => {
+  const row = e.target.closest('tr');
+  if (!row) return;
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    row.nextElementSibling?.focus();
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    row.previousElementSibling?.focus();
+  } else if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    row.querySelector('.row-checkbox').click();
+  }
+});
+</script>
+
+<script>
+  // ========== UTILITÁRIOS GLOBAIS ==========
+
+  // Debounce para inputs
+  function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+  }
+
+  // Anunciar para leitores de tela
+  function announceToScreenReader(message) {
+    const el = document.createElement('div');
+    el.setAttribute('role', 'status');
+    el.setAttribute('aria-live', 'polite');
+    el.className = 'sr-only';
+    el.textContent = message;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1000);
+  }
+
+  // Trap focus em modais
+  function trapFocus(element) {
+    const focusables = element.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+
+    element.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab') {
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    });
+  }
+</script>

@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#1a73e8">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Dashboard - UNIAE CRE</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      /* Cores com alto contraste */
+      --primary: #1a73e8;
+      --primary-dark: #1557b0;
+      --success: #0d652d;
+      --warning: #e37400;
+      --error: #c5221f;
+      --text: #000000;
+      --text-secondary: #3c4043;
+      --bg: #ffffff;
+      --bg-secondary: #f1f3f4;
+      --border: #dadce0;
+
+      /* Tamanhos acessíveis - otimizados para S20+ */
+      --font-base: 17px;
+      --font-large: 20px;
+      --font-xlarge: 26px;
+      --font-xxlarge: 34px;
+      --icon-size: 44px;
+      --touch-target: 52px;
+      --spacing: 16px;
+      
+      /* Safe areas para telas com notch/punch-hole */
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+    }
+
+    html {
+      height: -webkit-fill-available;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      font-size: var(--font-base);
+      line-height: 1.5;
+      color: var(--text);
+      background: var(--bg-secondary);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      overscroll-behavior-y: contain;
+      padding-left: var(--safe-left);
+      padding-right: var(--safe-right);
+    }
+
+    /* Header com toque grande - otimizado para S20+ */
+    .header {
+      background: var(--primary);
+      color: white;
+      padding: calc(var(--spacing) + var(--safe-top)) var(--spacing) var(--spacing) var(--spacing);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-title {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .header-title h1 {
+      font-size: var(--font-xlarge);
+      font-weight: 700;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-title .icon {
+      font-size: 36px;
+      flex-shrink: 0;
+    }
+
+    .header-title small {
+      font-size: 14px;
+      opacity: 0.95;
+      font-weight: 400;
+      display: block;
+    }
+
+    /* Botões grandes e acessíveis - otimizados para S20+ */
+    .btn {
+      min-height: 52px;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      touch-action: manipulation;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+
+    .btn-logout {
+      background: rgba(255,255,255,0.95);
+      color: var(--primary);
+      min-width: auto;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 10px;
+    }
+
+    /* Container principal - otimizado para S20+ */
+    .container {
+      padding: var(--spacing);
+      padding-bottom: calc(100px + var(--safe-bottom));
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Cards grandes e legíveis */
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: var(--spacing);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .card-title {
+      font-size: var(--font-large);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title .icon {
+      font-size: 32px;
+    }
+
+    /* Grid de estatísticas - 3 colunas para S20+ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: var(--spacing);
+    }
+
+    /* Telas menores: 2 colunas */
+    @media (max-width: 380px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 16px;
+      padding: 16px 12px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border: 2px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-card .icon {
+      font-size: 36px;
+      margin-bottom: 8px;
+      line-height: 1;
+    }
+
+    .stat-card .value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+      line-height: 1.1;
+    }
+
+    .stat-card .label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    /* Lista de itens acessível - otimizada para S20+ */
+    .item-list {
+      list-style: none;
+    }
+
+    .item {
+      background: var(--bg-secondary);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      min-height: 64px;
+      border: 2px solid transparent;
+      transition: all 0.15s ease;
+    }
+
+    .item:active {
+      border-color: var(--primary);
+      background: white;
+      transform: scale(0.99);
+    }
+
+    .item-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .item-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .item-details {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .item-price {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--success);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* Alert box acessível - otimizado para S20+ */
+    .alert {
+      padding: 14px 16px;
+      border-radius: 14px;
+      margin-bottom: var(--spacing);
+      font-size: 14px;
+      font-weight: 500;
+      border-left: 5px solid;
+      line-height: 1.5;
+    }
+
+    .alert strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    .alert-info {
+      background: #e8f0fe;
+      border-color: var(--primary);
+      color: #1967d2;
+    }
+
+    .alert-success {
+      background: #e6f4ea;
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .alert-warning {
+      background: #fef7e0;
+      border-color: var(--warning);
+      color: #b06000;
+    }
+
+    /* Menu de ações flutuante - otimizado para S20+ */
+    .action-menu {
+      position: fixed;
+      bottom: calc(20px + var(--safe-bottom));
+      right: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 50;
+    }
+
+    .action-btn {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      font-size: 28px;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(26, 115, 232, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .action-btn:active {
+      transform: scale(0.93);
+    }
+
+    /* Loading acessível */
+    .loading {
+      text-align: center;
+      padding: 40px;
+    }
+
+    .spinner {
+      width: 64px;
+      height: 64px;
+      border: 6px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      font-size: var(--font-xlarge);
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    /* Modo escuro (opcional) */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --text: #e8eaed;
+        --text-secondary: #9aa0a6;
+        --bg: #202124;
+        --bg-secondary: #292a2d;
+        --border: #5f6368;
+      }
+    }
+
+    /* Acessibilidade - foco visível */
+    *:focus {
+      outline: 3px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    /* Melhor contraste para links */
+    a {
+      color: var(--primary);
+      text-decoration: underline;
+      font-weight: 600;
+    }
+
+    /* Espaçamento generoso - otimizado para S20+ */
+    .section {
+      margin-bottom: 20px;
+    }
+
+    /* Texto grande para leitura */
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    /* Ícones emoji grandes e claros */
+    .emoji {
+      font-size: 36px;
+      line-height: 1;
+    }
+    
+    /* Otimizações para telas altas (20:9 como S20+) */
+    @media (min-aspect-ratio: 18/9) {
+      .container {
+        padding-top: 20px;
+      }
+      
+      .section {
+        margin-bottom: 24px;
+      }
+      
+      .stats-grid {
+        gap: 12px;
+      }
+    }
+    
+    /* Scrollbar sutil */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0,0,0,0.15);
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="header-title">
+        <h1>
+          <span class="icon">🍎</span>
+          <span>UNIAE CRE</span>
+        </h1>
+        <small id="userType">Carregando...</small>
+      </div>
+      <button class="btn btn-logout" onclick="fazerLogout()">
+        Sair
+      </button>
+    </div>
+  </header>
+
+  <!-- Container principal -->
+  <main class="container">
+    <!-- Boas-vindas -->
+    <div class="card section">
+      <h2 class="card-title">
+        <span class="icon">👋</span>
+        Bem-vindo!
+      </h2>
+      <p>Sistema de Gestão de Alimentação Escolar da CRE PP/Cruzeiro</p>
+    </div>
+
+    <!-- Alerta informativo -->
+    <div class="alert alert-info section">
+      <strong>📊 Valores PNAE 2024:</strong><br>
+      Ensino Fundamental: R$ 0,50/aluno/dia<br>
+      Ensino Integral: R$ 2,00/aluno/dia
+    </div>
+
+    <!-- Estatísticas -->
+    <div class="stats-grid section">
+      <div class="stat-card">
+        <div class="icon">👥</div>
+        <div class="value">450</div>
+        <div class="label">Alunos</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="icon">🍽️</div>
+        <div class="value">900</div>
+        <div class="label">Refeições/Dia</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="icon">💰</div>
+        <div class="value">R$ 7.200</div>
+        <div class="label">Orçamento/Mês</div>
+      </div>
+    </div>
+
+    <!-- Produtos típicos -->
+    <div class="card section">
+      <h2 class="card-title">
+        <span class="icon">📦</span>
+        Produtos Típicos
+      </h2>
+
+      <ul class="item-list">
+        <li class="item">
+          <div class="item-info">
+            <div class="item-name">🌾 Arroz branco</div>
+            <div class="item-details">50kg - Uso diário</div>
+          </div>
+          <div class="item-price">R$ 4,50/kg</div>
+        </li>
+
+        <li class="item">
+          <div class="item-info">
+            <div class="item-name">🫘 Feijão carioca</div>
+            <div class="item-details">30kg - Uso diário</div>
+          </div>
+          <div class="item-price">R$ 7,00/kg</div>
+        </li>
+
+        <li class="item">
+          <div class="item-info">
+            <div class="item-name">🍗 Frango congelado</div>
+            <div class="item-details">40kg - 3x semana</div>
+          </div>
+          <div class="item-price">R$ 8,50/kg</div>
+        </li>
+
+        <li class="item">
+          <div class="item-info">
+            <div class="item-name">🥛 Leite UHT</div>
+            <div class="item-details">100L - Uso diário</div>
+          </div>
+          <div class="item-price">R$ 4,50/L</div>
+        </li>
+
+        <li class="item">
+          <div class="item-info">
+            <div class="item-name">🍌 Banana prata</div>
+            <div class="item-details">30kg - Uso diário</div>
+          </div>
+          <div class="item-price">R$ 4,50/kg</div>
+        </li>
+
+        <li class="item">
+          <div class="item-info">
+            <div class="item-name">🥖 Pão francês</div>
+            <div class="item-details">60kg - Uso diário</div>
+          </div>
+          <div class="item-price">R$ 12,00/kg</div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Ações rápidas -->
+    <div class="card section">
+      <h2 class="card-title">
+        <span class="icon">⚡</span>
+        Ações Rápidas
+      </h2>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <button class="btn btn-primary" style="width: 100%;">
+          <span style="font-size: 22px;">📝</span>
+          Nova Nota Fiscal
+        </button>
+
+        <button class="btn btn-secondary" style="width: 100%;">
+          <span style="font-size: 22px;">✅</span>
+          Conferir Entrega
+        </button>
+
+        <button class="btn btn-secondary" style="width: 100%;">
+          <span style="font-size: 22px;">📊</span>
+          Ver Relatórios
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Menu de ações flutuante -->
+  <div class="action-menu">
+    <button class="action-btn" title="Ajuda" aria-label="Ajuda">
+      ❓
+    </button>
+  </div>
+
+  <script>
+    'use strict';
+
+    // Carregar informações do usuário
+    document.addEventListener('DOMContentLoaded', function() {
+      const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+
+      if (usuario.tipo) {
+        const tipos = {
+          'ANALISTA': 'Analista UNIAE',
+          'ESCOLA': 'Representante Escolar',
+          'FORNECEDOR': 'Fornecedor',
+          'NUTRICIONISTA': 'Nutricionista'
+        };
+
+        document.getElementById('userType').textContent = tipos[usuario.tipo] || usuario.tipo;
+      }
+    });
+
+    // Logout
+    function fazerLogout() {
+      if (confirm('Deseja realmente sair?')) {
+        const sessaoId = localStorage.getItem('sessao_id');
+
+        google.script.run
+          .withSuccessHandler(function() {
+            localStorage.removeItem('sessao_id');
+            localStorage.removeItem('usuario');
+            window.location.href = '?page=login';
+          })
+          .withFailureHandler(function() {
+            // Mesmo com erro, limpar e redirecionar
+            localStorage.removeItem('sessao_id');
+            localStorage.removeItem('usuario');
+            window.location.href = '?page=login';
+          })
+          .fazerLogout(sessaoId);
+      }
+    }
+
+    // Feedback tátil em dispositivos móveis
+    if ('vibrate' in navigator) {
+      document.querySelectorAll('.btn, .item').forEach(el => {
+        el.addEventListener('click', () => {
+          navigator.vibrate(10);
+        });
+      });
+    }
+
+    // Anunciar mudanças para leitores de tela
+    function anunciar(mensagem) {
+      const anuncio = document.createElement('div');
+      anuncio.setAttribute('role', 'status');
+      anuncio.setAttribute('aria-live', 'polite');
+      anuncio.className = 'sr-only';
+      anuncio.textContent = mensagem;
+      document.body.appendChild(anuncio);
+
+      setTimeout(() => anuncio.remove(), 1000);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0d652d">
+  <title>Recebimento - Escola</title>
+  <style>
+    :root {
+      --primary: #0d652d; --primary-dark: #094d22; --primary-light: #e6f4ea;
+      --success: #0d652d; --success-light: #e6f4ea;
+      --error: #c5221f; --error-light: #fce8e6;
+      --warning: #e37400; --warning-light: #fef7e0;
+      --text: #202124; --text-secondary: #5f6368;
+      --bg: #f8f9fa; --surface: #fff; --border: #dadce0;
+      --safe-top: env(safe-area-inset-top, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: calc(100px + var(--safe-bottom)); }
+    .header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: calc(16px + var(--safe-top)) 16px 16px; position: sticky; top: 0; z-index: 100; }
+    .header h1 { font-size: 18px; font-weight: 600; }
+    .header-sub { font-size: 12px; opacity: 0.9; margin-top: 4px; }
+    .container { padding: 16px; max-width: 500px; margin: 0 auto; }
+    .card { background: var(--surface); border-radius: 14px; padding: 16px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .card-title { font-size: 14px; font-weight: 600; margin-bottom: 14px; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 14px; border: 2px solid var(--border); border-radius: 10px; font-size: 16px; transition: all 0.2s; }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .progress-bar { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 16px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: var(--primary); transition: width 0.3s; }
+    .step-indicator { display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 12px; color: var(--text-secondary); }
+    .step-indicator .current { color: var(--primary); font-weight: 600; }
+</style>
+</head>
+<body>
+  <header class="header">
+    <h1>📦 Recebimento de Gêneros</h1>
+    <div class="header-sub" id="headerEscola">Selecione sua escola</div>
+  </header>
+  <main class="container">
+    <div id="alertBox" class="alert hidden"></div>
+    <div class="progress-bar"><div class="progress-bar-fill" id="progressFill" style="width: 33%"></div></div>
+    <div class="step-indicator"><span id="stepText" class="current">Passo 1 de 3: Selecionar Escola</span></div>
+
+    <!-- Step 1: Seleção da Escola -->
+    <div class="card" id="cardEscola">
+      <div class="card-title">🏫 Sua Unidade Escolar</div>
+      <div class="form-group">
+        <select id="selectEscola" onchange="selecionarEscola()">
+          <option value="">-- Carregando escolas... --</option>
+        </select>
+      </div>
+      <div class="hint" style="margin-top:8px;font-size:12px;color:var(--text-secondary)">
+        Selecione a escola onde você está registrando o recebimento
+      </div>
+    </div>
+
+    <!-- Step 2: Lista de NFs Pendentes -->
+    <div class="card hidden" id="cardNFsPendentes">
+      <div class="card-title">📋 Notas Fiscais Disponíveis</div>
+      
+      <!-- Filtros e Busca -->
+      <div class="filtros-container">
+        <!-- Busca por NF com Autocomplete -->
+        <div class="form-group autocomplete-wrapper">
+          <label>🔍 Buscar NF</label>
+          <input type="text" id="buscaNF" class="input-autocomplete" placeholder="Digite número da NF ou produto..." oninput="filtrarNFs()" autocomplete="off">
+          <div class="autocomplete-dropdown hidden" id="dropdownNF"></div>
+        </div>
+        
+        <!-- Filtro por Fornecedor -->
+        <div class="form-group">
+          <label>🏢 Fornecedor</label>
+          <select id="filtroFornecedor" onchange="filtrarNFs()">
+            <option value="">Todos os fornecedores</option>
+          </select>
+        </div>
+        
+        <!-- Filtro por Status -->
+        <div class="filtros-inline">
+          <button class="filtro-chip active" data-filtro="pendentes" onclick="setFiltroStatus(this, 'pendentes')">📋 Pendentes</button>
+          <button class="filtro-chip" data-filtro="todos" onclick="setFiltroStatus(this, 'todos')">📑 Todos</button>
+          <button class="filtro-chip" data-filtro="recebidos" onclick="setFiltroStatus(this, 'recebidos')">✅ Recebidos</button>
+        </div>
+      </div>
+      
+      <!-- Contador de resultados -->
+      <div class="resultados-info" id="resultadosInfo">
+        <span id="contadorNFs">0 NFs encontradas</span>
+      </div>
+      
+      <div id="listaNFsPendentes"><div class="empty-state">Carregando...</div></div>
+    </div>
+
+    <!-- Step 3: Formulário de Recebimento -->
+    <div id="formRecebimento" class="hidden">
+      <div class="card">
+        <div class="card-title">📝 Registrar Recebimento</div>
+        <div id="infoNFSelecionada" class="nf-resumo"></div>
+        
+        <!-- Gênero Alimentício Auto-Selecionado -->
+        <div class="genero-box" id="generoBox">
+          <div class="genero-header">
+            <span class="genero-icon">🥫</span>
+            <div class="genero-info">
+              <span class="genero-label">Gênero Alimentício</span>
+              <span class="genero-nome" id="generoNome">-</span>
+            </div>
+          </div>
+          <div class="genero-detalhes">
+            <div class="detalhe-item">
+              <span class="detalhe-label">Qtd na NF</span>
+              <span class="detalhe-valor" id="generoQtdNF">0</span>
+            </div>
+            <div class="detalhe-item">
+              <span class="detalhe-label">Valor Unit.</span>
+              <span class="detalhe-valor" id="generoValorUnit">R$ 0,00</span>
+            </div>
+            <div class="detalhe-item destaque">
+              <span class="detalhe-label">Valor Total NF</span>
+              <span class="detalhe-valor" id="generoValorTotal">R$ 0,00</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="recebimento-box">
+          <h3>📊 Quantidade Recebida</h3>
+          <div class="qtd-comparativo">
+            <div class="qtd-item esperado"><span class="label">Esperado</span><span class="valor" id="qtdEsperada">0</span><span class="unidade" id="unidadeEsperada">KG</span></div>
+            <div class="qtd-seta">→</div>
+            <div class="qtd-item recebido"><span class="label">Recebido</span><input type="number" id="qtdRecebida" step="0.001" min="0" oninput="calcularDiferencaCompleta()"><span class="unidade" id="unidadeRecebida">KG</span></div>
+          </div>
+          <div class="diferenca-box" id="diferencaBox"></div>
+          
+          <!-- Cálculo de Valores em Caso de Recusa -->
+          <div class="calculo-recusa hidden" id="calculoRecusa">
+            <div class="calculo-titulo">💰 Impacto Financeiro da Recusa</div>
+            <div class="calculo-grid">
+              <div class="calculo-item">
+                <span class="calc-label">Qtd Recusada</span>
+                <span class="calc-valor recusa" id="qtdRecusada">0</span>
+                <span class="calc-unidade" id="unidadeRecusada">KG</span>
+              </div>
+              <div class="calculo-item">
+                <span class="calc-label">Valor Recusado</span>
+                <span class="calc-valor recusa" id="valorRecusado">R$ 0,00</span>
+              </div>
+            </div>
+            <div class="calculo-resumo">
+              <div class="resumo-linha">
+                <span>Valor Original NF:</span>
+                <span id="valorOriginalNF">R$ 0,00</span>
+              </div>
+              <div class="resumo-linha desconto">
+                <span>(-) Valor Recusado:</span>
+                <span id="valorDescontado">R$ 0,00</span>
+              </div>
+              <div class="resumo-linha final">
+                <span>(=) Valor a Pagar:</span>
+                <span id="valorFinalPagar">R$ 0,00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">✅ Conferência de Qualidade</div>
+        <div class="check-grid">
+          <div class="check-item"><input type="checkbox" id="checkEmbalagem"><label for="checkEmbalagem">Embalagem íntegra</label></div>
+          <div class="check-item"><input type="checkbox" id="checkValidade"><label for="checkValidade">Validade adequada</label></div>
+          <div class="check-item"><input type="checkbox" id="checkCaracteristicas"><label for="checkCaracteristicas">Características OK</label></div>
+        </div>
+        <div class="form-group" style="margin-top:12px">
+          <label>Temperatura (°C) - se perecível</label>
+          <input type="number" id="temperatura" step="0.1" placeholder="Ex: 4.5">
+        </div>
+        
+        <!-- Motivo da Recusa (aparece quando há diferença) -->
+        <div class="motivo-recusa-box hidden" id="motivoRecusaBox">
+          <div class="form-group">
+            <label>⚠️ Motivo da Recusa/Diferença *</label>
+            <select id="motivoRecusa">
+              <option value="">-- Selecione o motivo --</option>
+              <option value="QUANTIDADE_INFERIOR">Quantidade inferior à NF</option>
+              <option value="PRODUTO_AVARIADO">Produto avariado/danificado</option>
+              <option value="VALIDADE_VENCIDA">Validade vencida ou próxima</option>
+              <option value="TEMPERATURA_INADEQUADA">Temperatura inadequada</option>
+              <option value="EMBALAGEM_VIOLADA">Embalagem violada</option>
+              <option value="CARACTERISTICAS_ALTERADAS">Características alteradas</option>
+              <option value="NAO_CONFORME_ESPECIFICACAO">Não conforme especificação</option>
+              <option value="OUTRO">Outro motivo</option>
+            </select>
+          </div>
+          <div class="form-group hidden" id="outroMotivoBox">
+            <label>Especifique o motivo</label>
+            <textarea id="outroMotivo" rows="2" placeholder="Descreva o motivo da recusa..."></textarea>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Observações</label>
+          <textarea id="observacoes" rows="2" placeholder="Observações adicionais..."></textarea>
+        </div>
+      </div>
+
+      <!-- Produção da Horta Escolar -->
+      <div class="card" id="cardHorta">
+        <div class="card-title horta-toggle" onclick="toggleHorta()" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+          <span>🌱 Produção da Horta Escolar</span>
+          <span id="hortaChevron" style="font-size:18px;transition:transform 0.2s;">▼</span>
+        </div>
+        <div id="hortaContent" style="display:none;">
+          <div class="form-group" style="margin-bottom:12px;">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:500;">
+              <input type="checkbox" id="temHortaProducao" onchange="toggleHortaItens()" style="width:auto;accent-color:var(--primary);">
+              Houve contribuição da horta escolar neste período?
+            </label>
+          </div>
+          <div id="hortaItensContainer" style="display:none;">
+            <div id="hortaItens"></div>
+            <button type="button" class="btn" onclick="adicionarItemHorta()"
+              style="width:100%;background:var(--primary-light);color:var(--primary);border:2px dashed var(--primary);margin-bottom:12px;font-weight:600;">
+              ＋ Adicionar Gênero da Horta
+            </button>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Data da Colheita *</label>
+                <input type="date" id="hortaDataColheita">
+              </div>
+              <div class="form-group">
+                <label>Responsável pela Colheita</label>
+                <input type="text" id="hortaResponsavelColheita" placeholder="Nome do responsável">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Destino da Produção</label>
+              <select id="hortaDestinoPadrao">
+                <option value="Cardapio_Dia">Cardápio do Dia</option>
+                <option value="Estoque">Estoque</option>
+                <option value="Descarte">Descarte</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">✍️ Responsável pelo Recebimento</div>
+        <div class="form-row">
+          <div class="form-group"><label>Nome Completo *</label><input type="text" id="responsavel" placeholder="Seu nome"></div>
+          <div class="form-group"><label>Matrícula *</label><input type="text" id="matricula" placeholder="123456"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Data *</label><input type="date" id="dataRecebimento"></div>
+          <div class="form-group"><label>Hora *</label><input type="time" id="horaRecebimento"></div>
+        </div>
+        <div class="check-item assinatura"><input type="checkbox" id="checkAssinatura"><label for="checkAssinatura">Confirmo que assinei o Termo de Recebimento</label></div>
+      </div>
+    </div>
+  </main>
+
+  <div class="bottom-actions" id="bottomActions">
+    <button class="btn btn-secondary hidden" id="btnVoltar" onclick="voltarPasso()">← Voltar</button>
+    <button class="btn btn-primary" id="btnAvancar" onclick="avancarPasso()">Selecionar Escola →</button>
+  </div>
+
+  <!-- Modal de Confirmação -->
+  <div class="modal-overlay hidden" id="modalConfirm">
+    <div class="modal">
+      <div class="modal-icon">📦</div>
+      <div class="modal-title">Confirmar Recebimento</div>
+      <div class="modal-text" id="modalResumo"></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="fecharModal()">Revisar</button>
+        <button class="btn btn-success" onclick="confirmarRecebimento()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Sucesso -->
+  <div class="modal-overlay hidden" id="modalSucesso">
+    <div class="modal">
+      <div class="success-check"></div>
+      <div class="modal-title">Recebimento Registrado!</div>
+      <div class="modal-text" id="modalSucessoText"></div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" onclick="novoRecebimento()">Registrar Outro</button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .alert { padding: 12px 14px; border-radius: 10px; margin-bottom: 14px; font-size: 13px; display: flex; align-items: center; gap: 10px; }
+    .alert-error { background: var(--error-light); color: var(--error); }
+    .alert-success { background: var(--success-light); color: var(--success); }
+    .hidden { display: none !important; }
+    .empty-state { text-align: center; padding: 30px; color: var(--text-secondary); }
+    
+    .nf-card { background: var(--bg); border-radius: 12px; padding: 14px; margin-bottom: 10px; border: 2px solid var(--border); cursor: pointer; transition: all 0.2s; }
+    .nf-card:active, .nf-card.selected { border-color: var(--primary); background: var(--primary-light); }
+    .nf-card.disabled { opacity: 0.6; cursor: not-allowed; border-color: var(--success); }
+    .nf-card .nf-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .nf-card .nf-numero { font-weight: 700; font-size: 15px; }
+    .nf-card .nf-produto { font-size: 14px; font-weight: 500; margin: 6px 0; }
+    .nf-card .nf-info { font-size: 13px; color: var(--text-secondary); }
+    .nf-card .nf-valor { font-weight: 700; color: var(--success); }
+    .nf-card .nf-recebimento-status { margin-top: 8px; padding: 8px; background: rgba(13,101,45,0.1); border-radius: 6px; font-size: 11px; color: var(--success); }
+    .progress-mini { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 4px; overflow: hidden; }
+    .progress-mini-fill { height: 100%; background: var(--success); transition: width 0.3s; }
+    
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+    .badge-pendente { background: var(--warning-light); color: var(--warning); }
+    .badge-recebido { background: var(--success-light); color: var(--success); }
+    
+    .nf-resumo { background: var(--bg); border-radius: 10px; padding: 12px; margin-bottom: 14px; }
+    .nf-resumo p { margin: 4px 0; font-size: 13px; }
+    .nf-resumo strong { color: var(--primary); }
+    
+    .recebimento-box { background: var(--primary-light); border-radius: 12px; padding: 16px; border: 2px solid var(--primary); }
+    .recebimento-box h3 { font-size: 14px; color: var(--primary); margin-bottom: 14px; }
+    
+    .qtd-comparativo { display: flex; align-items: center; justify-content: center; gap: 12px; }
+    .qtd-item { text-align: center; }
+    .qtd-item .label { display: block; font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; }
+    .qtd-item .valor { display: block; font-size: 24px; font-weight: 700; color: var(--text); }
+    .qtd-item.recebido input { width: 100px; text-align: center; font-size: 20px; font-weight: 700; padding: 8px; border: 2px solid var(--primary); border-radius: 8px; }
+    .qtd-item .unidade { display: block; font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+    .qtd-seta { font-size: 24px; color: var(--primary); }
+    
+    .diferenca-box { margin-top: 12px; padding: 10px; border-radius: 8px; text-align: center; font-size: 13px; font-weight: 600; }
+    .diferenca-box.conforme { background: var(--success-light); color: var(--success); }
+    .diferenca-box.parcial { background: var(--warning-light); color: var(--warning); }
+    .diferenca-box.recusa { background: var(--error-light); color: var(--error); }
+    
+    .check-grid { display: grid; gap: 10px; }
+    .check-item { display: flex; align-items: center; gap: 10px; padding: 10px; background: var(--bg); border-radius: 8px; }
+    .check-item input { width: 22px; height: 22px; accent-color: var(--primary); }
+    .check-item label { font-size: 14px; cursor: pointer; }
+    .check-item.assinatura { background: var(--primary-light); border: 2px solid var(--primary); margin-top: 14px; }
+    
+    .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.6; }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-secondary { background: var(--bg); color: var(--primary); border: 2px solid var(--primary); }
+    .btn-success { background: var(--success); color: white; }
+    
+    .bottom-actions { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); padding: 14px 16px calc(14px + var(--safe-bottom)); box-shadow: 0 -2px 10px rgba(0,0,0,0.1); display: flex; gap: 10px; }
+    .bottom-actions .btn { flex: 1; }
+    
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+    .modal { background: var(--surface); border-radius: 16px; padding: 24px; max-width: 340px; width: 100%; text-align: center; }
+    .modal-icon { font-size: 48px; margin-bottom: 16px; }
+    .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .modal-text { font-size: 14px; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.5; }
+    .modal-actions { display: flex; gap: 10px; }
+    .modal-actions .btn { flex: 1; padding: 12px; }
+    
+    .success-check { width: 60px; height: 60px; border-radius: 50%; background: var(--success); margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; animation: scaleIn 0.3s ease; }
+    .success-check::after { content: '✓'; color: white; font-size: 32px; font-weight: bold; }
+    @keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
+    
+    .loading { display: inline-block; width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    /* Filtros e Autocomplete */
+    .filtros-container { margin-bottom: 16px; }
+    .autocomplete-wrapper { position: relative; }
+    .input-autocomplete { padding-right: 40px !important; }
+    .autocomplete-dropdown { 
+      position: absolute; top: 100%; left: 0; right: 0; 
+      background: var(--surface); border: 2px solid var(--primary); 
+      border-top: none; border-radius: 0 0 10px 10px; 
+      max-height: 250px; overflow-y: auto; z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .autocomplete-item { 
+      padding: 12px 14px; cursor: pointer; 
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    .autocomplete-item:hover, .autocomplete-item.highlighted { background: var(--primary-light); }
+    .autocomplete-item:last-child { border-bottom: none; }
+    .autocomplete-item .nf-num { font-weight: 700; color: var(--primary); }
+    .autocomplete-item .nf-prod { font-size: 13px; color: var(--text); margin-top: 2px; }
+    .autocomplete-item .nf-forn { font-size: 11px; color: var(--text-secondary); }
+    .autocomplete-item .nf-valor { float: right; font-weight: 600; color: var(--success); }
+    .autocomplete-item.disabled { opacity: 0.5; background: #f0f0f0; }
+    .autocomplete-item.disabled::after { content: ' ✓ Já recebido'; font-size: 10px; color: var(--success); }
+    
+    .filtros-inline { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+    .filtro-chip { 
+      padding: 8px 14px; border: 2px solid var(--border); 
+      border-radius: 20px; background: var(--surface); 
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      transition: all 0.2s; color: var(--text-secondary);
+    }
+    .filtro-chip:hover { border-color: var(--primary); color: var(--primary); }
+    .filtro-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+    
+    .resultados-info { 
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+    
+    /* Highlight de busca */
+    .highlight { background: yellow; padding: 0 2px; border-radius: 2px; }
+    
+    /* Gênero Alimentício Box */
+    .genero-box {
+      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+      border: 2px solid var(--success);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+    .genero-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .genero-icon {
+      font-size: 32px;
+      background: white;
+      padding: 8px;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .genero-info {
+      flex: 1;
+    }
+    .genero-label {
+      display: block;
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .genero-nome {
+      display: block;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--success);
+      margin-top: 2px;
+    }
+    .genero-detalhes {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      background: white;
+      border-radius: 8px;
+      padding: 10px;
+    }
+    .detalhe-item {
+      text-align: center;
+    }
+    .detalhe-item.destaque {
+      background: var(--success-light);
+      border-radius: 6px;
+      padding: 4px;
+    }
+    .detalhe-label {
+      display: block;
+      font-size: 10px;
+      color: var(--text-secondary);
+    }
+    .detalhe-valor {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .detalhe-item.destaque .detalhe-valor {
+      color: var(--success);
+    }
+    
+    /* Cálculo de Recusa */
+    .calculo-recusa {
+      margin-top: 16px;
+      background: var(--error-light);
+      border: 2px solid var(--error);
+      border-radius: 10px;
+      padding: 14px;
+      animation: slideDown 0.3s ease;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .calculo-titulo {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--error);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .calculo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .calculo-item {
+      background: white;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+    }
+    .calc-label {
+      display: block;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+    .calc-valor {
+      display: block;
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .calc-valor.recusa {
+      color: var(--error);
+    }
+    .calc-unidade {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+    .calculo-resumo {
+      background: white;
+      border-radius: 8px;
+      padding: 10px;
+    }
+    .resumo-linha {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 13px;
+      border-bottom: 1px dashed var(--border);
+    }
+    .resumo-linha:last-child {
+      border-bottom: none;
+    }
+    .resumo-linha.desconto {
+      color: var(--error);
+      font-weight: 600;
+    }
+    .resumo-linha.final {
+      color: var(--success);
+      font-weight: 700;
+      font-size: 15px;
+      padding-top: 10px;
+      margin-top: 4px;
+      border-top: 2px solid var(--success);
+    }
+    
+    /* Motivo da Recusa */
+    .motivo-recusa-box {
+      margin-top: 14px;
+      padding: 14px;
+      background: var(--warning-light);
+      border: 2px solid var(--warning);
+      border-radius: 10px;
+    }
+    .motivo-recusa-box .form-group {
+      margin-bottom: 0;
+    }
+    .motivo-recusa-box label {
+      color: var(--warning);
+      font-weight: 700;
+    }
+    .motivo-recusa-box select {
+      border-color: var(--warning);
+    }
+    .motivo-recusa-box select:focus {
+      box-shadow: 0 0 0 3px var(--warning-light);
+    }
+  </style>
+
+  <script>
+    var passo = 1;
+    var escolaSelecionada = '';
+    var nfSelecionada = null;
+    var todasNFs = []; // Cache de todas as NFs
+    var filtroStatusAtual = 'pendentes';
+    var highlightedIndex = -1;
+    var hortaItemCount = 0;
+
+    // ========================================
+    // HORTA ESCOLAR — CORTINA / ACCORDION
+    // ========================================
+
+    function toggleHorta() {
+      var content = document.getElementById('hortaContent');
+      var chevron = document.getElementById('hortaChevron');
+      var visible = content.style.display !== 'none';
+      content.style.display = visible ? 'none' : 'block';
+      chevron.style.transform = visible ? '' : 'rotate(180deg)';
+    }
+
+    function toggleHortaItens() {
+      var checked = document.getElementById('temHortaProducao').checked;
+      document.getElementById('hortaItensContainer').style.display = checked ? 'block' : 'none';
+      if (checked && document.getElementById('hortaItens').children.length === 0) {
+        adicionarItemHorta();
+      }
+      // Preenche data padrão com hoje
+      if (checked && !document.getElementById('hortaDataColheita').value) {
+        document.getElementById('hortaDataColheita').valueAsDate = new Date();
+      }
+    }
+
+    function adicionarItemHorta() {
+      hortaItemCount++;
+      var idx = hortaItemCount;
+      var container = document.getElementById('hortaItens');
+      var div = document.createElement('div');
+      div.id = 'hortaItem_' + idx;
+      div.style.cssText = 'border:1px solid #c8e6c9;border-radius:10px;padding:12px;margin-bottom:10px;background:#f1f8e9;';
+      div.innerHTML =
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
+        '  <strong style="font-size:13px;color:#2e7d32;">🌿 Gênero #' + idx + '</strong>' +
+        '  <button type="button" onclick="removerItemHorta(' + idx + ')" style="background:none;border:none;color:#c62828;cursor:pointer;font-size:18px;line-height:1;">✕</button>' +
+        '</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">' +
+        '  <div class="form-group" style="margin:0;grid-column:1/-1;">' +
+        '    <label style="font-size:11px;">Gênero Alimentício *</label>' +
+        '    <input type="text" id="hortaProduto_' + idx + '" placeholder="Ex: Alface, Tomate, Couve..." style="font-size:14px;">' +
+        '  </div>' +
+        '  <div class="form-group" style="margin:0;">' +
+        '    <label style="font-size:11px;">Quantidade Colhida (kg) *</label>' +
+        '    <input type="number" id="hortaQtd_' + idx + '" placeholder="0,000" step="0.001" min="0" style="font-size:14px;">' +
+        '  </div>' +
+        '  <div class="form-group" style="margin:0;">' +
+        '    <label style="font-size:11px;">Unidade de Medida</label>' +
+        '    <select id="hortaUnidade_' + idx + '" style="font-size:14px;">' +
+        '      <option value="kg">kg</option>' +
+        '      <option value="unidade">Unidade</option>' +
+        '      <option value="maco">Maço</option>' +
+        '      <option value="caixa">Caixa</option>' +
+        '    </select>' +
+        '  </div>' +
+        '</div>';
+      container.appendChild(div);
+    }
+
+    function removerItemHorta(idx) {
+      var el = document.getElementById('hortaItem_' + idx);
+      if (el) el.remove();
+    }
+
+    function coletarDadosHorta() {
+      if (!document.getElementById('temHortaProducao').checked) return null;
+      var itens = [];
+      var container = document.getElementById('hortaItens');
+      var divs = container.querySelectorAll('[id^="hortaItem_"]');
+      divs.forEach(function(div) {
+        var idx = div.id.replace('hortaItem_', '');
+        var produto = (document.getElementById('hortaProduto_' + idx) || {}).value || '';
+        var qtd = parseFloat((document.getElementById('hortaQtd_' + idx) || {}).value) || 0;
+        var unidade = (document.getElementById('hortaUnidade_' + idx) || {}).value || 'kg';
+        if (produto.trim()) {
+          itens.push({ produto: produto.trim(), quantidadeKg: qtd, unidade: unidade });
+        }
+      });
+      if (itens.length === 0) return null;
+      return {
+        itens: itens,
+        dataColheita: document.getElementById('hortaDataColheita').value,
+        responsavelColheita: document.getElementById('hortaResponsavelColheita').value.trim(),
+        destinoPadrao: document.getElementById('hortaDestinoPadrao').value
+      };
+    }
+
+    // ========================================
+    // AUTOCOMPLETE E FILTROS
+    // ========================================
+    
+    function filtrarNFs() {
+      var busca = document.getElementById('buscaNF').value.toLowerCase().trim();
+      var fornecedor = document.getElementById('filtroFornecedor').value;
+      
+      var nfsFiltradas = todasNFs.filter(function(nf) {
+        // Filtro por status
+        var jaRecebeu = nf.jaRecebeuEscola || (nf.recebimentos && nf.recebimentos.indexOf(escolaSelecionada) >= 0);
+        if (filtroStatusAtual === 'pendentes' && jaRecebeu) return false;
+        if (filtroStatusAtual === 'recebidos' && !jaRecebeu) return false;
+        
+        // Filtro por fornecedor
+        if (fornecedor && (nf.fornecedor || nf.cnpj) !== fornecedor) return false;
+        
+        // Filtro por busca (número, produto, fornecedor)
+        if (busca) {
+          var textoNF = [
+            String(nf.numero || ''),
+            String(nf.produto || ''),
+            String(nf.fornecedor || ''),
+            String(nf.cnpj || '')
+          ].join(' ').toLowerCase();
+          if (textoNF.indexOf(busca) === -1) return false;
+        }
+        
+        return true;
+      });
+      
+      // Atualizar dropdown de autocomplete
+      if (busca.length >= 1) {
+        mostrarDropdownAutocomplete(nfsFiltradas, busca);
+      } else {
+        esconderDropdown();
+      }
+      
+      // Atualizar lista principal
+      renderizarNFsPendentes(nfsFiltradas);
+      
+      // Atualizar contador
+      document.getElementById('contadorNFs').textContent = nfsFiltradas.length + ' NF(s) encontrada(s)';
+    }
+    
+    function mostrarDropdownAutocomplete(nfs, busca) {
+      var dropdown = document.getElementById('dropdownNF');
+      
+      if (nfs.length === 0) {
+        dropdown.innerHTML = '<div class="autocomplete-item" style="color:var(--text-secondary)">Nenhuma NF encontrada</div>';
+        dropdown.classList.remove('hidden');
+        return;
+      }
+      
+      var html = '';
+      nfs.slice(0, 8).forEach(function(nf, idx) {
+        var jaRecebeu = nf.jaRecebeuEscola || (nf.recebimentos && nf.recebimentos.indexOf(escolaSelecionada) >= 0);
+        var numHighlight = highlightText(String(nf.numero), busca);
+        var prodHighlight = highlightText(String(nf.produto || ''), busca);
+        
+        html += '<div class="autocomplete-item' + (jaRecebeu ? ' disabled' : '') + '" ' +
+                'data-index="' + idx + '" ' +
+                'onclick="' + (jaRecebeu ? '' : 'selecionarNFAutocomplete(' + idx + ')') + '">' +
+                '<span class="nf-valor">R$ ' + (nf.valorTotal || 0).toLocaleString('pt-BR', {minimumFractionDigits:2}) + '</span>' +
+                '<div class="nf-num">NF ' + numHighlight + '</div>' +
+                '<div class="nf-prod">🥫 ' + prodHighlight + '</div>' +
+                '<div class="nf-forn">' + (nf.fornecedor || nf.cnpj || '') + ' • ' + nf.quantidade + ' ' + nf.unidade + '</div>' +
+                '</div>';
+      });
+      
+      if (nfs.length > 8) {
+        html += '<div class="autocomplete-item" style="text-align:center;color:var(--text-secondary);font-size:11px">+ ' + (nfs.length - 8) + ' mais resultados</div>';
+      }
+      
+      dropdown.innerHTML = html;
+      dropdown.classList.remove('hidden');
+      highlightedIndex = -1;
+    }
+    
+    function highlightText(text, busca) {
+      if (!busca || !text) return text;
+      var regex = new RegExp('(' + busca.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+      return text.replace(regex, '<span class="highlight">$1</span>');
+    }
+    
+    function esconderDropdown() {
+      document.getElementById('dropdownNF').classList.add('hidden');
+      highlightedIndex = -1;
+    }
+    
+    function selecionarNFAutocomplete(idx) {
+      var nfsFiltradas = todasNFs.filter(function(nf) {
+        var jaRecebeu = nf.jaRecebeuEscola || (nf.recebimentos && nf.recebimentos.indexOf(escolaSelecionada) >= 0);
+        if (filtroStatusAtual === 'pendentes' && jaRecebeu) return false;
+        if (filtroStatusAtual === 'recebidos' && !jaRecebeu) return false;
+        
+        var busca = document.getElementById('buscaNF').value.toLowerCase().trim();
+        var fornecedor = document.getElementById('filtroFornecedor').value;
+        
+        if (fornecedor && (nf.fornecedor || nf.cnpj) !== fornecedor) return false;
+        if (busca) {
+          var textoNF = [String(nf.numero || ''), String(nf.produto || ''), String(nf.fornecedor || '')].join(' ').toLowerCase();
+          if (textoNF.indexOf(busca) === -1) return false;
+        }
+        return true;
+      });
+      
+      if (nfsFiltradas[idx]) {
+        nfSelecionada = nfsFiltradas[idx];
+        document.getElementById('buscaNF').value = 'NF ' + nfSelecionada.numero + ' - ' + nfSelecionada.produto;
+        esconderDropdown();
+        
+        // Avançar automaticamente para o formulário
+        passo = 3;
+        prepararFormulario();
+        atualizarUI();
+      }
+    }
+    
+    function setFiltroStatus(el, status) {
+      filtroStatusAtual = status;
+      document.querySelectorAll('.filtro-chip').forEach(function(c) { c.classList.remove('active'); });
+      el.classList.add('active');
+      filtrarNFs();
+    }
+    
+    function popularFiltroFornecedores(nfs) {
+      var fornecedores = {};
+      nfs.forEach(function(nf) {
+        var forn = nf.fornecedor || nf.cnpj || '';
+        if (forn) fornecedores[forn] = true;
+      });
+      
+      var select = document.getElementById('filtroFornecedor');
+      select.innerHTML = '<option value="">Todos os fornecedores</option>';
+      Object.keys(fornecedores).sort().forEach(function(forn) {
+        var opt = document.createElement('option');
+        opt.value = forn;
+        opt.textContent = forn;
+        select.appendChild(opt);
+      });
+    }
+    
+    // Navegação por teclado no autocomplete
+    document.addEventListener('keydown', function(e) {
+      var dropdown = document.getElementById('dropdownNF');
+      if (dropdown.classList.contains('hidden')) return;
+      
+      var items = dropdown.querySelectorAll('.autocomplete-item:not([style*="text-align"])');
+      
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        highlightedIndex = Math.min(highlightedIndex + 1, items.length - 1);
+        updateHighlight(items);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        highlightedIndex = Math.max(highlightedIndex - 1, 0);
+        updateHighlight(items);
+      } else if (e.key === 'Enter' && highlightedIndex >= 0) {
+        e.preventDefault();
+        items[highlightedIndex].click();
+      } else if (e.key === 'Escape') {
+        esconderDropdown();
+      }
+    });
+    
+    function updateHighlight(items) {
+      items.forEach(function(item, idx) {
+        item.classList.toggle('highlighted', idx === highlightedIndex);
+      });
+    }
+    
+    // Fechar dropdown ao clicar fora
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.autocomplete-wrapper')) {
+        esconderDropdown();
+      }
+    });
+
+    // ========================================
+    // FUNÇÕES ORIGINAIS (ATUALIZADAS)
+    // ========================================
+
+    function atualizarUI() {
+      document.getElementById('progressFill').style.width = (passo * 33) + '%';
+      var textos = ['Passo 1 de 3: Selecionar Escola', 'Passo 2 de 3: Escolher NF', 'Passo 3 de 3: Registrar Recebimento'];
+      document.getElementById('stepText').textContent = textos[passo - 1];
+      
+      document.getElementById('cardEscola').classList.toggle('hidden', passo !== 1);
+      document.getElementById('cardNFsPendentes').classList.toggle('hidden', passo !== 2);
+      document.getElementById('formRecebimento').classList.toggle('hidden', passo !== 3);
+      document.getElementById('btnVoltar').classList.toggle('hidden', passo === 1);
+      
+      var btnTextos = ['Selecionar Escola →', 'Selecionar NF', '✅ Registrar Recebimento'];
+      document.getElementById('btnAvancar').textContent = btnTextos[passo - 1];
+    }
+
+    function selecionarEscola() {
+      escolaSelecionada = document.getElementById('selectEscola').value;
+      document.getElementById('headerEscola').textContent = escolaSelecionada || 'Selecione sua escola';
+    }
+
+    function avancarPasso() {
+      if (passo === 1) {
+        if (!escolaSelecionada) { mostrarAlerta('Selecione sua escola', 'error'); return; }
+        passo = 2;
+        carregarNFsPendentes();
+      } else if (passo === 2) {
+        if (!nfSelecionada) { mostrarAlerta('Selecione uma NF para registrar recebimento', 'error'); return; }
+        passo = 3;
+        prepararFormulario();
+      } else if (passo === 3) {
+        validarEConfirmar();
+      }
+      atualizarUI();
+    }
+
+    function voltarPasso() {
+      if (passo > 1) { passo--; nfSelecionada = null; atualizarUI(); }
+    }
+
+    function carregarNFsPendentes() {
+      document.getElementById('listaNFsPendentes').innerHTML = '<div class="empty-state">Carregando NFs...</div>';
+      document.getElementById('buscaNF').value = '';
+      
+      google.script.run
+        .withSuccessHandler(function(nfs) { 
+          todasNFs = nfs || [];
+          popularFiltroFornecedores(todasNFs);
+          filtrarNFs(); // Aplica filtros iniciais
+        })
+        .withFailureHandler(function() { 
+          todasNFs = [];
+          renderizarNFsPendentes([]); 
+        })
+        .listarNFsPendentesParaEscola(escolaSelecionada);
+    }
+
+    function renderizarNFsPendentes(nfs) {
+      if (nfs.length === 0) {
+        document.getElementById('listaNFsPendentes').innerHTML = '<div class="empty-state">📭 Nenhuma NF pendente de recebimento<br><small style="color:var(--text-secondary)">Aguarde o fornecedor lançar novas NFs</small></div>';
+        return;
+      }
+      var html = '';
+      nfs.forEach(function(nf) {
+        var jaRecebeu = nf.jaRecebeuEscola || (nf.recebimentos && nf.recebimentos.indexOf(escolaSelecionada) >= 0);
+        var totalRecebido = nf.totalRecebido || 0;
+        var saldoRestante = Math.max(0, nf.quantidade - totalRecebido);
+        var qtdEscolas = (nf.recebimentos || []).length;
+        
+        var badge = jaRecebeu 
+          ? '<span class="badge badge-recebido">✓ Já recebido</span>' 
+          : '<span class="badge badge-pendente">Pendente</span>';
+        
+        var statusRecebimento = '';
+        if (totalRecebido > 0) {
+          var percentual = Math.round((totalRecebido / nf.quantidade) * 100);
+          statusRecebimento = '<div class="nf-recebimento-status">' +
+            '<div class="progress-mini"><div class="progress-mini-fill" style="width:' + percentual + '%"></div></div>' +
+            '<span>' + totalRecebido + '/' + nf.quantidade + ' ' + nf.unidade + ' (' + percentual + '%) - ' + qtdEscolas + ' escola(s)</span>' +
+            '</div>';
+        }
+        
+        html += '<div class="nf-card' + (jaRecebeu ? ' disabled' : '') + '" onclick="' + (jaRecebeu ? '' : 'selecionarNF(this)') + '" data-nf=\'' + JSON.stringify(nf).replace(/'/g, "&#39;") + '\'>';
+        html += '<div class="nf-header"><span class="nf-numero">NF ' + nf.numero + '</span>' + badge + '</div>';
+        html += '<div class="nf-produto">🥫 ' + nf.produto + '</div>';
+        html += '<div class="nf-info">Qtd NF: <strong>' + nf.quantidade + ' ' + nf.unidade + '</strong> × R$ ' + (nf.valorUnitario || 0).toFixed(2) + '</div>';
+        html += statusRecebimento;
+        html += '<div class="nf-header" style="margin-top:8px"><span class="nf-info">' + (nf.fornecedor || nf.cnpj) + '</span><span class="nf-valor">R$ ' + (nf.valorTotal || 0).toLocaleString('pt-BR', {minimumFractionDigits:2}) + '</span></div>';
+        html += '</div>';
+      });
+      document.getElementById('listaNFsPendentes').innerHTML = html;
+    }
+
+    function selecionarNF(el) {
+      document.querySelectorAll('.nf-card').forEach(function(c) { c.classList.remove('selected'); });
+      el.classList.add('selected');
+      nfSelecionada = JSON.parse(el.dataset.nf);
+    }
+
+    function prepararFormulario() {
+      // Info básica da NF
+      document.getElementById('infoNFSelecionada').innerHTML = 
+        '<p><strong>NF:</strong> ' + nfSelecionada.numero + '</p>' +
+        '<p><strong>Fornecedor:</strong> ' + (nfSelecionada.fornecedor || nfSelecionada.cnpj) + '</p>';
+      
+      // Auto-preencher Gênero Alimentício
+      document.getElementById('generoNome').textContent = nfSelecionada.produto || '-';
+      document.getElementById('generoQtdNF').textContent = nfSelecionada.quantidade + ' ' + nfSelecionada.unidade;
+      document.getElementById('generoValorUnit').textContent = 'R$ ' + (nfSelecionada.valorUnitario || 0).toFixed(2);
+      document.getElementById('generoValorTotal').textContent = 'R$ ' + (nfSelecionada.valorTotal || 0).toLocaleString('pt-BR', {minimumFractionDigits:2});
+      
+      // Quantidade esperada e recebida
+      document.getElementById('qtdEsperada').textContent = nfSelecionada.quantidade;
+      document.getElementById('unidadeEsperada').textContent = nfSelecionada.unidade;
+      document.getElementById('unidadeRecebida').textContent = nfSelecionada.unidade;
+      document.getElementById('qtdRecebida').value = nfSelecionada.quantidade;
+      
+      // Resetar campos de recusa
+      document.getElementById('calculoRecusa').classList.add('hidden');
+      document.getElementById('motivoRecusaBox').classList.add('hidden');
+      document.getElementById('motivoRecusa').value = '';
+      document.getElementById('outroMotivoBox').classList.add('hidden');
+      
+      calcularDiferencaCompleta();
+    }
+    
+    function calcularDiferencaCompleta() {
+      var esperado = nfSelecionada ? nfSelecionada.quantidade : 0;
+      var recebido = parseFloat(document.getElementById('qtdRecebida').value) || 0;
+      var diff = esperado - recebido;
+      var valorUnitario = nfSelecionada ? nfSelecionada.valorUnitario : 0;
+      var valorTotal = nfSelecionada ? nfSelecionada.valorTotal : 0;
+      
+      var box = document.getElementById('diferencaBox');
+      var calculoRecusa = document.getElementById('calculoRecusa');
+      var motivoRecusaBox = document.getElementById('motivoRecusaBox');
+      
+      if (recebido >= esperado) {
+        // Quantidade conforme ou superior
+        box.className = 'diferenca-box conforme';
+        box.textContent = '✓ Quantidade conforme';
+        calculoRecusa.classList.add('hidden');
+        motivoRecusaBox.classList.add('hidden');
+      } else if (recebido > 0) {
+        // Recebimento parcial
+        box.className = 'diferenca-box parcial';
+        box.textContent = '⚠️ Faltam ' + diff.toFixed(3) + ' ' + nfSelecionada.unidade;
+        
+        // Mostrar cálculo de valores
+        mostrarCalculoRecusa(diff, recebido, valorUnitario, valorTotal);
+        motivoRecusaBox.classList.remove('hidden');
+      } else {
+        // Recusa total
+        box.className = 'diferenca-box recusa';
+        box.textContent = '✗ Recusa total - Nenhuma quantidade recebida';
+        
+        // Mostrar cálculo de valores (recusa total)
+        mostrarCalculoRecusa(esperado, 0, valorUnitario, valorTotal);
+        motivoRecusaBox.classList.remove('hidden');
+      }
+    }
+    
+    function mostrarCalculoRecusa(qtdRecusada, qtdRecebida, valorUnitario, valorTotal) {
+      var calculoRecusa = document.getElementById('calculoRecusa');
+      calculoRecusa.classList.remove('hidden');
+      
+      var valorRecusado = qtdRecusada * valorUnitario;
+      var valorFinal = valorTotal - valorRecusado;
+      
+      // Atualizar campos
+      document.getElementById('qtdRecusada').textContent = qtdRecusada.toFixed(3);
+      document.getElementById('unidadeRecusada').textContent = nfSelecionada.unidade;
+      document.getElementById('valorRecusado').textContent = 'R$ ' + valorRecusado.toLocaleString('pt-BR', {minimumFractionDigits:2});
+      
+      document.getElementById('valorOriginalNF').textContent = 'R$ ' + valorTotal.toLocaleString('pt-BR', {minimumFractionDigits:2});
+      document.getElementById('valorDescontado').textContent = '- R$ ' + valorRecusado.toLocaleString('pt-BR', {minimumFractionDigits:2});
+      document.getElementById('valorFinalPagar').textContent = 'R$ ' + Math.max(0, valorFinal).toLocaleString('pt-BR', {minimumFractionDigits:2});
+    }
+    
+    // Listener para mostrar campo "outro motivo"
+    document.getElementById('motivoRecusa').addEventListener('change', function() {
+      var outroBox = document.getElementById('outroMotivoBox');
+      if (this.value === 'OUTRO') {
+        outroBox.classList.remove('hidden');
+      } else {
+        outroBox.classList.add('hidden');
+      }
+    });
+
+    function calcularDiferenca() {
+      calcularDiferencaCompleta();
+    }
+
+    function validarEConfirmar() {
+      if (!document.getElementById('responsavel').value.trim()) { mostrarAlerta('Informe o nome do responsável', 'error'); return; }
+      if (!document.getElementById('matricula').value.trim()) { mostrarAlerta('Informe a matrícula', 'error'); return; }
+      if (!document.getElementById('checkAssinatura').checked) { mostrarAlerta('Confirme a assinatura no termo', 'error'); return; }
+      
+      var qtdRecebida = parseFloat(document.getElementById('qtdRecebida').value) || 0;
+      var qtdEsperada = nfSelecionada.quantidade;
+      var valorUnitario = nfSelecionada.valorUnitario || 0;
+      var valorTotal = nfSelecionada.valorTotal || 0;
+      
+      // Validar motivo se houver diferença
+      if (qtdRecebida < qtdEsperada) {
+        var motivo = document.getElementById('motivoRecusa').value;
+        if (!motivo) {
+          mostrarAlerta('Selecione o motivo da recusa/diferença', 'error');
+          return;
+        }
+        if (motivo === 'OUTRO' && !document.getElementById('outroMotivo').value.trim()) {
+          mostrarAlerta('Especifique o motivo da recusa', 'error');
+          return;
+        }
+      }
+      
+      var status = qtdRecebida >= qtdEsperada ? 'CONFORME' : qtdRecebida > 0 ? 'PARCIAL' : 'RECUSA_TOTAL';
+      var qtdRecusada = Math.max(0, qtdEsperada - qtdRecebida);
+      var valorRecusado = qtdRecusada * valorUnitario;
+      var valorFinal = valorTotal - valorRecusado;
+      
+      var resumoHTML = 
+        '<strong>' + escolaSelecionada + '</strong><br>' +
+        'NF ' + nfSelecionada.numero + '<br>' +
+        '<span style="color:var(--success)">🥫 ' + nfSelecionada.produto + '</span><br><br>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:center;margin:10px 0">' +
+        '<div style="background:#f0f0f0;padding:8px;border-radius:6px"><small>Esperado</small><br><strong>' + qtdEsperada + ' ' + nfSelecionada.unidade + '</strong></div>' +
+        '<div style="background:#f0f0f0;padding:8px;border-radius:6px"><small>Recebido</small><br><strong>' + qtdRecebida + ' ' + nfSelecionada.unidade + '</strong></div>' +
+        '</div>' +
+        'Status: <strong style="color:' + (status === 'CONFORME' ? 'var(--success)' : status === 'PARCIAL' ? 'var(--warning)' : 'var(--error)') + '">' + status + '</strong>';
+      
+      if (qtdRecusada > 0) {
+        resumoHTML += '<br><br><div style="background:var(--error-light);padding:10px;border-radius:8px;margin-top:8px">' +
+          '<strong style="color:var(--error)">💰 Impacto Financeiro</strong><br>' +
+          '<small>Qtd Recusada: ' + qtdRecusada.toFixed(3) + ' ' + nfSelecionada.unidade + '</small><br>' +
+          '<small>Valor Recusado: R$ ' + valorRecusado.toLocaleString('pt-BR', {minimumFractionDigits:2}) + '</small><br>' +
+          '<strong>Valor a Pagar: R$ ' + valorFinal.toLocaleString('pt-BR', {minimumFractionDigits:2}) + '</strong>' +
+          '</div>';
+      }
+      
+      document.getElementById('modalResumo').innerHTML = resumoHTML;
+      document.getElementById('modalConfirm').classList.remove('hidden');
+    }
+
+    function fecharModal() { document.getElementById('modalConfirm').classList.add('hidden'); }
+
+    function confirmarRecebimento() {
+      fecharModal();
+      var btn = document.getElementById('btnAvancar');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading"></span> Salvando...';
+
+      var qtdRecebida = parseFloat(document.getElementById('qtdRecebida').value) || 0;
+      var qtdEsperada = nfSelecionada.quantidade;
+      var qtdRecusada = Math.max(0, qtdEsperada - qtdRecebida);
+      var valorUnitario = nfSelecionada.valorUnitario || 0;
+      var valorRecusado = qtdRecusada * valorUnitario;
+      var valorFinal = (nfSelecionada.valorTotal || 0) - valorRecusado;
+      
+      var motivo = document.getElementById('motivoRecusa').value;
+      var motivoTexto = motivo === 'OUTRO' ? document.getElementById('outroMotivo').value.trim() : motivo;
+
+      var dados = {
+        nfId: nfSelecionada.id, 
+        nfNumero: nfSelecionada.numero, 
+        escola: escolaSelecionada,
+        produto: nfSelecionada.produto, 
+        quantidadeEsperada: qtdEsperada,
+        quantidadeRecebida: qtdRecebida,
+        quantidadeRecusada: qtdRecusada,
+        unidade: nfSelecionada.unidade, 
+        valorUnitario: valorUnitario,
+        valorTotalNF: nfSelecionada.valorTotal || 0,
+        valorRecusado: valorRecusado,
+        valorFinalPagar: Math.max(0, valorFinal),
+        responsavel: document.getElementById('responsavel').value.trim(),
+        matricula: document.getElementById('matricula').value.trim(),
+        dataRecebimento: document.getElementById('dataRecebimento').value,
+        horaRecebimento: document.getElementById('horaRecebimento').value,
+        embalagemOk: document.getElementById('checkEmbalagem').checked,
+        validadeOk: document.getElementById('checkValidade').checked,
+        caracteristicasOk: document.getElementById('checkCaracteristicas').checked,
+        temperatura: document.getElementById('temperatura').value || null,
+        motivoRecusa: qtdRecusada > 0 ? motivoTexto : null,
+        observacoes: document.getElementById('observacoes').value || '',
+        hortaEscolar: coletarDadosHorta()
+      };
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          btn.disabled = false; btn.textContent = '✅ Registrar Recebimento';
+          if (res.success) {
+            var msgSucesso = res.mensagem + '<br>ID: <strong>' + res.id + '</strong>';
+            if (qtdRecusada > 0) {
+              msgSucesso += '<br><br><div style="background:var(--warning-light);padding:8px;border-radius:6px;font-size:12px">' +
+                '⚠️ Recusa registrada<br>' +
+                'Qtd: ' + qtdRecusada.toFixed(3) + ' ' + nfSelecionada.unidade + '<br>' +
+                'Valor: R$ ' + valorRecusado.toLocaleString('pt-BR', {minimumFractionDigits:2}) +
+                '</div>';
+            }
+            document.getElementById('modalSucessoText').innerHTML = msgSucesso;
+            document.getElementById('modalSucesso').classList.remove('hidden');
+          } else { mostrarAlerta(res.error || 'Erro ao registrar', 'error'); }
+        })
+        .withFailureHandler(function(err) { btn.disabled = false; btn.textContent = '✅ Registrar Recebimento'; mostrarAlerta('Erro: ' + err.message, 'error'); })
+        .salvarRecebimento(dados);
+    }
+
+    function novoRecebimento() {
+      document.getElementById('modalSucesso').classList.add('hidden');
+      nfSelecionada = null; 
+      passo = 2; 
+      document.getElementById('buscaNF').value = '';
+      document.getElementById('filtroFornecedor').value = '';
+      filtroStatusAtual = 'pendentes';
+      document.querySelectorAll('.filtro-chip').forEach(function(c) { 
+        c.classList.toggle('active', c.dataset.filtro === 'pendentes'); 
+      });
+      atualizarUI(); 
+      carregarNFsPendentes();
+    }
+
+    function mostrarAlerta(msg, tipo) {
+      var box = document.getElementById('alertBox');
+      box.innerHTML = (tipo === 'error' ? '⚠️ ' : '✅ ') + msg;
+      box.className = 'alert alert-' + tipo;
+      box.classList.remove('hidden'); window.scrollTo(0, 0);
+      setTimeout(function() { box.classList.add('hidden'); }, 4000);
+    }
+
+    function carregarEscolas() {
+      google.script.run
+        .withSuccessHandler(function(escolas) {
+          var select = document.getElementById('selectEscola');
+          select.innerHTML = '<option value="">-- Selecione sua escola --</option>';
+          (escolas || []).forEach(function(escola) {
+            var opt = document.createElement('option');
+            opt.value = escola;
+            opt.textContent = escola;
+            select.appendChild(opt);
+          });
+        })
+        .withFailureHandler(function() {
+          // Fallback para lista padrão
+          var escolas = ['EC 01 Plano Piloto', 'EC 02 Plano Piloto', 'EC 03 Cruzeiro', 'EC 04 Cruzeiro', 'CEF 01 Plano Piloto', 'CEF 02 Cruzeiro'];
+          var select = document.getElementById('selectEscola');
+          select.innerHTML = '<option value="">-- Selecione sua escola --</option>';
+          escolas.forEach(function(escola) {
+            var opt = document.createElement('option');
+            opt.value = escola;
+            opt.textContent = escola;
+            select.appendChild(opt);
+          });
+        })
+        .listarEscolasDisponiveis();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      var hoje = new Date();
+      document.getElementById('dataRecebimento').value = hoje.toISOString().split('T')[0];
+      document.getElementById('horaRecebimento').value = hoje.toTimeString().slice(0,5);
+      carregarEscolas();
+      atualizarUI();
+    });
+  </script>
+</body>
+</html>

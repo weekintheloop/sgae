@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#2E7D32">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>AE - Sistema de Alimentação Escolar</title>
+  
+  <!-- Design System Aprimorado -->
+  <?!= include('AE_Design_System_Enhanced'); ?>
+  
+  <style>
+    /* ============================================
+       LAYOUT PRINCIPAL
+       ============================================ */
+    .ae-app {
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    /* Sidebar */
+    .ae-sidebar {
+      width: 280px;
+      background: var(--ae-gradient-primary);
+      color: var(--ae-text-inverse);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      z-index: var(--ae-z-fixed);
+      transition: transform var(--ae-transition-slow);
+    }
+    
+    .ae-sidebar-header {
+      padding: var(--ae-space-5);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .ae-sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: var(--ae-space-3);
+    }
+    
+    .ae-sidebar-logo-icon {
+      font-size: 32px;
+    }
+    
+    .ae-sidebar-logo-text {
+      font-size: var(--ae-font-2xl);
+      font-weight: 700;
+    }
+    
+    .ae-sidebar-subtitle {
+      font-size: var(--ae-font-xs);
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+    
+    .ae-sidebar-nav {
+      flex: 1;
+      padding: var(--ae-space-4);
+      overflow-y: auto;
+    }
+    
+    .ae-sidebar-section {
+      margin-bottom: var(--ae-space-6);
+    }
+    
+    .ae-sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.6;
+      padding: 0 var(--ae-space-3);
+      margin-bottom: var(--ae-space-2);
+    }
+</style>
+
+<style>
+    .ae-nav-item {
+      display: flex;
+      align-items: center;
+      gap: var(--ae-space-3);
+      padding: var(--ae-space-3) var(--ae-space-4);
+      border-radius: var(--ae-radius-md);
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      font-size: var(--ae-font-sm);
+      font-weight: 500;
+      transition: all var(--ae-transition-fast);
+      cursor: pointer;
+    }
+    
+    .ae-nav-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--ae-text-inverse);
+    }
+    
+    .ae-nav-item.active {
+      background: rgba(255, 255, 255, 0.2);
+      color: var(--ae-text-inverse);
+    }
+    
+    .ae-nav-item i {
+      width: 20px;
+      text-align: center;
+    }
+    
+    .ae-nav-badge {
+      margin-left: auto;
+      background: var(--ae-accent);
+      color: var(--ae-text-inverse);
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: var(--ae-radius-full);
+      font-weight: 600;
+    }
+    
+    .ae-sidebar-footer {
+      padding: var(--ae-space-4);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .ae-user-card {
+      display: flex;
+      align-items: center;
+      gap: var(--ae-space-3);
+      padding: var(--ae-space-3);
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: var(--ae-radius-md);
+    }
+    
+    .ae-user-avatar {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: var(--ae-radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+    
+    .ae-user-info {
+      flex: 1;
+    }
+    
+    .ae-user-name {
+      font-size: var(--ae-font-sm);
+      font-weight: 600;
+    }
+    
+    .ae-user-role {
+      font-size: var(--ae-font-xs);
+      opacity: 0.7;
+    }
+    
+    /* Main Content */
+    .ae-main {
+      flex: 1;
+      margin-left: 280px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 70px; /* Espaço para footer bar */
+    }
+    
+    .ae-content {
+      flex: 1;
+      padding: var(--ae-space-6);
+    }
+    
+    /* Sidebar Overlay (Mobile) */
+    .ae-sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--ae-bg-overlay);
+      z-index: calc(var(--ae-z-fixed) - 1);
+    }
+    
+    .ae-sidebar-overlay.active {
+      display: block;
+    }
+    
+    /* Responsivo */
+    @media (max-width: 1024px) {
+      .ae-sidebar {
+        transform: translateX(-100%);
+      }
+      
+      .ae-sidebar.open {
+        transform: translateX(0);
+      }
+      
+      .ae-main {
+        margin-left: 0;
+      }
+    }
+    
+    @media (max-width: 640px) {
+      .ae-content {
+        padding: var(--ae-space-4);
+      }
+    }
+    
+    /* Page Sections */
+    .ae-page {
+      display: none;
+      animation: ae-fade-in 0.3s ease;
+    }
+    
+    .ae-page.active {
+      display: block;
+    }
+    
+    @keyframes ae-fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Dashboard Stats */
+    .ae-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--ae-space-4);
+      margin-bottom: var(--ae-space-6);
+    }
+    
+    /* Quick Actions Grid */
+    .ae-quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: var(--ae-space-4);
+      margin-bottom: var(--ae-space-6);
+    }
+    
+    .ae-quick-action {
+      background: var(--ae-bg-surface);
+      border-radius: var(--ae-radius-lg);
+      padding: var(--ae-space-5);
+      text-align: center;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all var(--ae-transition-base);
+      box-shadow: var(--ae-shadow-sm);
+    }
+    
+    .ae-quick-action:hover {
+      border-color: var(--ae-primary-lighter);
+      transform: translateY(-4px);
+      box-shadow: var(--ae-shadow-lg);
+    }
+    
+    .ae-quick-action-icon {
+      font-size: 36px;
+      margin-bottom: var(--ae-space-3);
+    }
+    
+    .ae-quick-action-title {
+      font-size: var(--ae-font-sm);
+      font-weight: 600;
+      color: var(--ae-text-primary);
+      margin-bottom: var(--ae-space-1);
+    }
+    
+    .ae-quick-action-desc {
+      font-size: var(--ae-font-xs);
+      color: var(--ae-text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div class="ae-app">
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="ae-sidebar-overlay" id="sidebarOverlay" onclick="AEHeader.toggleSidebar()"></div>
+    
+    <!-- Sidebar -->
+    <aside class="ae-sidebar" id="sidebar">
+      <div class="ae-sidebar-header">
+        <div class="ae-sidebar-logo">
+          <span class="ae-sidebar-logo-icon">🍎</span>
+          <div>
+            <div class="ae-sidebar-logo-text">AE</div>
+            <div class="ae-sidebar-subtitle">Alimentação Escolar</div>
+          </div>
+        </div>
+      </div>
+      
+      <nav class="ae-sidebar-nav">
+        <div class="ae-sidebar-section">
+          <div class="ae-sidebar-section-title">Principal</div>
+          <a class="ae-nav-item active" onclick="AEApp.navigate('dashboard')">
+            <i class="fas fa-home"></i> Dashboard
+          </a>
+          <a class="ae-nav-item" onclick="AEApp.navigate('nfs')">
+            <i class="fas fa-file-invoice"></i> Notas Fiscais
+            <span class="ae-nav-badge">12</span>
+          </a>
+          <a class="ae-nav-item" onclick="AEApp.navigate('atesto')">
+            <i class="fas fa-check-double"></i> Atesto Digital
+          </a>
+        </div>
+        
+        <div class="ae-sidebar-section">
+          <div class="ae-sidebar-section-title">Financeiro</div>
+          <a class="ae-nav-item" onclick="AEApp.navigate('empenhos')">
+            <i class="fas fa-wallet"></i> Empenhos
+          </a>
+          <a class="ae-nav-item" onclick="AEApp.navigate('glosas')">
+            <i class="fas fa-ban"></i> Glosas
+          </a>
+        </div>
+        
+        <div class="ae-sidebar-section">
+          <div class="ae-sidebar-section-title">Nutrição</div>
+          <a class="ae-nav-item" onclick="AEApp.navigate('cardapios')">
+            <i class="fas fa-utensils"></i> Cardápios
+          </a>
+          <a class="ae-nav-item" onclick="AEApp.navigate('alunos-especiais')">
+            <i class="fas fa-user-shield"></i> Alunos Especiais
+          </a>
+        </div>
+        
+        <div class="ae-sidebar-section">
+          <div class="ae-sidebar-section-title">Relatórios</div>
+          <a class="ae-nav-item" onclick="AEApp.navigate('relatorios')">
+            <i class="fas fa-chart-bar"></i> Relatórios
+          </a>
+        </div>
+      </nav>
+      
+      <div class="ae-sidebar-footer">
+        <div class="ae-user-card">
+          <div class="ae-user-avatar" id="sidebar-user-avatar">U</div>
+          <div class="ae-user-info">
+            <div class="ae-user-name" id="sidebar-user-name">Usuário</div>
+            <div class="ae-user-role" id="sidebar-user-role">Analista</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="ae-main">
+      <!-- Header -->
+      <?!= include('UI_Header_Enhanced'); ?>
+      
+      <!-- Content Area -->
+      <div class="ae-content">
+        <!-- Dashboard Page -->
+        <section class="ae-page active" id="page-dashboard">
+          <h1 class="ae-text-2xl ae-font-bold ae-mb-6">Dashboard</h1>
+          
+          <!-- Stats Grid -->
+          <div class="ae-stats-grid">
+            <div class="ae-stat-card">
+              <div class="ae-stat-icon" style="background: var(--ae-primary-bg); color: var(--ae-primary);">
+                <i class="fas fa-file-invoice"></i>
+              </div>
+              <div class="ae-stat-content">
+                <div class="ae-stat-value">24</div>
+                <div class="ae-stat-label">NFs Pendentes</div>
+              </div>
+            </div>
+            <div class="ae-stat-card">
+              <div class="ae-stat-icon" style="background: var(--ae-success-light); color: var(--ae-success);">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <div class="ae-stat-content">
+                <div class="ae-stat-value">156</div>
+                <div class="ae-stat-label">NFs Atestadas</div>
+              </div>
+            </div>
+            <div class="ae-stat-card">
+              <div class="ae-stat-icon" style="background: var(--ae-warning-light); color: var(--ae-warning);">
+                <i class="fas fa-exclamation-triangle"></i>
+              </div>
+              <div class="ae-stat-content">
+                <div class="ae-stat-value">3</div>
+                <div class="ae-stat-label">Glosas</div>
+              </div>
+            </div>
+            <div class="ae-stat-card">
+              <div class="ae-stat-icon" style="background: var(--ae-info-light); color: var(--ae-info);">
+                <i class="fas fa-wallet"></i>
+              </div>
+              <div class="ae-stat-content">
+                <div class="ae-stat-value">R$ 45k</div>
+                <div class="ae-stat-label">Saldo Empenho</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Quick Actions -->
+          <h2 class="ae-text-lg ae-font-semibold ae-mb-4">Ações Rápidas</h2>
+          <div class="ae-quick-actions">
+            <div class="ae-quick-action" onclick="AEApp.navigate('nfs')">
+              <div class="ae-quick-action-icon">📄</div>
+              <div class="ae-quick-action-title">Nova NF</div>
+              <div class="ae-quick-action-desc">Cadastrar nota fiscal</div>
+            </div>
+            <div class="ae-quick-action" onclick="AEApp.navigate('atesto')">
+              <div class="ae-quick-action-icon">✅</div>
+              <div class="ae-quick-action-title">Atestar NFs</div>
+              <div class="ae-quick-action-desc">Aprovar notas conferidas</div>
+            </div>
+            <div class="ae-quick-action" onclick="AEDrawers.open('scanner')">
+              <div class="ae-quick-action-icon">📷</div>
+              <div class="ae-quick-action-title">Scanner QR</div>
+              <div class="ae-quick-action-desc">Ler código da NF</div>
+            </div>
+            <div class="ae-quick-action" onclick="AEApp.navigate('relatorios')">
+              <div class="ae-quick-action-icon">📊</div>
+              <div class="ae-quick-action-title">Relatórios</div>
+              <div class="ae-quick-action-desc">Gerar relatórios</div>
+            </div>
+          </div>
+        </section>
+        
+        <!-- NFs Page -->
+        <section class="ae-page" id="page-nfs">
+          <h1 class="ae-text-2xl ae-font-bold ae-mb-6">Notas Fiscais</h1>
+          <p class="ae-text-secondary">Conteúdo de Notas Fiscais...</p>
+        </section>
+        
+        <!-- Atesto Page -->
+        <section class="ae-page" id="page-atesto">
+          <h1 class="ae-text-2xl ae-font-bold ae-mb-6">Atesto Digital</h1>
+          <p class="ae-text-secondary">Conteúdo de Atesto Digital...</p>
+        </section>
+        
+        <!-- Outras páginas... -->
+        <section class="ae-page" id="page-empenhos">
+          <h1 class="ae-text-2xl ae-font-bold ae-mb-6">Empenhos</h1>
+          <p class="ae-text-secondary">Conteúdo de Empenhos...</p>
+        </section>
+        
+        <section class="ae-page" id="page-glosas">
+          <h1 class="ae-text-2xl ae-font-bold ae-mb-6">Glosas</h1>
+          <p class="ae-text-secondary">Conteúdo de Glosas...</p>
+        </section>
+        
+        <section class="ae-page" id="page-cardapios">
+          <h1 class="ae-text-2xl ae-font-bold ae-mb-6">Cardápios</h1>
+          <p class="ae-text-secondary">Conteúdo de Cardápios...</p>
+        </section>
+        
+        <section class="ae-page" id="page-alunos-especiais">
+          <h1 class="ae-text-2xl ae-font-bold ae-mb-6">Alunos com Necessidades Especiais</h1>
+          <p class="ae-text-secondary">Conteúdo de Alunos Especiais...</p>
+        </section>
+        
+        <section class="ae-page" id="page-relatorios">
+          <h1 class="ae-text-2xl ae-font-bold ae-mb-6">Relatórios</h1>
+          <p class="ae-text-secondary">Conteúdo de Relatórios...</p>
+        </section>
+      </div>
+    </main>
+  </div>
+  
+  <!-- Drawers -->
+  <?!= include('UI_Drawers_Enhanced'); ?>
+  
+  <!-- App Controller -->
+  <script>
+  /**
+   * AEApp - Controlador Principal da Aplicação
+   */
+  var AEApp = (function() {
+    'use strict';
+    
+    var state = {
+      currentPage: 'dashboard',
+      user: null
+    };
+    
+    function init() {
+      loadUserData();
+      console.log('AEApp inicializado');
+    }
+    
+    function loadUserData() {
+      // Simular dados do usuário
+      state.user = {
+        name: 'Maria Silva',
+        role: 'Analista',
+        initials: 'MS'
+      };
+      updateUserUI();
+    }
+    
+    function updateUserUI() {
+      if (!state.user) return;
+      
+      var elements = [
+        { id: 'sidebar-user-name', value: state.user.name },
+        { id: 'sidebar-user-role', value: state.user.role },
+        { id: 'sidebar-user-avatar', value: state.user.initials },
+        { id: 'profile-name', value: state.user.name },
+        { id: 'profile-role', value: state.user.role },
+        { id: 'profile-avatar', value: state.user.initials }
+      ];
+      
+      elements.forEach(function(el) {
+        var elem = document.getElementById(el.id);
+        if (elem) elem.textContent = el.value;
+      });
+    }
+    
+    function navigate(pageId) {
+      // Esconder todas as páginas
+      document.querySelectorAll('.ae-page').forEach(function(page) {
+        page.classList.remove('active');
+      });
+      
+      // Mostrar página selecionada
+      var targetPage = document.getElementById('page-' + pageId);
+      if (targetPage) {
+        targetPage.classList.add('active');
+        state.currentPage = pageId;
+      }
+      
+      // Atualizar nav items
+      document.querySelectorAll('.ae-nav-item').forEach(function(item) {
+        item.classList.remove('active');
+      });
+      event.target.closest('.ae-nav-item').classList.add('active');
+      
+      // Atualizar título
+      var titles = {
+        dashboard: 'Dashboard',
+        nfs: 'Notas Fiscais',
+        atesto: 'Atesto Digital',
+        empenhos: 'Empenhos',
+        glosas: 'Glosas',
+        cardapios: 'Cardápios',
+        'alunos-especiais': 'Alunos Especiais',
+        relatorios: 'Relatórios'
+      };
+      
+      if (typeof AEHeader !== 'undefined') {
+        AEHeader.setPageTitle(titles[pageId] || pageId);
+      }
+      
+      // Fechar sidebar no mobile
+      if (window.innerWidth < 1024) {
+        AEHeader.toggleSidebar();
+      }
+    }
+    
+    return {
+      init: init,
+      navigate: navigate
+    };
+  })();
+  
+  document.addEventListener('DOMContentLoaded', AEApp.init);
+  </script>
+</body>
+</html>

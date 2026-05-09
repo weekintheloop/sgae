@@ -1,0 +1,416 @@
+<!--
+  UX INTEGRATION HELPER - UNIAE
+  Integração entre componentes UX e helpers úteis
+  
+  Inclua APÓS os outros arquivos UX:
+  <?!= include('design-system'); ?>
+  <?!= include('UX_Efficiency_Boost'); ?>
+  <?!= include('UX_Intuitive_Navigation'); ?>
+  <?!= include('UX_Integration_Helper'); ?>
+  
+  ✅ Integração automática de componentes
+  ✅ Helpers para chamadas ao backend
+  ✅ Gestão de estado simplificada
+  ✅ Utilitários de formatação
+-->
+
+<script>
+/**
+ * UX - Namespace unificado para todos os componentes UX
+ */
+const UX = {
+  // Referências aos módulos
+  efficient: typeof EfficientUX !== 'undefined' ? EfficientUX : null,
+  nav: typeof IntuitiveNav !== 'undefined' ? IntuitiveNav : null,
+  
+  // ========================================
+  // TOAST UNIFICADO
+  // ========================================
+  toast: {
+    show(msg, type = 'info', duration) {
+      if (UX.efficient) {
+        UX.efficient.toast(msg, type, duration);
+      } else {
+        console.log(`[${type.toUpperCase()}] ${msg}`);
+      }
+    },
+    success(msg) { this.show(msg, 'success'); },
+    error(msg) { this.show(msg, 'error', 4000); },
+    warning(msg) { this.show(msg, 'warning'); },
+    info(msg) { this.show(msg, 'info'); }
+  },
+  
+  // ========================================
+  // LOADING STATE
+  // ========================================
+  loading: {
+    _overlay: null,
+    
+    show(message = 'Carregando...') {
+      if (!this._overlay) {
+        this._overlay = document.createElement('div');
+        this._overlay.className = 'ux-loading-overlay';
+        this._overlay.innerHTML = `
+          <div class="ux-loading-content">
+            <div class="ux-loading-spinner"></div>
+            <div class="ux-loading-text">${message}</div>
+          </div>
+        `;
+        document.body.appendChild(this._overlay);
+      } else {
+        this._overlay.querySelector('.ux-loading-text').textContent = message;
+      }
+      this._overlay.classList.add('active');
+    },
+    
+    hide() {
+      if (this._overlay) {
+        this._overlay.classList.remove('active');
+      }
+    },
+    
+    update(message) {
+      if (this._overlay) {
+        this._overlay.querySelector('.ux-loading-text').textContent = message;
+      }
+    }
+  },
+  
+  // ========================================
+  // BACKEND CALLS
+  // ========================================
+  async call(functionName, ...args) {
+    return new Promise((resolve, reject) => {
+      google.script.run
+        .withSuccessHandler(resolve)
+        .withFailureHandler(reject)
+        [functionName](...args);
+    });
+  },
+  
+  async callWithFeedback(functionName, options = {}, ...args) {
+    const {
+      loadingMessage = 'Processando...',
+      successMessage,
+      errorMessage = 'Erro ao processar. Tente novamente.',
+      silent = false
+    } = options;
+    
+    if (!silent) this.loading.show(loadingMessage);
+    
+    try {
+      const result = await this.call(functionName, ...args);
+      
+      if (!silent) {
+        this.loading.hide();
+        if (successMessage) {
+          this.toast.success(successMessage);
+        } else if (result && result.message) {
+          this.toast.success(result.message);
+        }
+      }
+      
+      return result;
+    } catch (error) {
+      if (!silent) {
+        this.loading.hide();
+        this.toast.error(errorMessage);
+      }
+      console.error('UX.call error:', error);
+      throw error;
+    }
+  },
+  
+  // ========================================
+  // FORMATADORES
+  // ========================================
+  format: {
+    currency(value, currency = 'BRL') {
+      if (value === null || value === undefined) return '-';
+      return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency
+      }).format(value);
+    },
+    
+    number(value, decimals = 2) {
+      if (value === null || value === undefined) return '-';
+      return new Intl.NumberFormat('pt-BR', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+      }).format(value);
+    },
+    
+    date(value, format = 'short') {
+      if (!value) return '-';
+      const date = value instanceof Date ? value : new Date(value);
+      if (isNaN(date)) return '-';
+      
+      const options = {
+        short: { day: '2-digit', month: '2-digit', year: 'numeric' },
+        long: { day: '2-digit', month: 'long', year: 'numeric' },
+        full: { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' },
+        time: { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }
+      };
+      
+      return date.toLocaleDateString('pt-BR', options[format] || options.short);
+    },
+    
+    cpfCnpj(value) {
+      if (!value) return '-';
+      const clean = value.replace(/\D/g, '');
+      if (clean.length === 11) {
+        return clean.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+      } else if (clean.length === 14) {
+        return clean.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+      }
+      return value;
+    },
+    
+    phone(value) {
+      if (!value) return '-';
+      const clean = value.replace(/\D/g, '');
+      if (clean.length === 11) {
+        return clean.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+      } else if (clean.length === 10) {
+        return clean.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+      }
+      return value;
+    },
+    
+    truncate(text, maxLength = 50) {
+      if (!text || text.length <= maxLength) return text || '';
+      return text.substring(0, maxLength - 3) + '...';
+    },
+    
+    relativeTime(date) {
+      if (!date) return '-';
+      const d = date instanceof Date ? date : new Date(date);
+      if (isNaN(d)) return '-';
+      
+      const now = new Date();
+      const diff = Math.floor((now - d) / 1000);
+      
+      if (diff < 60) return 'Agora';
+      if (diff < 3600) return `${Math.floor(diff / 60)} min atrás`;
+      if (diff < 86400) return `${Math.floor(diff / 3600)}h atrás`;
+      if (diff < 604800) return `${Math.floor(diff / 86400)} dias atrás`;
+      
+      return this.date(d);
+    }
+  },
+  
+  // ========================================
+  // VALIDAÇÃO
+  // ========================================
+  validate: {
+    required(value) {
+      return value !== null && value !== undefined && String(value).trim() !== '';
+    },
+    
+    email(value) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    },
+    
+    cpf(value) {
+      const cpf = String(value).replace(/\D/g, '');
+      if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+      
+      let sum = 0;
+      for (let i = 0; i < 9; i++) sum += parseInt(cpf[i]) * (10 - i);
+      let check = (sum * 10) % 11;
+      if (check === 10) check = 0;
+      if (check !== parseInt(cpf[9])) return false;
+      
+      sum = 0;
+      for (let i = 0; i < 10; i++) sum += parseInt(cpf[i]) * (11 - i);
+      check = (sum * 10) % 11;
+      if (check === 10) check = 0;
+      return check === parseInt(cpf[10]);
+    },
+    
+    cnpj(value) {
+      const cnpj = String(value).replace(/\D/g, '');
+      if (cnpj.length !== 14 || /^(\d)\1+$/.test(cnpj)) return false;
+      
+      const weights1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+      const weights2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+      
+      let sum = 0;
+      for (let i = 0; i < 12; i++) sum += parseInt(cnpj[i]) * weights1[i];
+      let check = sum % 11 < 2 ? 0 : 11 - (sum % 11);
+      if (check !== parseInt(cnpj[12])) return false;
+      
+      sum = 0;
+      for (let i = 0; i < 13; i++) sum += parseInt(cnpj[i]) * weights2[i];
+      check = sum % 11 < 2 ? 0 : 11 - (sum % 11);
+      return check === parseInt(cnpj[13]);
+    },
+    
+    minLength(value, min) {
+      return String(value || '').length >= min;
+    },
+    
+    maxLength(value, max) {
+      return String(value || '').length <= max;
+    },
+    
+    numeric(value) {
+      return !isNaN(parseFloat(value)) && isFinite(value);
+    },
+    
+    date(value) {
+      const d = new Date(value);
+      return !isNaN(d);
+    }
+  },
+  
+  // ========================================
+  // DEBOUNCE / THROTTLE
+  // ========================================
+  debounce(fn, delay = 300) {
+    let timer;
+    return function(...args) {
+      clearTimeout(timer);
+      timer = setTimeout(() => fn.apply(this, args), delay);
+    };
+  },
+  
+  throttle(fn, limit = 300) {
+    let inThrottle;
+    return function(...args) {
+      if (!inThrottle) {
+        fn.apply(this, args);
+        inThrottle = true;
+        setTimeout(() => inThrottle = false, limit);
+      }
+    };
+  },
+  
+  // ========================================
+  // STORAGE LOCAL
+  // ========================================
+  storage: {
+    set(key, value) {
+      try {
+        localStorage.setItem('uniae_' + key, JSON.stringify(value));
+        return true;
+      } catch (e) {
+        console.warn('Storage error:', e);
+        return false;
+      }
+    },
+    
+    get(key, defaultValue = null) {
+      try {
+        const item = localStorage.getItem('uniae_' + key);
+        return item ? JSON.parse(item) : defaultValue;
+      } catch (e) {
+        return defaultValue;
+      }
+    },
+    
+    remove(key) {
+      try {
+        localStorage.removeItem('uniae_' + key);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+  },
+  
+  // ========================================
+  // INICIALIZAÇÃO
+  // ========================================
+  init() {
+    // Adicionar estilos do loading
+    if (!document.getElementById('ux-loading-styles')) {
+      const style = document.createElement('style');
+      style.id = 'ux-loading-styles';
+      style.textContent = `
+        .ux-loading-overlay {
+          position: fixed;
+          inset: 0;
+          background: rgba(255,255,255,0.9);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 99999;
+          opacity: 0;
+          visibility: hidden;
+          transition: opacity 0.2s, visibility 0.2s;
+        }
+        .ux-loading-overlay.active {
+          opacity: 1;
+          visibility: visible;
+        }
+        .ux-loading-content {
+          text-align: center;
+        }
+        .ux-loading-spinner {
+          width: 40px;
+          height: 40px;
+          border: 3px solid var(--gray-200, #e5e7eb);
+          border-top-color: var(--primary, #667eea);
+          border-radius: 50%;
+          animation: ux-spin 0.8s linear infinite;
+          margin: 0 auto 16px;
+        }
+        @keyframes ux-spin {
+          to { transform: rotate(360deg); }
+        }
+        .ux-loading-text {
+          font-size: 14px;
+          color: var(--gray-600, #4b5563);
+        }
+      `;
+      document.head.appendChild(style);
+    }
+    
+    console.log('🎨 UX Integration Helper inicializado');
+  }
+};
+
+// Auto-inicializar
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => UX.init());
+} else {
+  UX.init();
+}
+
+// Helpers globais para acesso rápido
+const debounce = UX.debounce;
+const throttle = UX.throttle;
+
+// Anunciar para screen readers
+function announceToScreenReader(message) {
+  const region = document.getElementById('uxLiveRegion') || 
+                 document.querySelector('[role="status"][aria-live]');
+  if (region) {
+    region.textContent = message;
+    setTimeout(() => region.textContent = '', 1000);
+  }
+}
+
+// Trap focus em modais
+function trapFocus(element) {
+  const focusable = element.querySelectorAll(
+    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+  );
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  
+  element.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') return;
+    
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  });
+}
+</script>

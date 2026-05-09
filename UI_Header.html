@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Header Component - Alimentação Escolar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <style>
+    /* ========================================
+       HEADER COMPONENT - ALIMENTAÇÃO ESCOLAR
+       Design System Variables
+       ======================================== */
+    :root {
+      --ae-primary: #2E7D32;
+      --ae-primary-light: #4CAF50;
+      --ae-primary-dark: #1B5E20;
+      --ae-secondary: #EF6C00;
+      --ae-secondary-light: #FF9800;
+      --ae-accent: #C62828;
+      --ae-bg-main: #F1F8E9;
+      --ae-bg-card: #FFFFFF;
+      --ae-bg-overlay: rgba(0, 0, 0, 0.5);
+      --ae-text-primary: #263238;
+      --ae-text-secondary: #546E7A;
+      --ae-text-light: #FFFFFF;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.15);
+      --header-height: 64px;
+      --transition-fast: 0.2s ease;
+      --transition-normal: 0.3s ease;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--ae-bg-main);
+    }
+
+    /* ========================================
+       HEADER PRINCIPAL
+       ======================================== */
+    .ae-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--header-height);
+      background: linear-gradient(135deg, var(--ae-primary) 0%, var(--ae-primary-dark) 100%);
+      color: var(--ae-text-light);
+      z-index: 1000;
+      box-shadow: var(--shadow-md);
+    }
+
+    .ae-header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+      padding: 0 12px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Seção Esquerda: Menu + Logo */
+    .ae-header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Botão Menu Sanduíche */
+    .ae-hamburger {
+      width: 44px;
+      height: 44px;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 12px;
+      transition: var(--transition-fast);
+    }
+
+    .ae-hamburger:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .ae-hamburger:active {
+      transform: scale(0.95);
+    }
+
+    .ae-hamburger-line {
+      width: 20px;
+      height: 2px;
+      background: white;
+      border-radius: 1px;
+      transition: var(--transition-normal);
+    }
+
+    /* Animação do hamburger para X */
+    .ae-hamburger.active .ae-hamburger-line:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .ae-hamburger.active .ae-hamburger-line:nth-child(2) {
+      opacity: 0;
+    }
+
+    .ae-hamburger.active .ae-hamburger-line:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    /* Logo AE */
+    .ae-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ae-logo-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .ae-logo-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ae-logo-main {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      line-height: 1;
+    }
+
+    .ae-logo-sub {
+      font-size: 0.6rem;
+      font-weight: 400;
+      opacity: 0.9;
+      letter-spacing: 0.5px;
+    }
+
+    /* Seção Central: Título da Página (desktop) */
+    .ae-header-center {
+      display: none;
+      flex: 1;
+      text-align: center;
+    }
+
+    @media (min-width: 768px) {
+      .ae-header-center {
+        display: block;
+      }
+    }
+
+    .ae-page-title {
+      font-size: 1rem;
+      font-weight: 500;
+      opacity: 0.95;
+    }
+
+    /* Seção Direita: Ações */
+    .ae-header-right {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Botões de Ação do Header */
+    .ae-header-action {
+      width: 40px;
+      height: 40px;
+      background: transparent;
+      border: none;
+      border-radius: 50%;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: var(--transition-fast);
+    }
+
+    .ae-header-action:hover {
+      background: rgba(255,255,255,0.15);
+    }
+
+    .ae-header-action:active {
+      transform: scale(0.92);
+    }
+
+    .ae-header-action .material-symbols-outlined {
+      font-size: 22px;
+    }
+
+    /* Badge de Notificação */
+    .ae-action-badge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      min-width: 18px;
+      height: 18px;
+      background: var(--ae-accent);
+      color: white;
+      font-size: 10px;
+      font-weight: 600;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 5px;
+      border: 2px solid var(--ae-primary);
+      animation: badgePulse 2s infinite;
+    }
+
+    @keyframes badgePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    /* Status de Conexão */
+    .ae-connection {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 16px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      margin-right: 8px;
+    }
+
+    .ae-connection-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      transition: var(--transition-fast);
+    }
+
+    .ae-connection.online .ae-connection-dot {
+      background: #A5D6A7;
+      box-shadow: 0 0 6px #A5D6A7;
+    }
+
+    .ae-connection.offline .ae-connection-dot {
+      background: #FFCC80;
+      box-shadow: 0 0 6px #FFCC80;
+    }
+
+    .ae-connection.syncing .ae-connection-dot {
+      background: #81D4FA;
+      animation: syncPulse 1s infinite;
+    }
+
+    @keyframes syncPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* Avatar do Usuário */
+    .ae-user-avatar {
+      width: 36px;
+      height: 36px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      border: 2px solid rgba(255,255,255,0.3);
+    }
+
+    .ae-user-avatar:hover {
+      background: rgba(255,255,255,0.3);
+      border-color: rgba(255,255,255,0.5);
+    }
+
+    .ae-user-avatar img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .ae-user-avatar .material-symbols-outlined {
+      font-size: 20px;
+    }
+
+    /* ========================================
+       DRAWER LATERAL (PERFIL E CONFIGURAÇÕES)
+       ======================================== */
+    .ae-drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--ae-bg-overlay);
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition-normal);
+      z-index: 1100;
+    }
+
+    .ae-drawer-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .ae-drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 85%;
+      max-width: 320px;
+      height: 100%;
+      background: var(--ae-bg-card);
+      transform: translateX(-100%);
+      transition: transform var(--transition-normal);
+      z-index: 1101;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .ae-drawer.active {
+      transform: translateX(0);
+    }
+
+    /* Cabeçalho do Drawer */
+    .ae-drawer-header {
+      background: linear-gradient(135deg, var(--ae-primary) 0%, var(--ae-primary-dark) 100%);
+      color: white;
+      padding: 24px 20px;
+      position: relative;
+    }
+
+    .ae-drawer-header::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: inherit;
+      clip-path: ellipse(60% 100% at 50% 0%);
+    }
+
+    .ae-drawer-profile {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .ae-drawer-avatar {
+      width: 64px;
+      height: 64px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid rgba(255,255,255,0.4);
+    }
+
+    .ae-drawer-avatar .material-symbols-outlined {
+      font-size: 36px;
+    }
+
+    .ae-drawer-user-info h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .ae-drawer-user-info p {
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+
+    .ae-drawer-user-info .ae-user-role {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255,255,255,0.2);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      margin-top: 8px;
+    }
+
+    /* Navegação do Drawer */
+    .ae-drawer-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px 0 16px;
+    }
+
+    .ae-drawer-section {
+      padding: 0 8px;
+      margin-bottom: 8px;
+    }
+
+    .ae-drawer-section-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--ae-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 8px 16px;
+    }
+
+    .ae-drawer-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 16px;
+      color: var(--ae-text-primary);
+      text-decoration: none;
+      border-radius: 12px;
+      transition: var(--transition-fast);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      font-size: 0.9rem;
+      font-family: inherit;
+    }
+
+    .ae-drawer-item:hover {
+      background: var(--ae-bg-main);
+    }
+
+    .ae-drawer-item:active {
+      background: #E8F5E9;
+    }
+
+    .ae-drawer-item .material-symbols-outlined {
+      font-size: 22px;
+      color: var(--ae-text-secondary);
+    }
+
+    .ae-drawer-item.danger {
+      color: var(--ae-accent);
+    }
+
+    .ae-drawer-item.danger .material-symbols-outlined {
+      color: var(--ae-accent);
+    }
+
+    .ae-drawer-divider {
+      height: 1px;
+      background: #E0E0E0;
+      margin: 8px 16px;
+    }
+
+    /* Footer do Drawer */
+    .ae-drawer-footer {
+      padding: 16px 20px;
+      border-top: 1px solid #E0E0E0;
+      background: #FAFAFA;
+    }
+
+    .ae-drawer-version {
+      font-size: 0.7rem;
+      color: var(--ae-text-secondary);
+      text-align: center;
+    }
+
+    /* ========================================
+       DROPDOWN DO PERFIL (Desktop)
+       ======================================== */
+    .ae-profile-dropdown {
+      position: absolute;
+      top: calc(var(--header-height) - 4px);
+      right: 12px;
+      width: 280px;
+      background: var(--ae-bg-card);
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: var(--transition-normal);
+      z-index: 1050;
+      overflow: hidden;
+    }
+
+    .ae-profile-dropdown.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .ae-dropdown-header {
+      background: linear-gradient(135deg, var(--ae-primary) 0%, var(--ae-primary-dark) 100%);
+      color: white;
+      padding: 16px;
+    }
+
+    .ae-dropdown-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ae-dropdown-avatar {
+      width: 48px;
+      height: 48px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ae-dropdown-info h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .ae-dropdown-info p {
+      font-size: 0.75rem;
+      opacity: 0.9;
+    }
+
+    .ae-dropdown-body {
+      padding: 8px;
+    }
+
+    .ae-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      color: var(--ae-text-primary);
+      cursor: pointer;
+      transition: var(--transition-fast);
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      font-size: 0.85rem;
+      font-family: inherit;
+    }
+
+    .ae-dropdown-item:hover {
+      background: var(--ae-bg-main);
+    }
+
+    .ae-dropdown-item .material-symbols-outlined {
+      font-size: 20px;
+      color: var(--ae-text-secondary);
+    }
+
+    .ae-dropdown-item.danger {
+      color: var(--ae-accent);
+    }
+
+    .ae-dropdown-item.danger .material-symbols-outlined {
+      color: var(--ae-accent);
+    }
+
+    /* ========================================
+       RESPONSIVIDADE
+       ======================================== */
+    @media (min-width: 768px) {
+      .ae-header-inner {
+        padding: 0 24px;
+      }
+
+      .ae-hamburger {
+        width: 48px;
+        height: 48px;
+      }
+
+      .ae-logo-main {
+        font-size: 1.75rem;
+      }
+
+      .ae-logo-sub {
+        font-size: 0.7rem;
+      }
+
+      .ae-header-action {
+        width: 44px;
+        height: 44px;
+      }
+    }
+
+    /* Espaçador para conteúdo abaixo do header fixo */
+    .ae-header-spacer {
+      height: var(--header-height);
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Principal -->
+  <header class="ae-header" id="aeHeader">
+    <div class="ae-header-inner">
+      <!-- Esquerda: Menu Sanduíche + Logo -->
+      <div class="ae-header-left">
+        <button class="ae-hamburger" id="hamburgerBtn" aria-label="Abrir menu" aria-expanded="false">
+          <span class="ae-hamburger-line"></span>
+          <span class="ae-hamburger-line"></span>
+          <span class="ae-hamburger-line"></span>
+        </button>
+        
+        <div class="ae-brand">
+          <div class="ae-logo-icon">🍎</div>
+          <div class="ae-logo-text">
+            <span class="ae-logo-main">AE</span>
+            <span class="ae-logo-sub">Alimentação Escolar</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Centro: Título da Página (desktop) -->
+      <div class="ae-header-center">
+        <span class="ae-page-title" id="pageTitle">Menu Principal</span>
+      </div>
+      
+      <!-- Direita: Ações -->
+      <div class="ae-header-right">
+        <!-- Status de Conexão -->
+        <div class="ae-connection online" id="connectionStatus">
+          <span class="ae-connection-dot"></span>
+          <span class="ae-connection-label">Online</span>
+        </div>
+        
+        <!-- Botões de Ação -->
+        <button class="ae-header-action" id="btnNotifications" aria-label="Notificações">
+          <span class="material-symbols-outlined">notifications</span>
+          <span class="ae-action-badge" id="notifBadge">5</span>
+        </button>
+        
+        <button class="ae-header-action" id="btnSearch" aria-label="Buscar">
+          <span class="material-symbols-outlined">search</span>
+        </button>
+        
+        <button class="ae-header-action" id="btnCalendar" aria-label="Calendário">
+          <span class="material-symbols-outlined">calendar_month</span>
+        </button>
+        
+        <!-- Avatar do Usuário -->
+        <button class="ae-user-avatar" id="userAvatarBtn" aria-label="Perfil do usuário">
+          <span class="material-symbols-outlined">person</span>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Dropdown do Perfil (Desktop) -->
+    <div class="ae-profile-dropdown" id="profileDropdown">
+      <div class="ae-dropdown-header">
+        <div class="ae-dropdown-user">
+          <div class="ae-dropdown-avatar">
+            <span class="material-symbols-outlined" style="font-size: 28px;">person</span>
+          </div>
+          <div class="ae-dropdown-info">
+            <h4 id="dropdownUserName">Maria Silva</h4>
+            <p id="dropdownUserRole">Nutricionista • CRE-PP</p>
+          </div>
+        </div>
+      </div>
+      <div class="ae-dropdown-body">
+        <button class="ae-dropdown-item" onclick="AEHeader.navigate('perfil')">
+          <span class="material-symbols-outlined">account_circle</span>
+          <span>Meu Perfil</span>
+        </button>
+        <button class="ae-dropdown-item" onclick="AEHeader.navigate('configuracoes')">
+          <span class="material-symbols-outlined">settings</span>
+          <span>Configurações</span>
+        </button>
+        <button class="ae-dropdown-item" onclick="AEHeader.navigate('ajuda')">
+          <span class="material-symbols-outlined">help</span>
+          <span>Ajuda</span>
+        </button>
+        <button class="ae-dropdown-item danger" onclick="AEHeader.logout()">
+          <span class="material-symbols-outlined">logout</span>
+          <span>Sair</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Overlay do Drawer -->
+  <div class="ae-drawer-overlay" id="drawerOverlay"></div>
+  
+  <!-- Drawer Lateral -->
+  <nav class="ae-drawer" id="mainDrawer" aria-label="Menu principal">
+    <div class="ae-drawer-header">
+      <div class="ae-drawer-profile">
+        <div class="ae-drawer-avatar">
+          <span class="material-symbols-outlined">person</span>
+        </div>
+        <div class="ae-drawer-user-info">
+          <h3 id="drawerUserName">Maria Silva</h3>
+          <p id="drawerUserEmail">maria.silva@edu.df.gov.br</p>
+          <span class="ae-user-role">
+            <span class="material-symbols-outlined" style="font-size: 14px;">verified</span>
+            Nutricionista
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="ae-drawer-nav">
+      <!-- Seção: Conta -->
+      <div class="ae-drawer-section">
+        <div class="ae-drawer-section-title">Minha Conta</div>
+        <button class="ae-drawer-item" onclick="AEHeader.navigate('perfil')">
+          <span class="material-symbols-outlined">account_circle</span>
+          <span>Meu Perfil</span>
+        </button>
+        <button class="ae-drawer-item" onclick="AEHeader.navigate('trocar-senha')">
+          <span class="material-symbols-outlined">lock</span>
+          <span>Trocar Senha</span>
+        </button>
+        <button class="ae-drawer-item" onclick="AEHeader.navigate('preferencias')">
+          <span class="material-symbols-outlined">tune</span>
+          <span>Preferências</span>
+        </button>
+      </div>
+      
+      <div class="ae-drawer-divider"></div>
+      
+      <!-- Seção: Sistema -->
+      <div class="ae-drawer-section">
+        <div class="ae-drawer-section-title">Sistema</div>
+        <button class="ae-drawer-item" onclick="AEHeader.navigate('sincronizacao')">
+          <span class="material-symbols-outlined">sync</span>
+          <span>Sincronização</span>
+        </button>
+        <button class="ae-drawer-item" onclick="AEHeader.navigate('historico')">
+          <span class="material-symbols-outlined">history</span>
+          <span>Histórico de Ações</span>
+        </button>
+        <button class="ae-drawer-item" onclick="AEHeader.navigate('offline-data')">
+          <span class="material-symbols-outlined">cloud_off</span>
+          <span>Dados Offline</span>
+        </button>
+      </div>
+      
+      <div class="ae-drawer-divider"></div>
+      
+      <!-- Seção: Suporte -->
+      <div class="ae-drawer-section">
+        <div class="ae-drawer-section-title">Suporte</div>
+        <button class="ae-drawer-item" onclick="AEHeader.navigate('ajuda')">
+          <span class="material-symbols-outlined">help</span>
+          <span>Central de Ajuda</span>
+        </button>
+        <button class="ae-drawer-item" onclick="AEHeader.navigate('tutorial')">
+          <span class="material-symbols-outlined">school</span>
+          <span>Tutorial</span>
+        </button>
+        <button class="ae-drawer-item" onclick="AEHeader.navigate('sobre')">
+          <span class="material-symbols-outlined">info</span>
+          <span>Sobre o Sistema</span>
+        </button>
+      </div>
+      
+      <div class="ae-drawer-divider"></div>
+      
+      <!-- Sair -->
+      <div class="ae-drawer-section">
+        <button class="ae-drawer-item danger" onclick="AEHeader.logout()">
+          <span class="material-symbols-outlined">logout</span>
+          <span>Sair do Sistema</span>
+        </button>
+      </div>
+    </div>
+    
+    <div class="ae-drawer-footer">
+      <p class="ae-drawer-version">AE Sistema v2.0.0 • CRE Plano Piloto</p>
+    </div>
+  </nav>
+  
+  <!-- Espaçador -->
+  <div class="ae-header-spacer"></div>
+
+  <script>
+    /**
+     * ========================================
+     * AE HEADER COMPONENT
+     * Alimentação Escolar - CRE-PP
+     * ========================================
+     */
+    const AEHeader = {
+      // Estado
+      state: {
+        drawerOpen: false,
+        dropdownOpen: false,
+        isOnline: navigator.onLine,
+        isSyncing: false,
+        user: null,
+        notifications: []
+      },
+
+      // Elementos DOM
+      elements: {},
+
+      // Inicialização
+      init() {
+        this.cacheElements();
+        this.bindEvents();
+        this.setupConnectionMonitor();
+        this.loadUserData();
+        this.loadNotifications();
+      },
+
+      // Cache de elementos
+      cacheElements() {
+        this.elements = {
+          hamburger: document.getElementById('hamburgerBtn'),
+          drawer: document.getElementById('mainDrawer'),
+          overlay: document.getElementById('drawerOverlay'),
+          dropdown: document.getElementById('profileDropdown'),
+          avatarBtn: document.getElementById('userAvatarBtn'),
+          connectionStatus: document.getElementById('connectionStatus'),
+          notifBadge: document.getElementById('notifBadge'),
+          pageTitle: document.getElementById('pageTitle')
+        };
+      },
+
+      // Bindagem de eventos
+      bindEvents() {
+        // Menu hamburger
+        this.elements.hamburger?.addEventListener('click', () => this.toggleDrawer());
+        
+        // Overlay fecha drawer
+        this.elements.overlay?.addEventListener('click', () => this.closeDrawer());
+        
+        // Avatar abre dropdown
+        this.elements.avatarBtn?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.toggleDropdown();
+        });
+        
+        // Clique fora fecha dropdown
+        document.addEventListener('click', (e) => {
+          if (!this.elements.dropdown?.contains(e.target) && 
+              !this.elements.avatarBtn?.contains(e.target)) {
+            this.closeDropdown();
+          }
+        });
+        
+        // Tecla ESC fecha tudo
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            this.closeDrawer();
+            this.closeDropdown();
+          }
+        });
+
+        // Botões de ação do header
+        document.getElementById('btnNotifications')?.addEventListener('click', () => {
+          this.emit('openDrawer', 'notifications');
+        });
+        
+        document.getElementById('btnSearch')?.addEventListener('click', () => {
+          this.emit('openDrawer', 'search');
+        });
+        
+        document.getElementById('btnCalendar')?.addEventListener('click', () => {
+          this.emit('openDrawer', 'calendar');
+        });
+      },
+
+      // Toggle do drawer
+      toggleDrawer() {
+        this.state.drawerOpen ? this.closeDrawer() : this.openDrawer();
+      },
+
+      openDrawer() {
+        this.state.drawerOpen = true;
+        this.elements.drawer?.classList.add('active');
+        this.elements.overlay?.classList.add('active');
+        this.elements.hamburger?.classList.add('active');
+        this.elements.hamburger?.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      },
+
+      closeDrawer() {
+        this.state.drawerOpen = false;
+        this.elements.drawer?.classList.remove('active');
+        this.elements.overlay?.classList.remove('active');
+        this.elements.hamburger?.classList.remove('active');
+        this.elements.hamburger?.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      },
+
+      // Toggle do dropdown
+      toggleDropdown() {
+        this.state.dropdownOpen ? this.closeDropdown() : this.openDropdown();
+      },
+
+      openDropdown() {
+        this.state.dropdownOpen = true;
+        this.elements.dropdown?.classList.add('active');
+      },
+
+      closeDropdown() {
+        this.state.dropdownOpen = false;
+        this.elements.dropdown?.classList.remove('active');
+      },
+
+      // Monitor de conexão
+      setupConnectionMonitor() {
+        const updateStatus = (status) => {
+          const el = this.elements.connectionStatus;
+          if (!el) return;
+          
+          el.className = `ae-connection ${status}`;
+          const label = el.querySelector('.ae-connection-label');
+          
+          switch (status) {
+            case 'online':
+              if (label) label.textContent = 'Online';
+              break;
+            case 'offline':
+              if (label) label.textContent = 'Offline';
+              break;
+            case 'syncing':
+              if (label) label.textContent = 'Sincronizando...';
+              break;
+          }
+          
+          this.state.isOnline = status !== 'offline';
+          this.state.isSyncing = status === 'syncing';
+        };
+
+        window.addEventListener('online', () => updateStatus('online'));
+        window.addEventListener('offline', () => updateStatus('offline'));
+        
+        updateStatus(navigator.onLine ? 'online' : 'offline');
+      },
+
+      // Carregar dados do usuário
+      loadUserData() {
+        // Tenta cache local primeiro
+        const cached = localStorage.getItem('ae_user_data');
+        if (cached) {
+          try {
+            this.state.user = JSON.parse(cached);
+            this.updateUserUI();
+          } catch (e) {
+            // Cache corrompido - remove e continua para buscar do servidor
+            console.warn('Cache de usuário inválido, removendo:', e.message);
+            localStorage.removeItem('ae_user_data');
+          }
+        }
+
+        // Busca do servidor
+        if (typeof google !== 'undefined' && google.script) {
+          google.script.run
+            .withSuccessHandler((data) => {
+              if (data?.success && data.usuario) {
+                this.state.user = data.usuario;
+                localStorage.setItem('ae_user_data', JSON.stringify(data.usuario));
+                this.updateUserUI();
+              }
+            })
+            .withFailureHandler(() => {})
+            .api_getUsuarioLogado();
+        }
+      },
+
+      // Atualizar UI com dados do usuário
+      updateUserUI() {
+        const user = this.state.user;
+        if (!user) return;
+
+        // Drawer
+        const drawerName = document.getElementById('drawerUserName');
+        const drawerEmail = document.getElementById('drawerUserEmail');
+        if (drawerName) drawerName.textContent = user.nome || 'Usuário';
+        if (drawerEmail) drawerEmail.textContent = user.email || '';
+
+        // Dropdown
+        const dropdownName = document.getElementById('dropdownUserName');
+        const dropdownRole = document.getElementById('dropdownUserRole');
+        if (dropdownName) dropdownName.textContent = user.nome || 'Usuário';
+        if (dropdownRole) dropdownRole.textContent = `${user.perfil || 'Perfil'} • CRE-PP`;
+      },
+
+      // Carregar notificações
+      loadNotifications() {
+        if (typeof google !== 'undefined' && google.script) {
+          google.script.run
+            .withSuccessHandler((data) => {
+              if (data?.success) {
+                this.state.notifications = data.notificacoes || [];
+                this.updateNotificationBadge();
+              }
+            })
+            .withFailureHandler(() => {})
+            .api_getNotificacoes?.();
+        }
+      },
+
+      // Atualizar badge de notificações
+      updateNotificationBadge() {
+        const badge = this.elements.notifBadge;
+        if (!badge) return;
+
+        const count = this.state.notifications.filter(n => !n.lida).length;
+        badge.textContent = count > 99 ? '99+' : count;
+        badge.style.display = count > 0 ? 'flex' : 'none';
+      },
+
+      // Definir título da página
+      setPageTitle(title) {
+        if (this.elements.pageTitle) {
+          this.elements.pageTitle.textContent = title;
+        }
+      },
+
+      // Navegação
+      navigate(page) {
+        this.closeDrawer();
+        this.closeDropdown();
+        this.emit('navigate', page);
+        
+        if (typeof google !== 'undefined' && google.script) {
+          const funcMap = {
+            'perfil': 'abrirPerfil',
+            'trocar-senha': 'abrirTrocarSenha',
+            'preferencias': 'abrirPreferencias',
+            'configuracoes': 'abrirConfiguracoes',
+            'sincronizacao': 'abrirSincronizacao',
+            'historico': 'abrirHistorico',
+            'offline-data': 'abrirDadosOffline',
+            'ajuda': 'abrirAjuda',
+            'tutorial': 'abrirTutorial',
+            'sobre': 'abrirSobre'
+          };
+          
+          const func = funcMap[page];
+          if (func && google.script.run[func]) {
+            google.script.run[func]();
+          }
+        }
+      },
+
+      // Logout
+      logout() {
+        if (confirm('Deseja realmente sair do sistema?')) {
+          localStorage.removeItem('ae_user_data');
+          localStorage.removeItem('ae_session');
+          
+          if (typeof google !== 'undefined' && google.script) {
+            google.script.run
+              .withSuccessHandler(() => google.script.host.close())
+              .api_logout();
+          }
+        }
+      },
+
+      // Sistema de eventos
+      listeners: {},
+      
+      on(event, callback) {
+        if (!this.listeners[event]) this.listeners[event] = [];
+        this.listeners[event].push(callback);
+      },
+
+      emit(event, data) {
+        (this.listeners[event] || []).forEach(cb => cb(data));
+      }
+    };
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', () => AEHeader.init());
+
+    // Expor globalmente
+    window.AEHeader = AEHeader;
+  </script>
+</body>
+</html>

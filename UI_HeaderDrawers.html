@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Header Drawers - Alimentação Escolar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <style>
+    /* ========================================
+       HEADER DRAWERS - DESIGN SYSTEM
+       ======================================== */
+    :root {
+      --ae-primary: #2E7D32;
+      --ae-primary-light: #4CAF50;
+      --ae-primary-dark: #1B5E20;
+      --ae-secondary: #EF6C00;
+      --ae-secondary-light: #FF9800;
+      --ae-accent: #C62828;
+      --ae-info: #1565C0;
+      --ae-warning: #F9A825;
+      --ae-bg-main: #F1F8E9;
+      --ae-bg-card: #FFFFFF;
+      --ae-bg-overlay: rgba(0, 0, 0, 0.5);
+      --ae-text-primary: #263238;
+      --ae-text-secondary: #546E7A;
+      --ae-text-light: #FFFFFF;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.15);
+      --transition-fast: 0.2s ease;
+      --transition-normal: 0.3s ease;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--ae-bg-main);
+      color: var(--ae-text-primary);
+    }
+
+    /* ========================================
+       DRAWER BASE STYLES
+       ======================================== */
+    .ae-drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--ae-bg-overlay);
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition-normal);
+      z-index: 2000;
+    }
+
+    .ae-drawer-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .ae-header-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 90%;
+      max-width: 400px;
+      height: 100%;
+      background: var(--ae-bg-card);
+      transform: translateX(100%);
+      transition: transform var(--transition-normal);
+      z-index: 2001;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .ae-header-drawer.active {
+      transform: translateX(0);
+    }
+
+    .ae-header-drawer.from-left {
+      left: 0;
+      right: auto;
+      transform: translateX(-100%);
+    }
+
+    .ae-header-drawer.from-left.active {
+      transform: translateX(0);
+    }
+
+    /* Drawer Header */
+    .ae-drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid #E0E0E0;
+      background: var(--ae-bg-card);
+    }
+
+    .ae-drawer-head h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ae-drawer-head h2 .material-symbols-outlined {
+      color: var(--ae-primary);
+    }
+
+    .ae-drawer-close {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: transparent;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ae-text-secondary);
+      transition: var(--transition-fast);
+    }
+
+    .ae-drawer-close:hover {
+      background: var(--ae-bg-main);
+      color: var(--ae-text-primary);
+    }
+
+    /* Drawer Body */
+    .ae-drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    /* ========================================
+       1. DRAWER DE NOTIFICAÇÕES
+       ======================================== */
+    .ae-notif-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .ae-notif-tab {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: var(--ae-bg-main);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      color: var(--ae-text-secondary);
+    }
+
+    .ae-notif-tab.active {
+      background: var(--ae-primary);
+      color: white;
+    }
+
+    .ae-notif-item {
+      display: flex;
+      gap: 12px;
+      padding: 14px;
+      background: var(--ae-bg-card);
+      border-radius: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #E8E8E8;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .ae-notif-item:hover {
+      border-color: var(--ae-primary-light);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .ae-notif-item.unread {
+      background: #E8F5E9;
+      border-color: var(--ae-primary-light);
+    }
+
+    .ae-notif-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .ae-notif-icon.nf { background: #FFF3E0; color: var(--ae-secondary); }
+    .ae-notif-icon.cardapio { background: #E8F5E9; color: var(--ae-primary); }
+    .ae-notif-icon.alerta { background: #FFEBEE; color: var(--ae-accent); }
+    .ae-notif-icon.info { background: #E3F2FD; color: var(--ae-info); }
+
+    .ae-notif-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .ae-notif-title {
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 4px;
+      color: var(--ae-text-primary);
+    }
+
+    .ae-notif-desc {
+      font-size: 0.75rem;
+      color: var(--ae-text-secondary);
+      line-height: 1.4;
+    }
+
+    .ae-notif-time {
+      font-size: 0.65rem;
+      color: var(--ae-text-secondary);
+      margin-top: 6px;
+    }
+
+    .ae-notif-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--ae-text-secondary);
+    }
+
+    .ae-notif-empty .material-symbols-outlined {
+      font-size: 48px;
+      opacity: 0.5;
+      margin-bottom: 12px;
+    }
+
+    /* ========================================
+       2. DRAWER DE BUSCA GLOBAL
+       ======================================== */
+    .ae-search-input-wrap {
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .ae-search-input {
+      width: 100%;
+      padding: 14px 14px 14px 48px;
+      border: 2px solid #E0E0E0;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: var(--transition-fast);
+    }
+
+    .ae-search-input:focus {
+      outline: none;
+      border-color: var(--ae-primary);
+      box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+    }
+
+    .ae-search-input-wrap .material-symbols-outlined {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--ae-text-secondary);
+    }
+
+    .ae-search-filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .ae-search-filter {
+      padding: 8px 14px;
+      border: 1px solid #E0E0E0;
+      background: white;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .ae-search-filter.active {
+      background: var(--ae-primary);
+      color: white;
+      border-color: var(--ae-primary);
+    }
+
+    .ae-search-results {
+      margin-top: 16px;
+    }
+
+    .ae-search-result {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .ae-search-result:hover {
+      background: var(--ae-bg-main);
+    }
+
+    .ae-search-result-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--ae-bg-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ae-primary);
+    }
+
+    .ae-search-result-info h4 {
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .ae-search-result-info p {
+      font-size: 0.7rem;
+      color: var(--ae-text-secondary);
+    }
+
+    .ae-search-recent {
+      margin-top: 24px;
+    }
+
+    .ae-search-recent h3 {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ae-text-secondary);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    /* ========================================
+       3. DRAWER DE CALENDÁRIO
+       ======================================== */
+    .ae-calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .ae-calendar-nav {
+      display: flex;
+      gap: 8px;
+    }
+
+    .ae-calendar-nav-btn {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: var(--ae-bg-main);
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-fast);
+    }
+
+    .ae-calendar-nav-btn:hover {
+      background: var(--ae-primary-light);
+      color: white;
+    }
+
+    .ae-calendar-month {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .ae-calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 20px;
+    }
+
+    .ae-calendar-weekday {
+      text-align: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--ae-text-secondary);
+      padding: 8px 0;
+    }
+
+    .ae-calendar-day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      position: relative;
+    }
+
+    .ae-calendar-day:hover {
+      background: var(--ae-bg-main);
+    }
+
+    .ae-calendar-day.today {
+      background: var(--ae-primary);
+      color: white;
+      font-weight: 600;
+    }
+
+    .ae-calendar-day.has-event::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--ae-secondary);
+    }
+
+    .ae-calendar-day.other-month {
+      color: #BDBDBD;
+    }
+
+    .ae-calendar-events {
+      margin-top: 16px;
+    }
+
+    .ae-calendar-events h3 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--ae-text-secondary);
+    }
+
+    .ae-calendar-event {
+      display: flex;
+      gap: 12px;
+      padding: 12px;
+      background: var(--ae-bg-main);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      border-left: 3px solid var(--ae-primary);
+    }
+
+    .ae-calendar-event.entrega {
+      border-left-color: var(--ae-secondary);
+    }
+
+    .ae-calendar-event-time {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--ae-primary);
+      min-width: 50px;
+    }
+
+    .ae-calendar-event-info h4 {
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .ae-calendar-event-info p {
+      font-size: 0.7rem;
+      color: var(--ae-text-secondary);
+    }
+
+    /* ========================================
+       4. DRAWER DE STATUS DE ENTREGAS
+       ======================================== */
+    .ae-delivery-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .ae-delivery-stat {
+      text-align: center;
+      padding: 14px 8px;
+      background: var(--ae-bg-main);
+      border-radius: 10px;
+    }
+
+    .ae-delivery-stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--ae-primary);
+    }
+
+    .ae-delivery-stat-value.pending { color: var(--ae-warning); }
+    .ae-delivery-stat-value.problem { color: var(--ae-accent); }
+
+    .ae-delivery-stat-label {
+      font-size: 0.65rem;
+      color: var(--ae-text-secondary);
+      margin-top: 4px;
+    }
+
+    .ae-delivery-list {
+      margin-top: 16px;
+    }
+
+    .ae-delivery-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      background: var(--ae-bg-card);
+      border: 1px solid #E8E8E8;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .ae-delivery-status {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .ae-delivery-status.entregue { background: var(--ae-primary); }
+    .ae-delivery-status.em-transito { background: var(--ae-info); animation: pulse 1.5s infinite; }
+    .ae-delivery-status.pendente { background: var(--ae-warning); }
+    .ae-delivery-status.problema { background: var(--ae-accent); }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .ae-delivery-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .ae-delivery-info h4 {
+      font-size: 0.85rem;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ae-delivery-info p {
+      font-size: 0.7rem;
+      color: var(--ae-text-secondary);
+    }
+
+    .ae-delivery-time {
+      font-size: 0.7rem;
+      color: var(--ae-text-secondary);
+      text-align: right;
+    }
+
+    /* ========================================
+       5. DRAWER DE AJUDA RÁPIDA
+       ======================================== */
+    .ae-help-search {
+      margin-bottom: 20px;
+    }
+
+    .ae-help-categories {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .ae-help-category {
+      padding: 16px;
+      background: var(--ae-bg-main);
+      border-radius: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      border: 2px solid transparent;
+    }
+
+    .ae-help-category:hover {
+      border-color: var(--ae-primary-light);
+    }
+
+    .ae-help-category .material-symbols-outlined {
+      font-size: 28px;
+      color: var(--ae-primary);
+      margin-bottom: 8px;
+    }
+
+    .ae-help-category span {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .ae-help-faq {
+      margin-top: 20px;
+    }
+
+    .ae-help-faq h3 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--ae-text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .ae-help-faq-item {
+      padding: 14px;
+      background: var(--ae-bg-card);
+      border: 1px solid #E8E8E8;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .ae-help-faq-item:hover {
+      border-color: var(--ae-primary-light);
+    }
+
+    .ae-help-faq-item h4 {
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .ae-help-faq-item p {
+      font-size: 0.75rem;
+      color: var(--ae-text-secondary);
+      margin-top: 8px;
+      display: none;
+    }
+
+    .ae-help-faq-item.expanded p {
+      display: block;
+    }
+
+    .ae-help-contact {
+      margin-top: 24px;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--ae-primary) 0%, var(--ae-primary-dark) 100%);
+      border-radius: 12px;
+      color: white;
+      text-align: center;
+    }
+
+    .ae-help-contact h4 {
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+
+    .ae-help-contact p {
+      font-size: 0.75rem;
+      opacity: 0.9;
+      margin-bottom: 12px;
+    }
+
+    .ae-help-contact-btn {
+      padding: 10px 20px;
+      background: white;
+      color: var(--ae-primary);
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .ae-help-contact-btn:hover {
+      transform: scale(1.02);
+    }
+  </style>
+</head>
+<body>
+  <!-- Overlay compartilhado -->
+  <div class="ae-drawer-overlay" id="headerDrawerOverlay"></div>
+
+  <!-- ========================================
+       1. DRAWER DE NOTIFICAÇÕES
+       ======================================== -->
+  <aside class="ae-header-drawer" id="notificationsDrawer">
+    <div class="ae-drawer-head">
+      <h2><span class="material-symbols-outlined">notifications</span> Notificações</h2>
+      <button class="ae-drawer-close" onclick="HeaderDrawers.close()">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="ae-drawer-body">
+      <div class="ae-notif-tabs">
+        <button class="ae-notif-tab active" data-tab="todas">Todas</button>
+        <button class="ae-notif-tab" data-tab="nf">Notas Fiscais</button>
+        <button class="ae-notif-tab" data-tab="cardapio">Cardápios</button>
+      </div>
+      <div class="ae-notif-list" id="notifList">
+        <!-- Notificações serão inseridas via JS -->
+      </div>
+    </div>
+  </aside>
+
+  <!-- ========================================
+       2. DRAWER DE BUSCA GLOBAL
+       ======================================== -->
+  <aside class="ae-header-drawer" id="searchDrawer">
+    <div class="ae-drawer-head">
+      <h2><span class="material-symbols-outlined">search</span> Busca Global</h2>
+      <button class="ae-drawer-close" onclick="HeaderDrawers.close()">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="ae-drawer-body">
+      <div class="ae-search-input-wrap">
+        <span class="material-symbols-outlined">search</span>
+        <input type="text" class="ae-search-input" id="globalSearchInput" 
+               placeholder="Buscar NF, fornecedor, escola..." autocomplete="off">
+      </div>
+      <div class="ae-search-filters">
+        <button class="ae-search-filter active" data-filter="todos">Todos</button>
+        <button class="ae-search-filter" data-filter="nf">Notas Fiscais</button>
+        <button class="ae-search-filter" data-filter="fornecedor">Fornecedores</button>
+        <button class="ae-search-filter" data-filter="escola">Escolas</button>
+        <button class="ae-search-filter" data-filter="cardapio">Cardápios</button>
+      </div>
+      <div class="ae-search-results" id="searchResults"></div>
+      <div class="ae-search-recent" id="searchRecent">
+        <h3>Buscas Recentes</h3>
+        <div id="recentSearchList"></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ========================================
+       3. DRAWER DE CALENDÁRIO
+       ======================================== -->
+  <aside class="ae-header-drawer" id="calendarDrawer">
+    <div class="ae-drawer-head">
+      <h2><span class="material-symbols-outlined">calendar_month</span> Calendário</h2>
+      <button class="ae-drawer-close" onclick="HeaderDrawers.close()">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="ae-drawer-body">
+      <div class="ae-calendar-header">
+        <span class="ae-calendar-month" id="calendarMonth">Dezembro 2024</span>
+        <div class="ae-calendar-nav">
+          <button class="ae-calendar-nav-btn" onclick="HeaderDrawers.calendar.prevMonth()">
+            <span class="material-symbols-outlined">chevron_left</span>
+          </button>
+          <button class="ae-calendar-nav-btn" onclick="HeaderDrawers.calendar.nextMonth()">
+            <span class="material-symbols-outlined">chevron_right</span>
+          </button>
+        </div>
+      </div>
+      <div class="ae-calendar-grid" id="calendarGrid"></div>
+      <div class="ae-calendar-events">
+        <h3>Eventos do Dia</h3>
+        <div id="calendarEvents"></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ========================================
+       4. DRAWER DE STATUS DE ENTREGAS
+       ======================================== -->
+  <aside class="ae-header-drawer" id="deliveryDrawer">
+    <div class="ae-drawer-head">
+      <h2><span class="material-symbols-outlined">local_shipping</span> Status de Entregas</h2>
+      <button class="ae-drawer-close" onclick="HeaderDrawers.close()">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="ae-drawer-body">
+      <div class="ae-delivery-summary">
+        <div class="ae-delivery-stat">
+          <div class="ae-delivery-stat-value" id="deliveryDone">12</div>
+          <div class="ae-delivery-stat-label">Entregues</div>
+        </div>
+        <div class="ae-delivery-stat">
+          <div class="ae-delivery-stat-value pending" id="deliveryPending">5</div>
+          <div class="ae-delivery-stat-label">Pendentes</div>
+        </div>
+        <div class="ae-delivery-stat">
+          <div class="ae-delivery-stat-value problem" id="deliveryProblem">1</div>
+          <div class="ae-delivery-stat-label">Problemas</div>
+        </div>
+      </div>
+      <div class="ae-delivery-list" id="deliveryList">
+        <!-- Lista de entregas via JS -->
+      </div>
+    </div>
+  </aside>
+
+  <!-- ========================================
+       5. DRAWER DE AJUDA RÁPIDA
+       ======================================== -->
+  <aside class="ae-header-drawer" id="helpDrawer">
+    <div class="ae-drawer-head">
+      <h2><span class="material-symbols-outlined">help</span> Ajuda Rápida</h2>
+      <button class="ae-drawer-close" onclick="HeaderDrawers.close()">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="ae-drawer-body">
+      <div class="ae-help-search">
+        <div class="ae-search-input-wrap">
+          <span class="material-symbols-outlined">search</span>
+          <input type="text" class="ae-search-input" placeholder="Como posso ajudar?">
+        </div>
+      </div>
+      
+      <div class="ae-help-categories">
+        <div class="ae-help-category" onclick="HeaderDrawers.help.openCategory('cardapios')">
+          <span class="material-symbols-outlined">restaurant_menu</span>
+          <span>Cardápios</span>
+        </div>
+        <div class="ae-help-category" onclick="HeaderDrawers.help.openCategory('nf')">
+          <span class="material-symbols-outlined">receipt_long</span>
+          <span>Notas Fiscais</span>
+        </div>
+        <div class="ae-help-category" onclick="HeaderDrawers.help.openCategory('entregas')">
+          <span class="material-symbols-outlined">local_shipping</span>
+          <span>Entregas</span>
+        </div>
+        <div class="ae-help-category" onclick="HeaderDrawers.help.openCategory('pagamentos')">
+          <span class="material-symbols-outlined">payments</span>
+          <span>Pagamentos</span>
+        </div>
+      </div>
+      
+      <div class="ae-help-faq">
+        <h3>Perguntas Frequentes</h3>
+        <div class="ae-help-faq-item" onclick="HeaderDrawers.help.toggleFaq(this)">
+          <h4>Como lançar uma Nota Fiscal? <span class="material-symbols-outlined">expand_more</span></h4>
+          <p>Acesse o menu "Notas Fiscais", clique em "Nova NF" e preencha os dados ou importe o XML.</p>
+        </div>
+        <div class="ae-help-faq-item" onclick="HeaderDrawers.help.toggleFaq(this)">
+          <h4>Como registrar uma entrega? <span class="material-symbols-outlined">expand_more</span></h4>
+          <p>No menu "Recebimento UE", selecione a NF e preencha o checklist de conferência.</p>
+        </div>
+        <div class="ae-help-faq-item" onclick="HeaderDrawers.help.toggleFaq(this)">
+          <h4>Como aprovar um cardápio? <span class="material-symbols-outlined">expand_more</span></h4>
+          <p>Acesse "Cardápios Semanais", selecione o cardápio pendente e clique em "Aprovar".</p>
+        </div>
+      </div>
+      
+      <div class="ae-help-contact">
+        <h4>Precisa de mais ajuda?</h4>
+        <p>Nossa equipe está disponível para auxiliar</p>
+        <button class="ae-help-contact-btn" onclick="HeaderDrawers.help.openSupport()">
+          Falar com Suporte
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <script>
+    /**
+     * ========================================
+     * HEADER DRAWERS - ALIMENTAÇÃO ESCOLAR
+     * 5 Drawers: Notificações, Busca, Calendário, Entregas, Ajuda
+     * ========================================
+     */
+    const HeaderDrawers = {
+      // Estado
+      state: {
+        activeDrawer: null,
+        notifications: [],
+        searchResults: [],
+        recentSearches: [],
+        deliveries: [],
+        currentMonth: new Date(),
+        events: []
+      },
+
+      // Elementos
+      elements: {
+        overlay: null,
+        drawers: {}
+      },
+
+      // Inicialização
+      init() {
+        this.cacheElements();
+        this.bindEvents();
+        this.loadData();
+        this.calendar.render();
+      },
+
+      cacheElements() {
+        this.elements.overlay = document.getElementById('headerDrawerOverlay');
+        this.elements.drawers = {
+          notifications: document.getElementById('notificationsDrawer'),
+          search: document.getElementById('searchDrawer'),
+          calendar: document.getElementById('calendarDrawer'),
+          delivery: document.getElementById('deliveryDrawer'),
+          help: document.getElementById('helpDrawer')
+        };
+      },
+
+      bindEvents() {
+        // Overlay fecha drawer
+        this.elements.overlay?.addEventListener('click', () => this.close());
+        
+        // ESC fecha drawer
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') this.close();
+        });
+
+        // Tabs de notificação
+        document.querySelectorAll('.ae-notif-tab').forEach(tab => {
+          tab.addEventListener('click', (e) => this.notifications.filterByTab(e.target.dataset.tab));
+        });
+
+        // Filtros de busca
+        document.querySelectorAll('.ae-search-filter').forEach(filter => {
+          filter.addEventListener('click', (e) => this.search.setFilter(e.target.dataset.filter));
+        });
+
+        // Input de busca
+        const searchInput = document.getElementById('globalSearchInput');
+        searchInput?.addEventListener('input', (e) => this.search.query(e.target.value));
+      },
+
+      // Abrir drawer
+      open(drawerName) {
+        this.close(); // Fecha qualquer drawer aberto
+        
+        const drawer = this.elements.drawers[drawerName];
+        if (!drawer) return;
+
+        this.state.activeDrawer = drawerName;
+        drawer.classList.add('active');
+        this.elements.overlay?.classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+        // Foco no input de busca se for o drawer de busca
+        if (drawerName === 'search') {
+          setTimeout(() => document.getElementById('globalSearchInput')?.focus(), 300);
+        }
+      },
+
+      // Fechar drawer
+      close() {
+        if (!this.state.activeDrawer) return;
+
+        const drawer = this.elements.drawers[this.state.activeDrawer];
+        drawer?.classList.remove('active');
+        this.elements.overlay?.classList.remove('active');
+        document.body.style.overflow = '';
+        this.state.activeDrawer = null;
+      },
+
+      // Carregar dados
+      loadData() {
+        this.notifications.load();
+        this.delivery.load();
+        this.search.loadRecent();
+      },
+
+      // ========================================
+      // MÓDULO: NOTIFICAÇÕES
+      // ========================================
+      notifications: {
+        load() {
+          // Dados de exemplo (substituir por chamada ao backend)
+          HeaderDrawers.state.notifications = [
+            { id: 1, type: 'nf', title: 'NF Pendente de Atesto', desc: 'NF 12345 do Fornecedor ABC aguarda conferência', time: '5 min', unread: true },
+            { id: 2, type: 'cardapio', title: 'Cardápio Aprovado', desc: 'Cardápio da semana 51 foi aprovado pela supervisão', time: '1h', unread: true },
+            { id: 3, type: 'alerta', title: 'Certidão Vencendo', desc: 'CND do Fornecedor XYZ vence em 5 dias', time: '2h', unread: true },
+            { id: 4, type: 'info', title: 'Entrega Confirmada', desc: 'EC 304 Sul confirmou recebimento da entrega', time: '3h', unread: false },
+            { id: 5, type: 'nf', title: 'Pagamento Liberado', desc: 'NF 12340 teve pagamento autorizado', time: '1d', unread: false }
+          ];
+          this.render();
+        },
+
+        render(filter = 'todas') {
+          const list = document.getElementById('notifList');
+          if (!list) return;
+
+          let notifs = HeaderDrawers.state.notifications;
+          if (filter !== 'todas') {
+            notifs = notifs.filter(n => n.type === filter);
+          }
+
+          if (notifs.length === 0) {
+            list.innerHTML = `
+              <div class="ae-notif-empty">
+                <span class="material-symbols-outlined">notifications_off</span>
+                <p>Nenhuma notificação</p>
+              </div>`;
+            return;
+          }
+
+          list.innerHTML = notifs.map(n => `
+            <div class="ae-notif-item ${n.unread ? 'unread' : ''}" onclick="HeaderDrawers.notifications.open(${n.id})">
+              <div class="ae-notif-icon ${n.type}">
+                <span class="material-symbols-outlined">${this.getIcon(n.type)}</span>
+              </div>
+              <div class="ae-notif-content">
+                <div class="ae-notif-title">${n.title}</div>
+                <div class="ae-notif-desc">${n.desc}</div>
+                <div class="ae-notif-time">${n.time} atrás</div>
+              </div>
+            </div>
+          `).join('');
+        },
+
+        getIcon(type) {
+          const icons = { nf: 'receipt_long', cardapio: 'restaurant_menu', alerta: 'warning', info: 'info' };
+          return icons[type] || 'notifications';
+        },
+
+        filterByTab(tab) {
+          document.querySelectorAll('.ae-notif-tab').forEach(t => t.classList.remove('active'));
+          document.querySelector(`[data-tab="${tab}"]`)?.classList.add('active');
+          this.render(tab);
+        },
+
+        open(id) {
+          const notif = HeaderDrawers.state.notifications.find(n => n.id === id);
+          if (notif) {
+            notif.unread = false;
+            this.render();
+            console.log('Abrindo notificação:', notif);
+          }
+        }
+      },
+
+      // ========================================
+      // MÓDULO: BUSCA GLOBAL
+      // ========================================
+      search: {
+        currentFilter: 'todos',
+        debounceTimer: null,
+
+        query(term) {
+          clearTimeout(this.debounceTimer);
+          this.debounceTimer = setTimeout(() => this.execute(term), 300);
+        },
+
+        execute(term) {
+          if (!term || term.length < 2) {
+            document.getElementById('searchResults').innerHTML = '';
+            return;
+          }
+
+          // Simula busca (substituir por chamada ao backend)
+          const results = [
+            { type: 'nf', title: `NF ${term}123`, subtitle: 'Fornecedor ABC • R$ 5.430,00' },
+            { type: 'fornecedor', title: `Fornecedor ${term}`, subtitle: 'CNPJ: 12.345.678/0001-90' },
+            { type: 'escola', title: `EC ${term} Sul`, subtitle: 'Plano Piloto • 450 alunos' }
+          ];
+
+          this.renderResults(results);
+          this.saveRecent(term);
+        },
+
+        renderResults(results) {
+          const container = document.getElementById('searchResults');
+          if (!container) return;
+
+          container.innerHTML = results.map(r => `
+            <div class="ae-search-result" onclick="HeaderDrawers.search.openResult('${r.type}', '${r.title}')">
+              <div class="ae-search-result-icon">
+                <span class="material-symbols-outlined">${this.getIcon(r.type)}</span>
+              </div>
+              <div class="ae-search-result-info">
+                <h4>${r.title}</h4>
+                <p>${r.subtitle}</p>
+              </div>
+            </div>
+          `).join('');
+        },
+
+        getIcon(type) {
+          const icons = { nf: 'receipt_long', fornecedor: 'storefront', escola: 'school', cardapio: 'restaurant_menu' };
+          return icons[type] || 'search';
+        },
+
+        setFilter(filter) {
+          this.currentFilter = filter;
+          document.querySelectorAll('.ae-search-filter').forEach(f => f.classList.remove('active'));
+          document.querySelector(`[data-filter="${filter}"]`)?.classList.add('active');
+        },
+
+        loadRecent() {
+          const recent = JSON.parse(localStorage.getItem('ae_recent_searches') || '[]');
+          HeaderDrawers.state.recentSearches = recent.slice(0, 5);
+          this.renderRecent();
+        },
+
+        saveRecent(term) {
+          let recent = HeaderDrawers.state.recentSearches;
+          recent = [term, ...recent.filter(t => t !== term)].slice(0, 5);
+          HeaderDrawers.state.recentSearches = recent;
+          localStorage.setItem('ae_recent_searches', JSON.stringify(recent));
+          this.renderRecent();
+        },
+
+        renderRecent() {
+          const container = document.getElementById('recentSearchList');
+          if (!container) return;
+
+          container.innerHTML = HeaderDrawers.state.recentSearches.map(term => `
+            <div class="ae-search-result" onclick="document.getElementById('globalSearchInput').value='${term}'; HeaderDrawers.search.execute('${term}')">
+              <div class="ae-search-result-icon">
+                <span class="material-symbols-outlined">history</span>
+              </div>
+              <div class="ae-search-result-info">
+                <h4>${term}</h4>
+              </div>
+            </div>
+          `).join('');
+        },
+
+        openResult(type, title) {
+          console.log('Abrindo resultado:', type, title);
+          HeaderDrawers.close();
+        }
+      },
+
+      // ========================================
+      // MÓDULO: CALENDÁRIO
+      // ========================================
+      calendar: {
+        render() {
+          const date = HeaderDrawers.state.currentMonth;
+          const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                              'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+          
+          document.getElementById('calendarMonth').textContent = 
+            `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+
+          this.renderGrid();
+          this.renderEvents();
+        },
+
+        renderGrid() {
+          const grid = document.getElementById('calendarGrid');
+          if (!grid) return;
+
+          const weekdays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+          let html = weekdays.map(d => `<div class="ae-calendar-weekday">${d}</div>`).join('');
+
+          const date = HeaderDrawers.state.currentMonth;
+          const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+          const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+          const today = new Date();
+
+          // Dias do mês anterior
+          for (let i = 0; i < firstDay.getDay(); i++) {
+            const d = new Date(firstDay);
+            d.setDate(d.getDate() - (firstDay.getDay() - i));
+            html += `<div class="ae-calendar-day other-month">${d.getDate()}</div>`;
+          }
+
+          // Dias do mês atual
+          for (let i = 1; i <= lastDay.getDate(); i++) {
+            const isToday = today.getDate() === i && 
+                           today.getMonth() === date.getMonth() && 
+                           today.getFullYear() === date.getFullYear();
+            const hasEvent = [5, 12, 15, 20, 25].includes(i); // Exemplo
+            html += `<div class="ae-calendar-day ${isToday ? 'today' : ''} ${hasEvent ? 'has-event' : ''}" 
+                         onclick="HeaderDrawers.calendar.selectDay(${i})">${i}</div>`;
+          }
+
+          grid.innerHTML = html;
+        },
+
+        renderEvents() {
+          const container = document.getElementById('calendarEvents');
+          if (!container) return;
+
+          // Eventos de exemplo
+          const events = [
+            { time: '08:00', title: 'Entrega - Fornecedor ABC', type: 'entrega', local: 'EC 304 Sul' },
+            { time: '10:30', title: 'Revisão de Cardápio', type: 'cardapio', local: 'UNIAE' },
+            { time: '14:00', title: 'Entrega - Fornecedor XYZ', type: 'entrega', local: 'EC 102 Norte' }
+          ];
+
+          container.innerHTML = events.map(e => `
+            <div class="ae-calendar-event ${e.type}">
+              <div class="ae-calendar-event-time">${e.time}</div>
+              <div class="ae-calendar-event-info">
+                <h4>${e.title}</h4>
+                <p>${e.local}</p>
+              </div>
+            </div>
+          `).join('');
+        },
+
+        prevMonth() {
+          HeaderDrawers.state.currentMonth.setMonth(HeaderDrawers.state.currentMonth.getMonth() - 1);
+          this.render();
+        },
+
+        nextMonth() {
+          HeaderDrawers.state.currentMonth.setMonth(HeaderDrawers.state.currentMonth.getMonth() + 1);
+          this.render();
+        },
+
+        selectDay(day) {
+          console.log('Dia selecionado:', day);
+          // Carregar eventos do dia
+        }
+      },
+
+      // ========================================
+      // MÓDULO: STATUS DE ENTREGAS
+      // ========================================
+      delivery: {
+        load() {
+          // Dados de exemplo
+          HeaderDrawers.state.deliveries = [
+            { id: 1, escola: 'EC 304 Sul', fornecedor: 'Fornecedor ABC', status: 'entregue', hora: '08:45' },
+            { id: 2, escola: 'EC 102 Norte', fornecedor: 'Fornecedor XYZ', status: 'em-transito', hora: '10:30' },
+            { id: 3, escola: 'EC 405 Sul', fornecedor: 'Fornecedor ABC', status: 'pendente', hora: '11:00' },
+            { id: 4, escola: 'CEF 01 Lago Sul', fornecedor: 'Fornecedor DEF', status: 'problema', hora: '09:15' },
+            { id: 5, escola: 'EC 316 Norte', fornecedor: 'Fornecedor XYZ', status: 'entregue', hora: '07:30' }
+          ];
+          this.render();
+        },
+
+        render() {
+          const list = document.getElementById('deliveryList');
+          if (!list) return;
+
+          const deliveries = HeaderDrawers.state.deliveries;
+          
+          // Atualiza contadores
+          document.getElementById('deliveryDone').textContent = deliveries.filter(d => d.status === 'entregue').length;
+          document.getElementById('deliveryPending').textContent = deliveries.filter(d => d.status === 'pendente' || d.status === 'em-transito').length;
+          document.getElementById('deliveryProblem').textContent = deliveries.filter(d => d.status === 'problema').length;
+
+          list.innerHTML = deliveries.map(d => `
+            <div class="ae-delivery-item" onclick="HeaderDrawers.delivery.open(${d.id})">
+              <div class="ae-delivery-status ${d.status}"></div>
+              <div class="ae-delivery-info">
+                <h4>${d.escola}</h4>
+                <p>${d.fornecedor}</p>
+              </div>
+              <div class="ae-delivery-time">${d.hora}</div>
+            </div>
+          `).join('');
+        },
+
+        open(id) {
+          console.log('Abrindo entrega:', id);
+          HeaderDrawers.close();
+        }
+      },
+
+      // ========================================
+      // MÓDULO: AJUDA RÁPIDA
+      // ========================================
+      help: {
+        toggleFaq(element) {
+          element.classList.toggle('expanded');
+          const icon = element.querySelector('.material-symbols-outlined');
+          if (icon) {
+            icon.textContent = element.classList.contains('expanded') ? 'expand_less' : 'expand_more';
+          }
+        },
+
+        openCategory(category) {
+          console.log('Abrindo categoria de ajuda:', category);
+        },
+
+        openSupport() {
+          console.log('Abrindo suporte');
+          // Integrar com sistema de suporte
+        }
+      }
+    };
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', () => HeaderDrawers.init());
+
+    // Expor globalmente
+    window.HeaderDrawers = HeaderDrawers;
+  </script>
+</body>
+</html>

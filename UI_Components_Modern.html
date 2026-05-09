@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Componentes Modernos - UNIAE</title>
+  <?!= include('DesignSystem'); ?>
+  <style>
+    /* Design System loaded via include */
+
+
+    /* ============================================================================
+       TOAST NOTIFICATIONS
+       ============================================================================ */
+
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 400px;
+    }
+
+    .toast {
+      background: white;
+      border-radius: 12px;
+      padding: 16px 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 300px;
+      animation: slideInRight 0.3s ease-out;
+      border-left: 4px solid;
+    }
+
+    .toast.success {
+      border-left-color: var(--success);
+    }
+
+    .toast.error {
+      border-left-color: var(--error);
+    }
+
+    .toast.warning {
+      border-left-color: var(--warning);
+    }
+
+    .toast.info {
+      border-left-color: var(--info);
+    }
+
+    .toast-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .toast.success .toast-icon {
+      color: var(--success);
+    }
+
+    .toast.error .toast-icon {
+      color: var(--error);
+    }
+
+    .toast.warning .toast-icon {
+      color: var(--warning);
+    }
+
+    .toast.info .toast-icon {
+      color: var(--info);
+    }
+
+    .toast-content {
+      flex: 1;
+    }
+
+    .toast-title {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 4px;
+      color: var(--text-primary);
+    }
+
+    .toast-message {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .toast-close {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .toast-close:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* ============================================================================
+       MODAL
+       ============================================================================ */
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 20px;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 16px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: scaleIn 0.3s ease-out;
+    }
+
+    .modal-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--bg-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      max-height: calc(90vh - 160px);
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--bg-tertiary);
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    /* ============================================================================
+       DROPDOWN
+       ============================================================================ */
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: white;
+      border: 2px solid var(--bg-tertiary);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .dropdown-toggle:hover {
+      border-color: var(--primary);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      min-width: 200px;
+      padding: 8px;
+      display: none;
+      z-index: 1000;
+      animation: fadeInDown 0.2s ease-out;
+    }
+
+    .dropdown-menu.show {
+      display: block;
+    }
+
+    .dropdown-item {
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    .dropdown-item:hover {
+      background: var(--bg-primary);
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background: var(--bg-tertiary);
+      margin: 8px 0;
+    }
+
+    /* ============================================================================
+       TABS MODERNOS
+       ============================================================================ */
+
+    .tabs-modern {
+      display: flex;
+      gap: 8px;
+      border-bottom: 2px solid var(--bg-tertiary);
+      margin-bottom: 24px;
+      overflow-x: auto;
+    }
+
+    .tab-modern {
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      color: var(--text-secondary);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      white-space: nowrap;
+      position: relative;
+    }
+
+    .tab-modern:hover {
+      color: var(--primary);
+      background: var(--bg-primary);
+    }
+
+    .tab-modern.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .tab-modern::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--primary);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .tab-modern.active::after {
+      transform: scaleX(1);
+    }
+
+    /* ============================================================================
+       CARDS MODERNOS
+       ============================================================================ */
+
+    .card-modern {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s;
+      border: 1px solid var(--bg-tertiary);
+    }
+
+    .card-modern:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      transform: translateY(-4px);
+    }
+
+    .card-modern-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .card-modern-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .card-modern-badge {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* ============================================================================
+       PROGRESS BAR MODERNO
+       ============================================================================ */
+
+    .progress-modern {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-tertiary);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-modern-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
+      border-radius: 999px;
+      transition: width 0.5s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-modern-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+
+    /* ============================================================================
+       SWITCH TOGGLE
+       ============================================================================ */
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .switch-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg-tertiary);
+      transition: 0.3s;
+      border-radius: 24px;
+    }
+
+    .switch-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background: white;
+      transition: 0.3s;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .switch input:checked+.switch-slider {
+      background: var(--primary);
+    }
+
+    .switch input:checked+.switch-slider:before {
+      transform: translateX(24px);
+    }
+
+    /* ============================================================================
+       AVATAR
+       ============================================================================ */
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .avatar-lg {
+      width: 64px;
+      height: 64px;
+      font-size: 24px;
+    }
+
+    .avatar-sm {
+      width: 32px;
+      height: 32px;
+      font-size: 14px;
+    }
+
+    /* ============================================================================
+       CHIP
+       ============================================================================ */
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .chip-close {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      transition: color 0.2s;
+    }
+
+    .chip-close:hover {
+      color: var(--text-primary);
+    }
+
+    /* ============================================================================
+       EMPTY STATE
+       ============================================================================ */
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .empty-state-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .empty-state-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .empty-state-description {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+  </style>
+</head>
+
+<body style="padding: 40px; background: var(--bg-primary);">
+  <h1 style="margin-bottom: 40px;">Componentes Modernos UNIAE</h1>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Demonstração de Componentes -->
+  <div style="display: grid; gap: 24px;">
+
+    <!-- Toast -->
+    <div class="card-modern">
+      <div class="card-modern-header">
+        <h2 class="card-modern-title">Toast Notifications</h2>
+      </div>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <button class="btn btn-success"
+          onclick="showToast('success', 'Sucesso!', 'Operação realizada com sucesso')">Success</button>
+        <button class="btn btn-error" onclick="showToast('error', 'Erro!', 'Algo deu errado')">Error</button>
+        <button class="btn btn-warning"
+          onclick="showToast('warning', 'Atenção!', 'Verifique os dados')">Warning</button>
+        <button class="btn btn-primary" onclick="showToast('info', 'Informação', 'Dados atualizados')">Info</button>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="card-modern">
+      <div class="card-modern-header">
+        <h2 class="card-modern-title">Modal</h2>
+      </div>
+      <button class="btn btn-primary" onclick="showModal()">Abrir Modal</button>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="card-modern">
+      <div class="card-modern-header">
+        <h2 class="card-modern-title">Progress Bar</h2>
+      </div>
+      <div class="progress-modern">
+        <div class="progress-modern-bar" style="width: 65%"></div>
+      </div>
+      <p style="margin-top: 8px; font-size: 14px; color: var(--text-secondary);">65% completo</p>
+    </div>
+
+    <!-- Switch -->
+    <div class="card-modern">
+      <div class="card-modern-header">
+        <h2 class="card-modern-title">Switch Toggle</h2>
+      </div>
+      <label class="switch">
+        <input type="checkbox" checked>
+        <span class="switch-slider"></span>
+      </label>
+      <span style="margin-left: 12px;">Notificações ativadas</span>
+    </div>
+
+    <!-- Avatar -->
+    <div class="card-modern">
+      <div class="card-modern-header">
+        <h2 class="card-modern-title">Avatars</h2>
+      </div>
+      <div style="display: flex; gap: 16px; align-items: center;">
+        <div class="avatar avatar-sm">JS</div>
+        <div class="avatar">MS</div>
+        <div class="avatar avatar-lg">AC</div>
+      </div>
+    </div>
+
+    <!-- Chips -->
+    <div class="card-modern">
+      <div class="card-modern-header">
+        <h2 class="card-modern-title">Chips</h2>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <div class="chip">
+          <span>JavaScript</span>
+          <button class="chip-close">
+            <span class="material-symbols-outlined" style="font-size: 16px;">close</span>
+          </button>
+        </div>
+        <div class="chip">
+          <span>React</span>
+          <button class="chip-close">
+            <span class="material-symbols-outlined" style="font-size: 16px;">close</span>
+          </button>
+        </div>
+        <div class="chip">
+          <span>TypeScript</span>
+          <button class="chip-close">
+            <span class="material-symbols-outlined" style="font-size: 16px;">close</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="card-modern">
+      <div class="empty-state">
+        <div class="empty-state-icon">📋</div>
+        <div class="empty-state-title">Nenhum item encontrado</div>
+        <div class="empty-state-description">Comece adicionando seu primeiro item</div>
+        <button class="btn btn-primary">Adicionar Item</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ============================================================================
+    // TOAST NOTIFICATIONS
+    // ============================================================================
+
+    function showToast(type, title, message) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+
+      const icons = {
+        success: 'check_circle',
+        error: 'error',
+        warning: 'warning',
+        info: 'info'
+      };
+
+      toast.innerHTML = `
+        <span class="material-symbols-outlined toast-icon">${icons[type]}</span>
+        <div class="toast-content">
+          <div class="toast-title">${title}</div>
+          <div class="toast-message">${message}</div>
+        </div>
+        <button class="toast-close" onclick="this.parentElement.remove()">
+          <span class="material-symbols-outlined" style="font-size: 20px;">close</span>
+        </button>
+      `;
+
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.animation = 'slideInRight 0.3s ease-out reverse';
+        setTimeout(() => toast.remove(), 300);
+      }, 5000);
+    }
+
+    // ============================================================================
+    // MODAL
+    // ============================================================================
+
+    function showModal() {
+      const overlay = document.createElement('div');
+      overlay.className = 'modal-overlay';
+      overlay.onclick = (e) => {
+        if (e.target === overlay) closeModal(overlay);
+      };
+
+      overlay.innerHTML = `
+        <div class="modal">
+          <div class="modal-header">
+            <h3 class="modal-title">Título do Modal</h3>
+            <button class="modal-close" onclick="closeModal(this.closest('.modal-overlay'))">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Este é um exemplo de modal moderno e elegante.</p>
+            <p>Você pode adicionar qualquer conteúdo aqui.</p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal(this.closest('.modal-overlay'))">Cancelar</button>
+            <button class="btn btn-primary" onclick="closeModal(this.closest('.modal-overlay'))">Confirmar</button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(overlay);
+    }
+
+    function closeModal(overlay) {
+      overlay.style.animation = 'fadeIn 0.3s ease-out reverse';
+      setTimeout(() => overlay.remove(), 300);
+    }
+
+    // Exemplo de uso global
+    window.UNIAE = {
+      toast: showToast,
+      modal: showModal
+    };
+  </script>
+</body>
+
+</html>

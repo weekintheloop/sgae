@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#1a73e8">
+  <title>Lançar NF - Fornecedor</title>
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --primary-dark: #1557b0;
+      --primary-light: #e8f0fe;
+      --success: #0d652d;
+      --success-light: #e6f4ea;
+      --error: #c5221f;
+      --error-light: #fce8e6;
+      --warning: #e37400;
+      --warning-light: #fef7e0;
+      --text: #202124;
+      --text-secondary: #5f6368;
+      --bg: #f8f9fa;
+      --surface: #fff;
+      --border: #dadce0;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: calc(100px + var(--safe-bottom));
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: calc(16px + var(--safe-top)) 16px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-sub {
+      font-size: 12px;
+      opacity: 0.9;
+      margin-top: 4px;
+    }
+
+    .container {
+      padding: 16px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* Progress Steps */
+    .progress-steps {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding: 16px;
+      background: var(--surface);
+      margin-bottom: 16px;
+      border-radius: 12px;
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .step-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--border);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .step.active .step-circle {
+      background: var(--primary);
+      color: white;
+    }
+
+    .step.completed .step-circle {
+      background: var(--success);
+      color: white;
+    }
+
+    .step-label {
+      font-size: 10px;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    .step.active .step-label {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-size: 16px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    .form-group input.error {
+      border-color: var(--error);
+    }
+
+    .form-group input.valid {
+      border-color: var(--success);
+    }
+
+    .form-group .hint {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .form-group .error-msg {
+      font-size: 11px;
+      color: var(--error);
+      margin-top: 4px;
+      display: none;
+    }
+
+    .form-group.has-error .error-msg {
+      display: block;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .form-row-3 {
+      display: grid;
+      grid-template-columns: 1fr 80px 100px;
+      gap: 10px;
+    }
+
+    .chave-input {
+      font-family: monospace;
+      font-size: 14px !important;
+      letter-spacing: 1px;
+    }
+
+    .chave-counter {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+    }
+
+    .chave-counter span {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .chave-counter .count {
+      font-weight: 600;
+    }
+
+    .chave-counter .count.valid {
+      color: var(--success);
+    }
+
+    .chave-counter .count.invalid {
+      color: var(--error);
+    }
+
+    .total-box {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .total-box .row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .total-box .row.final {
+      font-size: 22px;
+      font-weight: 700;
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
+      padding-top: 12px;
+      margin-top: 8px;
+      opacity: 1;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.1s, opacity 0.2s;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: var(--bg);
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+
+    .bottom-actions {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      padding: 14px 16px calc(14px + var(--safe-bottom));
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      gap: 10px;
+    }
+
+    .bottom-actions .btn {
+      flex: 1;
+    }
+
+    .alert {
+      padding: 12px 14px;
+      border-radius: 10px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .alert-error {
+      background: var(--error-light);
+      color: var(--error);
+    }
+
+    .alert-success {
+      background: var(--success-light);
+      color: var(--success);
+    }
+
+    .alert-warning {
+      background: var(--warning-light);
+      color: var(--warning);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      background: var(--bg);
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .nf-list {
+      margin-top: 8px;
+    }
+
+    .nf-item {
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+      border-left: 4px solid var(--primary);
+    }
+
+    .nf-item .nf-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nf-item .nf-numero {
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .nf-item .nf-status {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    .nf-item .nf-status.enviada {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .nf-item .nf-status.aprovado {
+      background: var(--success-light);
+      color: var(--success);
+    }
+
+    .nf-item .nf-status.glosado {
+      background: var(--warning-light);
+      color: var(--warning);
+    }
+
+    .nf-item .nf-status.rejeitado {
+      background: var(--error-light);
+      color: var(--error);
+    }
+
+    .nf-item .nf-produto {
+      font-size: 14px;
+      font-weight: 500;
+      margin: 8px 0 4px;
+    }
+
+    .nf-item .nf-info {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .nf-item .nf-valor {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--success);
+      margin-top: 8px;
+    }
+
+    /* Confirmation Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 340px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .modal-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .modal-text {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .modal-actions .btn {
+      flex: 1;
+      padding: 12px;
+    }
+
+    /* Loading */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Success Animation */
+    .success-check {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--success);
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: scaleIn 0.3s ease;
+    }
+
+    .success-check::after {
+      content: '✓';
+      color: white;
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0);
+      }
+
+      to {
+        transform: scale(1);
+      }
+    }
+
+    /* Empty State */
+    .empty-state {
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    .empty-state .icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .empty-state h3 {
+      color: var(--text);
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .empty-state p {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+    
+    /* Filtros Minhas NFs */
+    .filtros-minhas-nfs { margin-bottom: 12px; }
+    .filtros-status-inline { display: flex; gap: 6px; flex-wrap: wrap; }
+    .filtro-status-chip {
+      padding: 6px 12px; border: 1px solid var(--border);
+      border-radius: 16px; background: var(--surface);
+      font-size: 11px; font-weight: 600; cursor: pointer;
+      transition: all 0.2s; color: var(--text-secondary);
+    }
+    .filtro-status-chip:hover { border-color: var(--primary); color: var(--primary); }
+    .filtro-status-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+    .highlight-search { background: yellow; padding: 0 2px; border-radius: 2px; }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <h1>📋 Fornecedor</h1>
+    <div class="header-sub">Lançamento de Nota Fiscal</div>
+  </header>
+
+  <main class="container">
+    <div id="alertBox" class="alert hidden"></div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="mostrarTab('nova')">➕ Nova NF</button>
+      <button class="tab" onclick="mostrarTab('minhas')">📄 Minhas NFs</button>
+    </div>
+
+    <!-- Nova NF -->
+    <div id="tabNova">
+      <div class="progress-steps">
+        <div class="step active" id="step1">
+          <div class="step-circle">1</div>
+          <div class="step-label">Dados NF</div>
+        </div>
+        <div class="step" id="step2">
+          <div class="step-circle">2</div>
+          <div class="step-label">Produto</div>
+        </div>
+        <div class="step" id="step3">
+          <div class="step-circle">3</div>
+          <div class="step-label">Revisão</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📄 Dados da Nota Fiscal</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Número da NF *</label>
+            <input type="text" id="numeroNF" placeholder="123456" oninput="validarCampo(this, 'numero')">
+            <div class="error-msg">Número obrigatório</div>
+          </div>
+          <div class="form-group">
+            <label>Série</label>
+            <input type="text" id="serie" value="1" placeholder="1">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Chave de Acesso NF-e (44 dígitos) *</label>
+          <input type="text" id="chaveAcesso" class="chave-input" maxlength="44"
+            placeholder="35241212345678000199550010000012341123456789" oninput="atualizarContador()">
+          <div class="chave-counter">
+            <span class="hint">Apenas números</span>
+            <span class="count" id="chaveCount">0/44</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Data Emissão *</label>
+            <input type="date" id="dataEmissao">
+          </div>
+          <div class="form-group">
+            <label>CNPJ Emitente *</label>
+            <input type="text" id="cnpj" maxlength="14" placeholder="12345678000199" oninput="formatarCNPJ(this)">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Nome do Fornecedor</label>
+          <input type="text" id="fornecedor" placeholder="Razão social ou nome fantasia">
+        </div>
+
+        <div class="form-group">
+          <label>Nota de Empenho (opcional)</label>
+          <input type="text" id="notaEmpenho" placeholder="2024NE00001">
+          <div class="hint">Vincule a NF a uma nota de empenho para rastreabilidade</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🥫 Gênero Alimentício</div>
+        <div class="form-group">
+          <label>Descrição do Produto *</label>
+          <input type="text" id="descricaoProduto" placeholder="Ex: Arroz branco tipo 1 - 5kg"
+            oninput="validarCampo(this, 'produto')">
+          <div class="hint">Cada NF deve conter apenas 1 gênero alimentício</div>
+        </div>
+
+        <div class="form-row-3">
+          <div class="form-group">
+            <label>Quantidade *</label>
+            <input type="number" id="quantidade" step="0.001" min="0.001" placeholder="100" oninput="calcularTotal()">
+          </div>
+          <div class="form-group">
+            <label>Unidade *</label>
+            <select id="unidade" onchange="calcularTotal()">
+              <option value="KG">KG</option>
+              <option value="UN">UN</option>
+              <option value="DZ">DZ</option>
+              <option value="L">L</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Valor Unit. *</label>
+            <input type="number" id="valorUnitario" step="0.01" min="0.01" placeholder="5.50" oninput="calcularTotal()">
+          </div>
+        </div>
+      </div>
+
+      <div class="total-box">
+        <div class="row"><span>Quantidade:</span><span id="txtQtd">0 KG</span></div>
+        <div class="row"><span>Valor Unitário:</span><span>R$ <span id="txtUnit">0,00</span></span></div>
+        <div class="row final"><span>TOTAL:</span><span>R$ <span id="txtTotal">0,00</span></span></div>
+      </div>
+    </div>
+
+    <!-- Minhas NFs -->
+    <div id="tabMinhas" class="hidden">
+      <div class="card">
+        <div class="card-title">📄 Notas Fiscais Enviadas</div>
+        
+        <!-- Filtros de busca -->
+        <div class="filtros-minhas-nfs">
+          <div class="form-group" style="margin-bottom:10px">
+            <input type="text" id="buscaMinhasNFs" placeholder="🔍 Buscar por número, produto ou status..." oninput="filtrarMinhasNFs()">
+          </div>
+          <div class="filtros-status-inline">
+            <button class="filtro-status-chip active" data-status="todos" onclick="setFiltroStatusNF(this, 'todos')">Todos</button>
+            <button class="filtro-status-chip" data-status="ENVIADA" onclick="setFiltroStatusNF(this, 'ENVIADA')">📤 Enviadas</button>
+            <button class="filtro-status-chip" data-status="APROVADO" onclick="setFiltroStatusNF(this, 'APROVADO')">✅ Aprovadas</button>
+            <button class="filtro-status-chip" data-status="GLOSADO" onclick="setFiltroStatusNF(this, 'GLOSADO')">⚠️ Glosadas</button>
+            <button class="filtro-status-chip" data-status="REJEITADO" onclick="setFiltroStatusNF(this, 'REJEITADO')">❌ Rejeitadas</button>
+          </div>
+        </div>
+        
+        <div class="contador-nfs" id="contadorMinhasNFs" style="font-size:12px;color:var(--text-secondary);margin:10px 0;padding-bottom:10px;border-bottom:1px solid var(--border)">
+          0 notas fiscais
+        </div>
+        
+        <div id="listaNFs" class="nf-list">
+          <p style="color:var(--text-secondary);text-align:center;padding:20px">Carregando...</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="bottom-actions" id="bottomActions">
+    <button class="btn btn-primary" id="btnEnviar" onclick="confirmarEnvio()">
+      <span id="btnEnviarText">📤 Enviar Nota Fiscal</span>
+    </button>
+  </div>
+
+  <!-- Modal de Confirmação -->
+  <div class="modal-overlay hidden" id="modalConfirm">
+    <div class="modal">
+      <div class="modal-icon">📋</div>
+      <div class="modal-title">Confirmar Envio</div>
+      <div class="modal-text" id="modalResumo"></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="fecharModal()">Cancelar</button>
+        <button class="btn btn-success" onclick="enviarNF()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Sucesso -->
+  <div class="modal-overlay hidden" id="modalSucesso">
+    <div class="modal">
+      <div class="success-check"></div>
+      <div class="modal-title">NF Enviada!</div>
+      <div class="modal-text" id="modalSucessoText"></div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" onclick="novaNF()">Nova NF</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var currentStep = 1;
+
+    function atualizarContador() {
+      var input = document.getElementById('chaveAcesso');
+      var chave = input.value.replace(/\D/g, '');
+      input.value = chave;
+
+      var count = document.getElementById('chaveCount');
+      count.textContent = chave.length + '/44';
+      count.className = 'count ' + (chave.length === 44 ? 'valid' : chave.length > 0 ? 'invalid' : '');
+
+      input.className = 'chave-input ' + (chave.length === 44 ? 'valid' : chave.length > 0 && chave.length < 44 ? 'error' : '');
+      atualizarProgresso();
+    }
+
+    function formatarCNPJ(input) {
+      input.value = input.value.replace(/\D/g, '').substring(0, 14);
+    }
+
+    function validarCampo(input, tipo) {
+      var valido = input.value.trim().length > 0;
+      input.className = valido ? 'valid' : '';
+      input.parentElement.classList.toggle('has-error', !valido && input.value.length > 0);
+      atualizarProgresso();
+    }
+
+    function calcularTotal() {
+      var qtd = parseFloat(document.getElementById('quantidade').value) || 0;
+      var unit = parseFloat(document.getElementById('valorUnitario').value) || 0;
+      var unidade = document.getElementById('unidade').value;
+      var total = qtd * unit;
+
+      document.getElementById('txtQtd').textContent = qtd.toLocaleString('pt-BR', { maximumFractionDigits: 3 }) + ' ' + unidade;
+      document.getElementById('txtUnit').textContent = unit.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('txtTotal').textContent = total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      atualizarProgresso();
+    }
+
+    function atualizarProgresso() {
+      var step1OK = document.getElementById('numeroNF').value.trim() &&
+        document.getElementById('chaveAcesso').value.length === 44;
+      var step2OK = document.getElementById('descricaoProduto').value.trim() &&
+        parseFloat(document.getElementById('quantidade').value) > 0 &&
+        parseFloat(document.getElementById('valorUnitario').value) > 0;
+
+      document.getElementById('step1').className = 'step ' + (step1OK ? 'completed' : 'active');
+      document.getElementById('step2').className = 'step ' + (step1OK && step2OK ? 'completed' : step1OK ? 'active' : '');
+      document.getElementById('step3').className = 'step ' + (step1OK && step2OK ? 'active' : '');
+    }
+
+    function mostrarTab(tab) {
+      document.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('active'); });
+      event.target.classList.add('active');
+      document.getElementById('tabNova').classList.toggle('hidden', tab !== 'nova');
+      document.getElementById('tabMinhas').classList.toggle('hidden', tab !== 'minhas');
+      document.getElementById('bottomActions').classList.toggle('hidden', tab !== 'nova');
+      if (tab === 'minhas') carregarMinhasNFs();
+    }
+
+    function confirmarEnvio() {
+      var chave = document.getElementById('chaveAcesso').value;
+      if (chave.length !== 44) { mostrarAlerta('Chave de acesso deve ter exatamente 44 dígitos', 'error'); return; }
+      if (!document.getElementById('numeroNF').value.trim()) { mostrarAlerta('Número da NF é obrigatório', 'error'); return; }
+      if (!document.getElementById('descricaoProduto').value.trim()) { mostrarAlerta('Descrição do produto é obrigatória', 'error'); return; }
+
+      var qtd = parseFloat(document.getElementById('quantidade').value) || 0;
+      var unit = parseFloat(document.getElementById('valorUnitario').value) || 0;
+      if (qtd <= 0 || unit <= 0) { mostrarAlerta('Quantidade e valor unitário devem ser maiores que zero', 'error'); return; }
+
+      var total = qtd * unit;
+      var unidade = document.getElementById('unidade').value;
+
+      document.getElementById('modalResumo').innerHTML =
+        '<strong>NF ' + document.getElementById('numeroNF').value + '</strong><br>' +
+        document.getElementById('descricaoProduto').value + '<br>' +
+        qtd.toLocaleString('pt-BR') + ' ' + unidade + ' × R$ ' + unit.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) + '<br>' +
+        '<strong style="font-size:18px">Total: R$ ' + total.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) + '</strong>';
+
+      document.getElementById('modalConfirm').classList.remove('hidden');
+    }
+
+    function fecharModal() {
+      document.getElementById('modalConfirm').classList.add('hidden');
+    }
+
+    function enviarNF() {
+      fecharModal();
+
+      var btn = document.getElementById('btnEnviar');
+      btn.disabled = true;
+      document.getElementById('btnEnviarText').innerHTML = '<span class="loading"></span> Enviando...';
+
+      var dados = {
+        numero: document.getElementById('numeroNF').value.trim(),
+        serie: document.getElementById('serie').value.trim(),
+        chaveAcesso: document.getElementById('chaveAcesso').value,
+        dataEmissao: document.getElementById('dataEmissao').value,
+        cnpj: document.getElementById('cnpj').value.trim(),
+        fornecedor: document.getElementById('fornecedor').value.trim(),
+        notaEmpenho: document.getElementById('notaEmpenho').value.trim(),
+        produto: document.getElementById('descricaoProduto').value.trim(),
+        quantidade: parseFloat(document.getElementById('quantidade').value) || 0,
+        unidade: document.getElementById('unidade').value,
+        valorUnitario: parseFloat(document.getElementById('valorUnitario').value) || 0
+      };
+
+      google.script.run
+        .withSuccessHandler(function (res) {
+          btn.disabled = false;
+          document.getElementById('btnEnviarText').innerHTML = '📤 Enviar Nota Fiscal';
+
+          if (res.success) {
+            document.getElementById('modalSucessoText').innerHTML =
+              'ID: <strong>' + res.id + '</strong><br>Valor: R$ ' + (res.valorTotal || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+            document.getElementById('modalSucesso').classList.remove('hidden');
+          } else {
+            mostrarAlerta(res.error || 'Erro ao enviar', 'error');
+          }
+        })
+        .withFailureHandler(function (err) {
+          btn.disabled = false;
+          document.getElementById('btnEnviarText').innerHTML = '📤 Enviar Nota Fiscal';
+          mostrarAlerta('Erro: ' + err.message, 'error');
+        })
+        .salvarNotaFiscal(dados);
+    }
+
+    function novaNF() {
+      document.getElementById('modalSucesso').classList.add('hidden');
+      limparFormulario();
+    }
+
+    // Cache de todas as NFs para filtros
+    var todasMinhasNFs = [];
+    var filtroStatusNFAtual = 'todos';
+
+    function carregarMinhasNFs() {
+      document.getElementById('listaNFs').innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:20px">Carregando...</p>';
+      document.getElementById('buscaMinhasNFs').value = '';
+      
+      google.script.run
+        .withSuccessHandler(function (nfs) {
+          console.log('NFs recebidas:', nfs);
+          todasMinhasNFs = nfs || [];
+          filtrarMinhasNFs();
+        })
+        .withFailureHandler(function (err) {
+          console.error('Erro ao carregar NFs:', err);
+          document.getElementById('listaNFs').innerHTML = '<p style="color:var(--error);text-align:center;padding:20px">Erro ao carregar: ' + (err.message || err) + '</p>';
+        })
+        .listarNotasFiscais();
+    }
+
+    function filtrarMinhasNFs() {
+      var busca = document.getElementById('buscaMinhasNFs').value.toLowerCase().trim();
+      
+      var nfsFiltradas = todasMinhasNFs.filter(function(nf) {
+        // Filtro por status
+        if (filtroStatusNFAtual !== 'todos') {
+          var status = String(nf.status || '').toUpperCase();
+          if (status.indexOf(filtroStatusNFAtual) === -1) return false;
+        }
+        
+        // Filtro por busca
+        if (busca) {
+          var textoNF = [
+            String(nf.numero || ''),
+            String(nf.produto || ''),
+            String(nf.fornecedor || ''),
+            String(nf.status || '')
+          ].join(' ').toLowerCase();
+          if (textoNF.indexOf(busca) === -1) return false;
+        }
+        
+        return true;
+      });
+      
+      document.getElementById('contadorMinhasNFs').textContent = nfsFiltradas.length + ' nota(s) fiscal(is)';
+      renderizarNFs(nfsFiltradas, busca);
+    }
+
+    function setFiltroStatusNF(el, status) {
+      filtroStatusNFAtual = status;
+      document.querySelectorAll('.filtro-status-chip').forEach(function(c) { c.classList.remove('active'); });
+      el.classList.add('active');
+      filtrarMinhasNFs();
+    }
+
+    function highlightSearchText(text, busca) {
+      if (!busca || !text) return text;
+      var regex = new RegExp('(' + busca.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+      return text.replace(regex, '<span class="highlight-search">$1</span>');
+    }
+
+    function renderizarNFs(nfs, busca) {
+      if (nfs.length === 0) {
+        document.getElementById('listaNFs').innerHTML = '<div class="empty-state"><div class="icon">📋</div><h3>Nenhuma nota fiscal</h3><p>Clique em "Nova NF" para cadastrar</p></div>';
+        return;
+      }
+      busca = busca || '';
+      var html = '';
+      nfs.forEach(function (nf) {
+        var statusClass = (nf.status || '').toLowerCase().replace('_', '-');
+        if (statusClass.indexOf('aprovado') >= 0) statusClass = 'aprovado';
+        else if (statusClass.indexOf('glosado') >= 0) statusClass = 'glosado';
+        else if (statusClass.indexOf('rejeitado') >= 0) statusClass = 'rejeitado';
+        else statusClass = 'enviada';
+
+        var numeroHL = highlightSearchText(String(nf.numero || ''), busca);
+        var produtoHL = highlightSearchText(String(nf.produto || ''), busca);
+
+        html += '<div class="nf-item">';
+        html += '<div class="nf-header"><span class="nf-numero">NF ' + numeroHL + '</span><span class="nf-status ' + statusClass + '">' + (nf.status || 'ENVIADA') + '</span></div>';
+        html += '<div class="nf-produto">🥫 ' + produtoHL + '</div>';
+        html += '<div class="nf-info">' + (nf.quantidade || 0) + ' ' + (nf.unidade || '') + ' × R$ ' + (nf.valorUnitario || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) + '</div>';
+        html += '<div class="nf-valor">R$ ' + (nf.valorTotal || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) + '</div>';
+        html += '</div>';
+      });
+      document.getElementById('listaNFs').innerHTML = html;
+    }
+
+    function limparFormulario() {
+      document.getElementById('numeroNF').value = '';
+      document.getElementById('chaveAcesso').value = '';
+      document.getElementById('cnpj').value = '';
+      document.getElementById('fornecedor').value = '';
+      document.getElementById('notaEmpenho').value = '';
+      document.getElementById('descricaoProduto').value = '';
+      document.getElementById('quantidade').value = '';
+      document.getElementById('valorUnitario').value = '';
+      atualizarContador();
+      calcularTotal();
+      atualizarProgresso();
+    }
+
+    function mostrarAlerta(msg, tipo) {
+      var box = document.getElementById('alertBox');
+      box.innerHTML = (tipo === 'error' ? '⚠️ ' : tipo === 'success' ? '✅ ' : 'ℹ️ ') + msg;
+      box.className = 'alert alert-' + tipo;
+      box.classList.remove('hidden');
+      window.scrollTo(0, 0);
+      setTimeout(function () { box.classList.add('hidden'); }, 5000);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('dataEmissao').value = new Date().toISOString().split('T')[0];
+      atualizarProgresso();
+    });
+  </script>
+</body>
+
+</html>

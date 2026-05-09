@@ -1,0 +1,1048 @@
+<!--
+  UX EFFICIENCY BOOST - UNIAE
+  Melhorias de UX focadas em eficiência e intuitividade
+  
+  Inclua: <?!= include('UX_Efficiency_Boost'); ?>
+  
+  ✅ Ações rápidas com 1 clique
+  ✅ Feedback instantâneo
+  ✅ Navegação intuitiva
+  ✅ Formulários inteligentes
+  ✅ Performance otimizada
+-->
+
+<style>
+/* ========================================
+   MOBILE-FIRST BASE STYLES
+   ======================================== */
+*, *::before, *::after {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button, a, [role="button"], .clickable {
+  touch-action: manipulation;
+}
+
+/* ========================================
+   VARIÁVEIS DE EFICIÊNCIA
+   ======================================== */
+:root {
+  --quick-transition: 120ms ease-out;
+  --smooth-transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --bounce-transition: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ========================================
+   QUICK ACTIONS - AÇÕES COM 1 CLIQUE
+   ======================================== */
+.quick-fab {
+  position: fixed;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  right: 24px;
+  z-index: 1000;
+}
+
+.quick-fab-main {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--primary, #667eea);
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  transition: var(--smooth-transition);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+</style>
+<style>
+
+.quick-fab-main:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+.quick-fab-main:active {
+  transform: scale(0.95);
+}
+
+.quick-fab-menu {
+  position: absolute;
+  bottom: 70px;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: var(--smooth-transition);
+}
+
+.quick-fab.open .quick-fab-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.quick-fab-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+
+.quick-fab-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: white;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: var(--quick-transition);
+}
+
+.quick-fab-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.quick-fab-label {
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* ========================================
+   SMART INPUT - CAMPOS INTELIGENTES
+   ======================================== */
+.smart-input-wrapper {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.smart-input {
+  width: 100%;
+  padding: 14px 16px;
+  padding-right: 44px;
+  border: 2px solid var(--gray-200, #e5e7eb);
+  border-radius: 10px;
+  font-size: 15px;
+  transition: var(--quick-transition);
+  background: white;
+}
+
+.smart-input:focus {
+  outline: none;
+  border-color: var(--primary, #667eea);
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.smart-input.valid {
+  border-color: var(--success, #10b981);
+}
+
+.smart-input.invalid {
+  border-color: var(--error, #ef4444);
+}
+
+.smart-input-icon {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  opacity: 0;
+  transition: var(--quick-transition);
+}
+
+.smart-input.valid + .smart-input-icon.success,
+.smart-input.invalid + .smart-input-icon.error {
+  opacity: 1;
+}
+
+.smart-input-icon.success { color: var(--success, #10b981); }
+.smart-input-icon.error { color: var(--error, #ef4444); }
+
+/* Floating Label */
+.floating-label {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
+  color: var(--gray-500, #6b7280);
+  pointer-events: none;
+  transition: var(--quick-transition);
+  background: white;
+  padding: 0 4px;
+}
+
+.smart-input:focus ~ .floating-label,
+.smart-input:not(:placeholder-shown) ~ .floating-label {
+  top: 0;
+  font-size: 12px;
+  color: var(--primary, #667eea);
+}
+
+/* ========================================
+   INSTANT FEEDBACK - FEEDBACK IMEDIATO
+   ======================================== */
+.instant-toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  background: var(--gray-900, #1f2937);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.instant-toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+.instant-toast.success { background: var(--success, #10b981); }
+.instant-toast.error { background: var(--error, #ef4444); }
+.instant-toast.warning { background: var(--warning, #f59e0b); color: #1f2937; }
+
+/* ========================================
+   COMMAND PALETTE - BUSCA RÁPIDA
+   ======================================== */
+.command-palette-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 15vh;
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--quick-transition);
+}
+
+.command-palette-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.command-palette {
+  width: 100%;
+  max-width: 560px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  overflow: hidden;
+  transform: scale(0.95) translateY(-20px);
+  transition: var(--smooth-transition);
+}
+
+.command-palette-overlay.active .command-palette {
+  transform: scale(1) translateY(0);
+}
+
+.command-search {
+  width: 100%;
+  padding: 18px 20px;
+  border: none;
+  font-size: 17px;
+  outline: none;
+  border-bottom: 1px solid var(--gray-100, #f3f4f6);
+}
+
+.command-search::placeholder {
+  color: var(--gray-400, #9ca3af);
+}
+
+.command-results {
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.command-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  cursor: pointer;
+  transition: var(--quick-transition);
+}
+
+.command-item:hover,
+.command-item.selected {
+  background: var(--gray-50, #f9fafb);
+}
+
+.command-item-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--gray-100, #f3f4f6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.command-item-content {
+  flex: 1;
+}
+
+.command-item-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gray-900, #1f2937);
+}
+
+.command-item-desc {
+  font-size: 12px;
+  color: var(--gray-500, #6b7280);
+  margin-top: 2px;
+}
+
+.command-item-shortcut {
+  display: flex;
+  gap: 4px;
+}
+
+.command-key {
+  padding: 3px 7px;
+  background: var(--gray-100, #f3f4f6);
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--gray-600, #4b5563);
+}
+
+.command-empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--gray-500, #6b7280);
+}
+
+/* ========================================
+   INLINE ACTIONS - AÇÕES CONTEXTUAIS
+   ======================================== */
+.inline-actions {
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transition: var(--quick-transition);
+}
+
+tr:hover .inline-actions,
+.card:hover .inline-actions,
+.list-item:hover .inline-actions {
+  opacity: 1;
+}
+
+.inline-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--gray-100, #f3f4f6);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: var(--quick-transition);
+}
+
+.inline-btn:hover {
+  background: var(--gray-200, #e5e7eb);
+  transform: scale(1.1);
+}
+
+.inline-btn.danger:hover {
+  background: var(--error-light, #fee2e2);
+  color: var(--error, #ef4444);
+}
+
+/* ========================================
+   SMART DROPDOWN - DROPDOWN INTELIGENTE
+   ======================================== */
+.smart-dropdown {
+  position: relative;
+}
+
+.smart-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: white;
+  border: 2px solid var(--gray-200, #e5e7eb);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: var(--quick-transition);
+}
+
+.smart-dropdown-trigger:hover {
+  border-color: var(--gray-300, #d1d5db);
+}
+
+.smart-dropdown-trigger.open {
+  border-color: var(--primary, #667eea);
+}
+
+.smart-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 200px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: var(--smooth-transition);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.smart-dropdown.open .smart-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.smart-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: var(--quick-transition);
+}
+
+.smart-dropdown-item:hover {
+  background: var(--gray-50, #f9fafb);
+}
+
+.smart-dropdown-item.selected {
+  background: var(--primary-light, rgba(102, 126, 234, 0.1));
+  color: var(--primary, #667eea);
+}
+
+.smart-dropdown-divider {
+  height: 1px;
+  background: var(--gray-100, #f3f4f6);
+  margin: 6px 0;
+}
+
+/* ========================================
+   PROGRESS MINI - INDICADOR COMPACTO
+   ======================================== */
+.progress-mini {
+  height: 4px;
+  background: var(--gray-200, #e5e7eb);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-mini-bar {
+  height: 100%;
+  background: var(--primary, #667eea);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.progress-mini-bar.success { background: var(--success, #10b981); }
+.progress-mini-bar.warning { background: var(--warning, #f59e0b); }
+.progress-mini-bar.error { background: var(--error, #ef4444); }
+
+/* ========================================
+   CHIP SELECT - SELEÇÃO RÁPIDA
+   ======================================== */
+.chip-select {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  padding: 8px 16px;
+  background: var(--gray-100, #f3f4f6);
+  border: 2px solid transparent;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--quick-transition);
+  user-select: none;
+}
+
+.chip:hover {
+  background: var(--gray-200, #e5e7eb);
+}
+
+.chip.selected {
+  background: var(--primary-light, rgba(102, 126, 234, 0.15));
+  border-color: var(--primary, #667eea);
+  color: var(--primary, #667eea);
+}
+
+.chip.selected:hover {
+  background: var(--primary-light, rgba(102, 126, 234, 0.25));
+}
+
+/* ========================================
+   SWIPE ACTIONS (MOBILE)
+   ======================================== */
+.swipe-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.swipe-content {
+  position: relative;
+  background: white;
+  transition: transform 0.2s ease;
+  z-index: 1;
+}
+
+.swipe-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+}
+
+.swipe-action {
+  width: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+}
+
+.swipe-action.edit { background: var(--info, #3b82f6); }
+.swipe-action.delete { background: var(--error, #ef4444); }
+.swipe-action.archive { background: var(--warning, #f59e0b); }
+
+/* ========================================
+   SKELETON LOADER SIMPLES
+   ======================================== */
+.skeleton-line {
+  height: 16px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.skeleton-line.short { width: 40%; }
+.skeleton-line.medium { width: 70%; }
+.skeleton-line.full { width: 100%; }
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ========================================
+   MOBILE-FIRST RESPONSIVE
+   Samsung S20: 360x800 CSS pixels
+   ======================================== */
+
+/* Base Mobile (default) */
+.quick-fab { bottom: 80px; right: 16px; } /* Acima do bottom nav */
+.quick-fab-main { 
+  width: 52px; 
+  height: 52px;
+  border-radius: 14px;
+}
+
+.command-palette { 
+  margin: 0 12px; 
+  max-width: none;
+  border-radius: 16px;
+}
+
+.command-search {
+  padding: 16px;
+  font-size: 16px; /* Previne zoom iOS */
+}
+
+.command-item {
+  padding: 14px 16px;
+  min-height: 52px;
+}
+
+.inline-actions { opacity: 1; } /* Sempre visível no mobile */
+
+.smart-input {
+  font-size: 16px; /* Previne zoom iOS */
+  min-height: 48px;
+}
+
+.chip {
+  min-height: 44px;
+  padding: 10px 18px;
+}
+
+/* Tablet e Desktop */
+@media (min-width: 768px) {
+  .quick-fab { bottom: 24px; right: 24px; }
+  .quick-fab-main { width: 56px; height: 56px; }
+  
+  .command-palette { 
+    margin: 0; 
+    max-width: 560px;
+    border-radius: 16px;
+  }
+  
+  .inline-actions { opacity: 0; }
+  tr:hover .inline-actions,
+  .card:hover .inline-actions { opacity: 1; }
+}
+</style>
+<!-- HT
+ML Components -->
+<div id="instantToast" class="instant-toast"></div>
+
+<!-- Command Palette -->
+<div class="command-palette-overlay" id="commandPalette">
+  <div class="command-palette">
+    <input type="text" class="command-search" id="commandSearch" 
+           placeholder="Digite para buscar ações, NFs, fornecedores..." 
+           autocomplete="off">
+    <div class="command-results" id="commandResults"></div>
+  </div>
+</div>
+
+<!-- Quick FAB -->
+<div class="quick-fab" id="quickFab">
+  <div class="quick-fab-menu">
+    <div class="quick-fab-item">
+      <span class="quick-fab-label">Nova NF</span>
+      <button class="quick-fab-btn" onclick="EfficientUX.action('nova-nf')" title="Nova Nota Fiscal">📄</button>
+    </div>
+    <div class="quick-fab-item">
+      <span class="quick-fab-label">Registrar Entrega</span>
+      <button class="quick-fab-btn" onclick="EfficientUX.action('entrega')" title="Registrar Entrega">🚚</button>
+    </div>
+    <div class="quick-fab-item">
+      <span class="quick-fab-label">Atestar</span>
+      <button class="quick-fab-btn" onclick="EfficientUX.action('atestar')" title="Atestar">✅</button>
+    </div>
+    <div class="quick-fab-item">
+      <span class="quick-fab-label">Buscar</span>
+      <button class="quick-fab-btn" onclick="EfficientUX.openCommandPalette()" title="Buscar">🔍</button>
+    </div>
+  </div>
+  <button class="quick-fab-main" onclick="EfficientUX.toggleFab()" aria-label="Menu de ações rápidas">
+    <span id="fabIcon">⚡</span>
+  </button>
+</div>
+
+<script>
+/**
+ * EfficientUX - Sistema de UX focado em eficiência
+ */
+const EfficientUX = {
+  // ========================================
+  // TOAST INSTANTÂNEO
+  // ========================================
+  toast(message, type = 'info', duration = 2500) {
+    const toast = document.getElementById('instantToast');
+    if (!toast) return;
+    
+    toast.className = 'instant-toast ' + type;
+    toast.innerHTML = this.getToastIcon(type) + ' ' + message;
+    toast.classList.add('show');
+    
+    clearTimeout(this._toastTimer);
+    this._toastTimer = setTimeout(() => {
+      toast.classList.remove('show');
+    }, duration);
+  },
+  
+  getToastIcon(type) {
+    const icons = { success: '✓', error: '✕', warning: '⚠', info: 'ℹ' };
+    return icons[type] || icons.info;
+  },
+  
+  success(msg) { this.toast(msg, 'success'); },
+  error(msg) { this.toast(msg, 'error', 4000); },
+  warning(msg) { this.toast(msg, 'warning'); },
+  info(msg) { this.toast(msg, 'info'); },
+  
+  // ========================================
+  // QUICK FAB
+  // ========================================
+  toggleFab() {
+    const fab = document.getElementById('quickFab');
+    const icon = document.getElementById('fabIcon');
+    fab.classList.toggle('open');
+    icon.textContent = fab.classList.contains('open') ? '✕' : '⚡';
+  },
+  
+  closeFab() {
+    const fab = document.getElementById('quickFab');
+    const icon = document.getElementById('fabIcon');
+    fab.classList.remove('open');
+    icon.textContent = '⚡';
+  },
+  
+  // ========================================
+  // COMMAND PALETTE
+  // ========================================
+  commands: [
+    { id: 'nova-nf', icon: '📄', title: 'Nova Nota Fiscal', desc: 'Cadastrar nova NF', shortcut: ['Alt', 'N'] },
+    { id: 'entrega', icon: '🚚', title: 'Registrar Entrega', desc: 'Nova entrega de alimentos', shortcut: ['Alt', 'E'] },
+    { id: 'atestar', icon: '✅', title: 'Atestar', desc: 'Atestar notas fiscais', shortcut: ['Alt', 'A'] },
+    { id: 'buscar-nf', icon: '🔍', title: 'Buscar NF', desc: 'Pesquisar nota fiscal', shortcut: ['Ctrl', 'F'] },
+    { id: 'dashboard', icon: '📊', title: 'Dashboard', desc: 'Ir para o painel', shortcut: ['Alt', 'D'] },
+    { id: 'relatorios', icon: '📈', title: 'Relatórios', desc: 'Gerar relatórios', shortcut: ['Alt', 'R'] },
+    { id: 'config', icon: '⚙️', title: 'Configurações', desc: 'Ajustes do sistema' },
+    { id: 'ajuda', icon: '❓', title: 'Ajuda', desc: 'Central de ajuda', shortcut: ['F1'] },
+  ],
+  
+  selectedIndex: 0,
+  filteredCommands: [],
+  
+  openCommandPalette() {
+    this.closeFab();
+    const overlay = document.getElementById('commandPalette');
+    const search = document.getElementById('commandSearch');
+    
+    overlay.classList.add('active');
+    search.value = '';
+    search.focus();
+    
+    this.filteredCommands = [...this.commands];
+    this.selectedIndex = 0;
+    this.renderCommands();
+    
+    // Fechar ao clicar fora
+    overlay.onclick = (e) => {
+      if (e.target === overlay) this.closeCommandPalette();
+    };
+  },
+  
+  closeCommandPalette() {
+    document.getElementById('commandPalette').classList.remove('active');
+  },
+  
+  filterCommands(query) {
+    query = query.toLowerCase().trim();
+    if (!query) {
+      this.filteredCommands = [...this.commands];
+    } else {
+      this.filteredCommands = this.commands.filter(cmd => 
+        cmd.title.toLowerCase().includes(query) || 
+        cmd.desc.toLowerCase().includes(query)
+      );
+    }
+    this.selectedIndex = 0;
+    this.renderCommands();
+  },
+  
+  renderCommands() {
+    const container = document.getElementById('commandResults');
+    
+    if (this.filteredCommands.length === 0) {
+      container.innerHTML = '<div class="command-empty">Nenhum resultado encontrado</div>';
+      return;
+    }
+    
+    container.innerHTML = this.filteredCommands.map((cmd, i) => `
+      <div class="command-item ${i === this.selectedIndex ? 'selected' : ''}" 
+           onclick="EfficientUX.executeCommand('${cmd.id}')"
+           onmouseenter="EfficientUX.selectedIndex = ${i}; EfficientUX.renderCommands();">
+        <div class="command-item-icon">${cmd.icon}</div>
+        <div class="command-item-content">
+          <div class="command-item-title">${cmd.title}</div>
+          <div class="command-item-desc">${cmd.desc}</div>
+        </div>
+        ${cmd.shortcut ? `
+          <div class="command-item-shortcut">
+            ${cmd.shortcut.map(k => `<span class="command-key">${k}</span>`).join('')}
+          </div>
+        ` : ''}
+      </div>
+    `).join('');
+  },
+  
+  navigateCommands(direction) {
+    if (direction === 'up') {
+      this.selectedIndex = Math.max(0, this.selectedIndex - 1);
+    } else {
+      this.selectedIndex = Math.min(this.filteredCommands.length - 1, this.selectedIndex + 1);
+    }
+    this.renderCommands();
+    
+    // Scroll para item selecionado
+    const selected = document.querySelector('.command-item.selected');
+    if (selected) selected.scrollIntoView({ block: 'nearest' });
+  },
+  
+  executeSelectedCommand() {
+    if (this.filteredCommands[this.selectedIndex]) {
+      this.executeCommand(this.filteredCommands[this.selectedIndex].id);
+    }
+  },
+  
+  executeCommand(id) {
+    this.closeCommandPalette();
+    this.action(id);
+  },
+  
+  // ========================================
+  // AÇÕES
+  // ========================================
+  action(id) {
+    console.log('Ação executada:', id);
+    
+    // Callbacks customizáveis
+    if (this.actionCallbacks && this.actionCallbacks[id]) {
+      this.actionCallbacks[id]();
+      return;
+    }
+    
+    // Ações padrão (podem ser sobrescritas)
+    switch(id) {
+      case 'nova-nf':
+        this.toast('Abrindo formulário de NF...', 'info');
+        break;
+      case 'entrega':
+        this.toast('Abrindo registro de entrega...', 'info');
+        break;
+      case 'atestar':
+        this.toast('Abrindo atesto...', 'info');
+        break;
+      case 'buscar-nf':
+        this.openCommandPalette();
+        break;
+      case 'dashboard':
+        this.toast('Indo para Dashboard...', 'info');
+        break;
+      case 'relatorios':
+        this.toast('Abrindo relatórios...', 'info');
+        break;
+      case 'config':
+        this.toast('Abrindo configurações...', 'info');
+        break;
+      case 'ajuda':
+        this.toast('Abrindo ajuda...', 'info');
+        break;
+      default:
+        this.toast('Ação: ' + id, 'info');
+    }
+  },
+  
+  // Registrar callbacks customizados
+  onAction(id, callback) {
+    if (!this.actionCallbacks) this.actionCallbacks = {};
+    this.actionCallbacks[id] = callback;
+  },
+  
+  // ========================================
+  // SMART INPUT
+  // ========================================
+  validateInput(input, rules = {}) {
+    const value = input.value.trim();
+    let isValid = true;
+    
+    if (rules.required && !value) isValid = false;
+    if (rules.minLength && value.length < rules.minLength) isValid = false;
+    if (rules.maxLength && value.length > rules.maxLength) isValid = false;
+    if (rules.pattern && !rules.pattern.test(value)) isValid = false;
+    if (rules.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) isValid = false;
+    if (rules.custom && !rules.custom(value)) isValid = false;
+    
+    input.classList.toggle('valid', isValid && value);
+    input.classList.toggle('invalid', !isValid && value);
+    
+    return isValid;
+  },
+  
+  // ========================================
+  // DROPDOWN INTELIGENTE
+  // ========================================
+  initDropdowns() {
+    document.querySelectorAll('.smart-dropdown').forEach(dropdown => {
+      const trigger = dropdown.querySelector('.smart-dropdown-trigger');
+      
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        
+        // Fechar outros dropdowns
+        document.querySelectorAll('.smart-dropdown.open').forEach(d => {
+          if (d !== dropdown) d.classList.remove('open');
+        });
+        
+        dropdown.classList.toggle('open');
+        trigger.classList.toggle('open');
+      });
+      
+      // Selecionar item
+      dropdown.querySelectorAll('.smart-dropdown-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const value = item.dataset.value;
+          const text = item.textContent.trim();
+          
+          // Atualizar seleção visual
+          dropdown.querySelectorAll('.smart-dropdown-item').forEach(i => i.classList.remove('selected'));
+          item.classList.add('selected');
+          
+          // Atualizar trigger
+          const triggerText = trigger.querySelector('.dropdown-text');
+          if (triggerText) triggerText.textContent = text;
+          
+          // Fechar
+          dropdown.classList.remove('open');
+          trigger.classList.remove('open');
+          
+          // Evento customizado
+          dropdown.dispatchEvent(new CustomEvent('change', { detail: { value, text } }));
+        });
+      });
+    });
+    
+    // Fechar ao clicar fora
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.smart-dropdown.open').forEach(d => {
+        d.classList.remove('open');
+        d.querySelector('.smart-dropdown-trigger').classList.remove('open');
+      });
+    });
+  },
+  
+  // ========================================
+  // CHIP SELECT
+  // ========================================
+  initChipSelect() {
+    document.querySelectorAll('.chip-select').forEach(container => {
+      const isMultiple = container.dataset.multiple === 'true';
+      
+      container.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          if (!isMultiple) {
+            container.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+          }
+          chip.classList.toggle('selected');
+          
+          // Coletar valores selecionados
+          const selected = Array.from(container.querySelectorAll('.chip.selected'))
+            .map(c => c.dataset.value);
+          
+          container.dispatchEvent(new CustomEvent('change', { detail: { selected } }));
+        });
+      });
+    });
+  },
+  
+  // ========================================
+  // INICIALIZAÇÃO
+  // ========================================
+  init() {
+    // Atalhos de teclado globais
+    document.addEventListener('keydown', (e) => {
+      // Ctrl+K ou Cmd+K para Command Palette
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        this.openCommandPalette();
+      }
+      
+      // ESC para fechar
+      if (e.key === 'Escape') {
+        this.closeCommandPalette();
+        this.closeFab();
+      }
+      
+      // Navegação no Command Palette
+      if (document.getElementById('commandPalette').classList.contains('active')) {
+        if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          this.navigateCommands('up');
+        } else if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          this.navigateCommands('down');
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          this.executeSelectedCommand();
+        }
+      }
+      
+      // Atalhos Alt+
+      if (e.altKey) {
+        switch(e.key.toLowerCase()) {
+          case 'n': e.preventDefault(); this.action('nova-nf'); break;
+          case 'e': e.preventDefault(); this.action('entrega'); break;
+          case 'a': e.preventDefault(); this.action('atestar'); break;
+          case 'd': e.preventDefault(); this.action('dashboard'); break;
+          case 'r': e.preventDefault(); this.action('relatorios'); break;
+        }
+      }
+      
+      // F1 para ajuda
+      if (e.key === 'F1') {
+        e.preventDefault();
+        this.action('ajuda');
+      }
+    });
+    
+    // Busca no Command Palette
+    const searchInput = document.getElementById('commandSearch');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        this.filterCommands(e.target.value);
+      });
+    }
+    
+    // Inicializar componentes
+    this.initDropdowns();
+    this.initChipSelect();
+    
+    console.log('✨ EfficientUX inicializado');
+  }
+};
+
+// Auto-inicializar quando DOM estiver pronto
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => EfficientUX.init());
+} else {
+  EfficientUX.init();
+}
+
+// Helpers globais para uso rápido
+function toast(msg, type) { EfficientUX.toast(msg, type); }
+function toastSuccess(msg) { EfficientUX.success(msg); }
+function toastError(msg) { EfficientUX.error(msg); }
+function toastWarning(msg) { EfficientUX.warning(msg); }
+</script>

@@ -1,0 +1,1692 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Conferência de Recebimento - AE CRE-PP</title>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #2E7D32;
+      --primary-light: #4CAF50;
+      --primary-dark: #1B5E20;
+      --secondary: #EF6C00;
+      --secondary-light: #FF9800;
+      
+      --success: #2E7D32;
+      --warning: #F57C00;
+      --error: #D32F2F;
+      --info: #1976D2;
+      
+      --bg-primary: #FAFAFA;
+      --bg-card: #FFFFFF;
+      --bg-input: #F5F5F5;
+      
+      --text-primary: #212121;
+      --text-secondary: #757575;
+      --text-hint: #9E9E9E;
+      
+      --border: #E0E0E0;
+      --border-focus: #2E7D32;
+      
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+      --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+      
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--secondary) 0%, #E65100 100%);
+      color: white;
+      padding: 16px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-md);
+    }
+    
+    .header-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .header h1 {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .header-subtitle {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+    
+    /* Container */
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+    
+    /* Card */
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    
+    .card-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-input);
+    }
+    
+    .card-header .icon {
+      color: var(--secondary);
+      font-size: 22px;
+    }
+    
+    .card-header h2 {
+      font-size: 15px;
+      font-weight: 600;
+    }
+    
+    .card-body {
+      padding: 16px;
+    }
+    
+    /* Info Grid */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    
+    .info-item {
+      padding: 10px;
+      background: var(--bg-input);
+      border-radius: var(--radius-sm);
+    }
+    
+    .info-label {
+      font-size: 11px;
+      color: var(--text-hint);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .info-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-top: 2px;
+    }
+    
+    .info-value.highlight {
+      color: var(--primary);
+    }
+    
+    /* Checklist */
+    .checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .check-item {
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+    }
+    
+    .check-item.expanded {
+      border-color: var(--secondary);
+    }
+    
+    .check-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+    
+    .check-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--bg-input);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--text-hint);
+      flex-shrink: 0;
+    }
+    
+    .check-item.ok .check-icon {
+      background: #E8F5E9;
+      color: var(--success);
+    }
+    
+    .check-item.problem .check-icon {
+      background: #FFEBEE;
+      color: var(--error);
+    }
+    
+    .check-info {
+      flex: 1;
+    }
+    
+    .check-title {
+      font-weight: 600;
+      font-size: 14px;
+    }
+    
+    .check-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+    
+    .check-status {
+      font-size: 20px;
+      color: var(--text-hint);
+    }
+    
+    .check-item.ok .check-status { color: var(--success); }
+    .check-item.problem .check-status { color: var(--error); }
+    
+    /* Check Options */
+    .check-options {
+      display: none;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    
+    .check-item.expanded .check-options {
+      display: block;
+    }
+    
+    .option-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    
+    .option-btn {
+      flex: 1;
+      padding: 12px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg-card);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+      min-height: 44px;
+    }
+    
+    .option-btn .icon {
+      font-size: 28px;
+      color: var(--text-hint);
+    }
+    
+    .option-btn span {
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .option-btn.ok:hover, .option-btn.ok.selected {
+      border-color: var(--success);
+      background: #E8F5E9;
+    }
+    
+    .option-btn.ok.selected .icon { color: var(--success); }
+    
+    .option-btn.problem:hover, .option-btn.problem.selected {
+      border-color: var(--error);
+      background: #FFEBEE;
+    }
+    
+    .option-btn.problem.selected .icon { color: var(--error); }
+    
+    /* Problem Details */
+    .problem-details {
+      display: none;
+      margin-top: 12px;
+    }
+    
+    .check-item.problem .problem-details {
+      display: block;
+    }
+    
+    .problem-type {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    
+    .problem-chip {
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .problem-chip.selected {
+      background: var(--error);
+      color: white;
+      border-color: var(--error);
+    }
+    
+    .form-group {
+      margin-top: 12px;
+    }
+    
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+    
+    .form-input, .form-textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+    }
+    
+    .form-input:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--border-focus);
+    }
+    
+    .form-textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    
+    /* Temperature Input */
+    .temp-input {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .temp-input input {
+      width: 80px;
+      text-align: center;
+    }
+    
+    .temp-status {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .temp-status.ok {
+      background: #E8F5E9;
+      color: var(--success);
+    }
+    
+    .temp-status.warning {
+      background: #FFF3E0;
+      color: var(--warning);
+    }
+    
+    .temp-status.danger {
+      background: #FFEBEE;
+      color: var(--error);
+    }
+
+    /* Photo Capture */
+    .photo-capture {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .photo-btn {
+      width: 70px;
+      height: 70px;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: var(--bg-input);
+      transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+    }
+    
+    .photo-btn:hover {
+      border-color: var(--secondary);
+    }
+    
+    .photo-btn .icon {
+      font-size: 24px;
+      color: var(--text-hint);
+    }
+    
+    .photo-btn span {
+      font-size: 10px;
+      color: var(--text-hint);
+    }
+    
+    .photo-preview {
+      width: 70px;
+      height: 70px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .photo-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .photo-preview .remove {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 24px;
+      height: 24px;
+      background: var(--error);
+      color: white;
+      border-radius: var(--radius-full, 9999px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    
+    /* Items List */
+    .items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .item-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      background: var(--bg-input);
+      border-radius: var(--radius-sm);
+    }
+    
+    .item-info {
+      flex: 1;
+    }
+    
+    .item-name {
+      font-weight: 500;
+      font-size: 14px;
+    }
+    
+    .item-expected {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    
+    .item-qty {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .qty-btn {
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: var(--radius-full, 9999px);
+      background: var(--primary);
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .qty-btn:disabled {
+      background: var(--border);
+      cursor: not-allowed;
+    }
+    
+    .qty-value {
+      width: 50px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    
+    .item-status {
+      font-size: 20px;
+    }
+    
+    .item-status.ok { color: var(--success); }
+    .item-status.partial { color: var(--warning); }
+    .item-status.missing { color: var(--error); }
+    
+    /* Footer Actions */
+    .footer-actions {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-card);
+      padding: 12px 16px;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+      display: flex;
+      gap: 12px;
+      z-index: 100;
+    }
+    
+    .btn {
+      flex: 1;
+      padding: 14px 20px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease, border-color 0.2s ease;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+    
+    .btn-primary:disabled {
+      background: var(--text-hint);
+      cursor: not-allowed;
+    }
+    
+    .btn-secondary {
+      background: var(--bg-input);
+      color: var(--text-primary);
+      border: 2px solid var(--border);
+    }
+    
+    .btn-danger {
+      background: var(--error);
+      color: white;
+    }
+    
+    /* Progress */
+    .progress-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+      margin: 16px 0;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      transition: width 0.3s ease;
+    }
+    
+    .progress-text {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--text-primary);
+      color: white;
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--error); }
+    
+    /* Loading */
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.95);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+    
+    .loading-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid var(--border);
+      border-top-color: var(--secondary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    
+    .modal-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .modal {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      width: 100%;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+    }
+    
+    .modal-overlay.show .modal {
+      transform: translateY(0);
+    }
+    
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .modal-header h3 {
+      font-size: 16px;
+    }
+    
+    .modal-close {
+      width: 44px;
+      height: 44px;
+      border: none;
+      background: var(--bg-input);
+      border-radius: var(--radius-full, 9999px);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-body {
+      padding: 20px;
+    }
+    
+    .modal-footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 12px;
+    }
+    
+    /* Signature */
+    .signature-pad {
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: white;
+      touch-action: none;
+    }
+    
+    .signature-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 8px;
+    }
+    
+    .signature-clear {
+      padding: 8px 16px;
+      border: none;
+      background: var(--bg-input);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <span class="material-icons-round" style="font-size: 28px;">inventory_2</span>
+      <div>
+        <h1>Conferência de Recebimento</h1>
+        <div class="header-subtitle" id="escolaNome">Carregando...</div>
+      </div>
+    </div>
+  </header>
+  
+  <main class="container">
+    <!-- Info da Entrega -->
+    <div class="card">
+      <div class="card-header">
+        <span class="material-icons-round icon">local_shipping</span>
+        <h2>Dados da Entrega</h2>
+      </div>
+      <div class="card-body">
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-label">Fornecedor</div>
+            <div class="info-value" id="fornecedorNome">-</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Nota Fiscal</div>
+            <div class="info-value highlight" id="nfNumero">-</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Data Entrega</div>
+            <div class="info-value" id="dataEntrega">-</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Valor</div>
+            <div class="info-value" id="valorNF">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Progresso -->
+    <div class="card">
+      <div class="card-body">
+        <div class="progress-text">
+          <span id="checkProgress">0</span> de <span id="checkTotal">4</span> verificações concluídas
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Checklist de Conferência -->
+    <div class="card">
+      <div class="card-header">
+        <span class="material-icons-round icon">checklist</span>
+        <h2>Checklist de Conferência</h2>
+      </div>
+      <div class="card-body">
+        <div class="checklist">
+          <!-- 1. Quantidade -->
+          <div class="check-item" data-check="quantidade">
+            <div class="check-header">
+              <div class="check-icon">
+                <span class="material-icons-round">scale</span>
+              </div>
+              <div class="check-info">
+                <div class="check-title">Quantidade</div>
+                <div class="check-desc">Verificar se as quantidades estão corretas</div>
+              </div>
+              <span class="material-icons-round check-status">radio_button_unchecked</span>
+            </div>
+            <div class="check-options">
+              <div class="option-buttons">
+                <button class="option-btn ok" data-value="ok">
+                  <span class="material-icons-round icon">check_circle</span>
+                  <span>Conforme</span>
+                </button>
+                <button class="option-btn problem" data-value="problem">
+                  <span class="material-icons-round icon">error</span>
+                  <span>Divergência</span>
+                </button>
+              </div>
+              <div class="problem-details">
+                <div class="items-list" id="itemsList">
+                  <!-- Items serão carregados aqui -->
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 2. Qualidade -->
+          <div class="check-item" data-check="qualidade">
+            <div class="check-header">
+              <div class="check-icon">
+                <span class="material-icons-round">verified</span>
+              </div>
+              <div class="check-info">
+                <div class="check-title">Qualidade</div>
+                <div class="check-desc">Avaliar aparência e estado dos produtos</div>
+              </div>
+              <span class="material-icons-round check-status">radio_button_unchecked</span>
+            </div>
+            <div class="check-options">
+              <div class="option-buttons">
+                <button class="option-btn ok" data-value="ok">
+                  <span class="material-icons-round icon">thumb_up</span>
+                  <span>Aprovado</span>
+                </button>
+                <button class="option-btn problem" data-value="problem">
+                  <span class="material-icons-round icon">thumb_down</span>
+                  <span>Reprovado</span>
+                </button>
+              </div>
+              <div class="problem-details">
+                <div class="problem-type">
+                  <span class="problem-chip" data-type="aparencia">Aparência inadequada</span>
+                  <span class="problem-chip" data-type="odor">Odor estranho</span>
+                  <span class="problem-chip" data-type="cor">Cor alterada</span>
+                  <span class="problem-chip" data-type="textura">Textura anormal</span>
+                  <span class="problem-chip" data-type="maturacao">Maturação inadequada</span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Observações</label>
+                  <textarea class="form-textarea" id="obsQualidade" placeholder="Descreva o problema..."></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Fotos do Problema</label>
+                  <div class="photo-capture" id="photosQualidade">
+                    <div class="photo-btn" onclick="capturarFoto('qualidade')">
+                      <span class="material-icons-round icon">add_a_photo</span>
+                      <span>Adicionar</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 3. Temperatura -->
+          <div class="check-item" data-check="temperatura">
+            <div class="check-header">
+              <div class="check-icon">
+                <span class="material-icons-round">thermostat</span>
+              </div>
+              <div class="check-info">
+                <div class="check-title">Temperatura</div>
+                <div class="check-desc">Verificar temperatura dos produtos refrigerados</div>
+              </div>
+              <span class="material-icons-round check-status">radio_button_unchecked</span>
+            </div>
+            <div class="check-options">
+              <div class="form-group">
+                <label class="form-label">Temperatura Aferida (°C)</label>
+                <div class="temp-input">
+                  <input type="number" class="form-input" id="tempValue" placeholder="0" step="0.1">
+                  <span>°C</span>
+                  <span class="temp-status" id="tempStatus">-</span>
+                </div>
+              </div>
+              <div class="option-buttons" style="margin-top: 12px;">
+                <button class="option-btn ok" data-value="ok">
+                  <span class="material-icons-round icon">ac_unit</span>
+                  <span>Adequada</span>
+                </button>
+                <button class="option-btn problem" data-value="problem">
+                  <span class="material-icons-round icon">whatshot</span>
+                  <span>Inadequada</span>
+                </button>
+              </div>
+              <div class="problem-details">
+                <div class="form-group">
+                  <label class="form-label">Observações</label>
+                  <textarea class="form-textarea" id="obsTemperatura" placeholder="Descreva o problema de temperatura..."></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 4. Embalagem -->
+          <div class="check-item" data-check="embalagem">
+            <div class="check-header">
+              <div class="check-icon">
+                <span class="material-icons-round">inventory</span>
+              </div>
+              <div class="check-info">
+                <div class="check-title">Embalagem</div>
+                <div class="check-desc">Verificar integridade das embalagens</div>
+              </div>
+              <span class="material-icons-round check-status">radio_button_unchecked</span>
+            </div>
+            <div class="check-options">
+              <div class="option-buttons">
+                <button class="option-btn ok" data-value="ok">
+                  <span class="material-icons-round icon">check_box</span>
+                  <span>Íntegra</span>
+                </button>
+                <button class="option-btn problem" data-value="problem">
+                  <span class="material-icons-round icon">broken_image</span>
+                  <span>Danificada</span>
+                </button>
+              </div>
+              <div class="problem-details">
+                <div class="problem-type">
+                  <span class="problem-chip" data-type="rasgada">Rasgada</span>
+                  <span class="problem-chip" data-type="amassada">Amassada</span>
+                  <span class="problem-chip" data-type="molhada">Molhada</span>
+                  <span class="problem-chip" data-type="suja">Suja</span>
+                  <span class="problem-chip" data-type="aberta">Aberta/Violada</span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Fotos do Problema</label>
+                  <div class="photo-capture" id="photosEmbalagem">
+                    <div class="photo-btn" onclick="capturarFoto('embalagem')">
+                      <span class="material-icons-round icon">add_a_photo</span>
+                      <span>Adicionar</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Horta Escolar -->
+    <div class="card" id="cardHortaReceiving">
+      <div class="card-header" onclick="toggleHortaReceiving()" style="cursor:pointer;user-select:none;">
+        <span class="material-icons-round icon" style="color:#388e3c;">eco</span>
+        <h2>Horta Escolar</h2>
+        <span id="hortaReceivingChevron" class="material-icons-round" style="margin-left:auto;transition:transform 0.2s;color:var(--text-secondary);">expand_more</span>
+      </div>
+      <div id="hortaReceivingContent" style="display:none;">
+        <div class="card-body">
+          <div style="margin-bottom:14px;">
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;font-weight:500;color:#388e3c;">
+              <input type="checkbox" id="hortaReceivingAtiva" onchange="toggleHortaReceivingForm()"
+                style="width:18px;height:18px;accent-color:#388e3c;cursor:pointer;">
+              Registrar produção da horta escolar nesta conferência
+            </label>
+            <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;margin-left:28px;">
+              Géneros alimentícios cultivados na própria unidade escolar
+            </div>
+          </div>
+
+          <div id="hortaReceivingForm" style="display:none;">
+            <div id="hortaReceivingItens"></div>
+            <button type="button" onclick="adicionarItemHortaReceiving()"
+              style="width:100%;padding:10px;background:#e8f5e9;color:#2e7d32;border:2px dashed #66bb6a;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:14px;">
+              ＋ Adicionar Gênero da Horta
+            </button>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div class="form-group">
+                <label class="form-label">Data da Colheita</label>
+                <input type="date" class="form-input" id="hortaReceivingDataColheita">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Responsável pela Colheita</label>
+                <input type="text" class="form-input" id="hortaReceivingResponsavel" placeholder="Nome do responsável">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Destino da Produção</label>
+              <select class="form-input" id="hortaReceivingDestino" style="appearance:auto;">
+                <option value="Cardapio_Dia">Cardápio do Dia</option>
+                <option value="Estoque">Estoque</option>
+                <option value="Descarte">Descarte</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Observações Gerais -->
+    <div class="card">
+      <div class="card-header">
+        <span class="material-icons-round icon">notes</span>
+        <h2>Observações Gerais</h2>
+      </div>
+      <div class="card-body">
+        <textarea class="form-textarea" id="obsGerais" placeholder="Adicione observações gerais sobre o recebimento..."></textarea>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Footer Actions -->
+  <div class="footer-actions">
+    <button class="btn btn-secondary" id="btnRecusar">
+      <span class="material-icons-round">close</span>
+      Recusar
+    </button>
+    <button class="btn btn-primary" id="btnAceitar" disabled>
+      <span class="material-icons-round">check</span>
+      Aceitar Entrega
+    </button>
+  </div>
+
+  <!-- Modal de Assinatura -->
+  <div class="modal-overlay" id="modalAssinatura">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Assinatura do Responsável</h3>
+        <button class="modal-close" onclick="fecharModal('modalAssinatura')">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Nome do Responsável</label>
+          <input type="text" class="form-input" id="nomeResponsavel" placeholder="Nome completo">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Matrícula</label>
+          <input type="text" class="form-input" id="matriculaResponsavel" placeholder="Número da matrícula">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Assinatura</label>
+          <canvas class="signature-pad" id="signaturePad" width="300" height="150"></canvas>
+          <div class="signature-actions">
+            <button class="signature-clear" onclick="limparAssinatura()">Limpar</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="fecharModal('modalAssinatura')">Cancelar</button>
+        <button class="btn btn-primary" id="btnConfirmarRecebimento">Confirmar Recebimento</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal de Recusa -->
+  <div class="modal-overlay" id="modalRecusa">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Recusar Entrega</h3>
+        <button class="modal-close" onclick="fecharModal('modalRecusa')">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Motivo da Recusa</label>
+          <select class="form-input" id="motivoRecusa" style="appearance: auto;">
+            <option value="">Selecione...</option>
+            <option value="quantidade">Quantidade incorreta</option>
+            <option value="qualidade">Qualidade inadequada</option>
+            <option value="temperatura">Temperatura fora do padrão</option>
+            <option value="embalagem">Embalagem danificada</option>
+            <option value="validade">Prazo de validade curto</option>
+            <option value="outro">Outro motivo</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Detalhamento</label>
+          <textarea class="form-textarea" id="detalheRecusa" placeholder="Descreva o motivo da recusa..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="fecharModal('modalRecusa')">Cancelar</button>
+        <button class="btn btn-danger" id="btnConfirmarRecusa">Confirmar Recusa</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <span class="material-icons-round" id="toastIcon">check_circle</span>
+    <span id="toastMessage">Mensagem</span>
+  </div>
+  
+  <!-- Loading -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <p style="margin-top: 16px; color: var(--text-secondary);" id="loadingText">Carregando...</p>
+  </div>
+  
+  <!-- Input de câmera oculto -->
+  <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
+  
+  <script>
+    // ========================================
+    // HORTA ESCOLAR — CONFERÊNCIA DE RECEBIMENTO
+    // ========================================
+    var hortaReceivingCount = 0;
+
+    function toggleHortaReceiving() {
+      var content = document.getElementById('hortaReceivingContent');
+      var chevron = document.getElementById('hortaReceivingChevron');
+      var visible = content.style.display !== 'none';
+      content.style.display = visible ? 'none' : 'block';
+      chevron.style.transform = visible ? '' : 'rotate(180deg)';
+    }
+
+    function toggleHortaReceivingForm() {
+      var checked = document.getElementById('hortaReceivingAtiva').checked;
+      document.getElementById('hortaReceivingForm').style.display = checked ? 'block' : 'none';
+      if (checked && document.getElementById('hortaReceivingItens').children.length === 0) {
+        adicionarItemHortaReceiving();
+      }
+      if (checked && !document.getElementById('hortaReceivingDataColheita').value) {
+        document.getElementById('hortaReceivingDataColheita').valueAsDate = new Date();
+      }
+    }
+
+    function adicionarItemHortaReceiving() {
+      hortaReceivingCount++;
+      var idx = hortaReceivingCount;
+      var container = document.getElementById('hortaReceivingItens');
+      var div = document.createElement('div');
+      div.id = 'hortaRItem_' + idx;
+      div.style.cssText = 'border:1px solid #a5d6a7;border-radius:8px;padding:12px;margin-bottom:10px;background:#f9fbe7;';
+      div.innerHTML =
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
+        '  <span style="font-size:13px;font-weight:600;color:#2e7d32;">🌿 Gênero #' + idx + '</span>' +
+        '  <button type="button" onclick="removerItemHortaReceiving(' + idx + ')" style="background:none;border:none;color:#c62828;cursor:pointer;font-size:18px;">✕</button>' +
+        '</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">' +
+        '  <div style="grid-column:1/-1;">' +
+        '    <label class="form-label" style="font-size:11px;">Gênero Alimentício *</label>' +
+        '    <input type="text" class="form-input" id="hortaRProduto_' + idx + '" placeholder="Ex: Alface, Tomate, Couve...">' +
+        '  </div>' +
+        '  <div>' +
+        '    <label class="form-label" style="font-size:11px;">Qtd. Colhida *</label>' +
+        '    <input type="number" class="form-input" id="hortaRQtd_' + idx + '" placeholder="0,000" step="0.001" min="0">' +
+        '  </div>' +
+        '  <div>' +
+        '    <label class="form-label" style="font-size:11px;">Unidade</label>' +
+        '    <select class="form-input" id="hortaRUnidade_' + idx + '" style="appearance:auto;">' +
+        '      <option value="kg">kg</option>' +
+        '      <option value="unidade">Unidade</option>' +
+        '      <option value="maco">Maço</option>' +
+        '      <option value="caixa">Caixa</option>' +
+        '    </select>' +
+        '  </div>' +
+        '</div>';
+      container.appendChild(div);
+    }
+
+    function removerItemHortaReceiving(idx) {
+      var el = document.getElementById('hortaRItem_' + idx);
+      if (el) el.remove();
+    }
+
+    function coletarDadosHortaReceiving() {
+      if (!document.getElementById('hortaReceivingAtiva').checked) return null;
+      var itens = [];
+      var divs = document.getElementById('hortaReceivingItens').querySelectorAll('[id^="hortaRItem_"]');
+      divs.forEach(function(div) {
+        var idx = div.id.replace('hortaRItem_', '');
+        var produto = (document.getElementById('hortaRProduto_' + idx) || {}).value || '';
+        var qtd = parseFloat((document.getElementById('hortaRQtd_' + idx) || {}).value) || 0;
+        var unidade = (document.getElementById('hortaRUnidade_' + idx) || {}).value || 'kg';
+        if (produto.trim()) itens.push({ produto: produto.trim(), quantidadeKg: qtd, unidade: unidade });
+      });
+      if (itens.length === 0) return null;
+      return {
+        itens: itens,
+        dataColheita: document.getElementById('hortaReceivingDataColheita').value,
+        responsavelColheita: document.getElementById('hortaReceivingResponsavel').value.trim(),
+        destino: document.getElementById('hortaReceivingDestino').value
+      };
+    }
+
+    (function() {
+      'use strict';
+      
+      // Estado
+      var state = {
+        entrega: null,
+        itens: [],
+        checks: {
+          quantidade: null,
+          qualidade: null,
+          temperatura: null,
+          embalagem: null
+        },
+        problemas: {
+          qualidade: [],
+          embalagem: []
+        },
+        fotos: {
+          qualidade: [],
+          embalagem: []
+        },
+        signatureCtx: null,
+        isDrawing: false
+      };
+      
+      // Inicialização
+      function init() {
+        bindEvents();
+        setupSignaturePad();
+        carregarDados();
+      }
+      
+      function bindEvents() {
+        // Check items
+        document.querySelectorAll('.check-header').forEach(function(header) {
+          header.addEventListener('click', function() {
+            var item = this.closest('.check-item');
+            toggleCheckItem(item);
+          });
+        });
+        
+        // Option buttons
+        document.querySelectorAll('.option-btn').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var item = this.closest('.check-item');
+            var value = this.dataset.value;
+            selecionarOpcao(item, this, value);
+          });
+        });
+        
+        // Problem chips
+        document.querySelectorAll('.problem-chip').forEach(function(chip) {
+          chip.addEventListener('click', function() {
+            this.classList.toggle('selected');
+            var item = this.closest('.check-item');
+            var checkType = item.dataset.check;
+            atualizarProblemas(checkType);
+          });
+        });
+        
+        // Temperature input
+        document.getElementById('tempValue').addEventListener('input', function() {
+          atualizarStatusTemperatura(this.value);
+        });
+        
+        // Buttons
+        document.getElementById('btnAceitar').addEventListener('click', abrirModalAssinatura);
+        document.getElementById('btnRecusar').addEventListener('click', function() {
+          abrirModal('modalRecusa');
+        });
+        document.getElementById('btnConfirmarRecebimento').addEventListener('click', confirmarRecebimento);
+        document.getElementById('btnConfirmarRecusa').addEventListener('click', confirmarRecusa);
+        
+        // Camera
+        document.getElementById('cameraInput').addEventListener('change', processarFoto);
+      }
+      
+      function toggleCheckItem(item) {
+        var wasExpanded = item.classList.contains('expanded');
+        document.querySelectorAll('.check-item').forEach(function(i) {
+          i.classList.remove('expanded');
+        });
+        if (!wasExpanded) {
+          item.classList.add('expanded');
+        }
+      }
+      
+      function selecionarOpcao(item, btn, value) {
+        var checkType = item.dataset.check;
+        
+        // Remove seleção anterior
+        item.querySelectorAll('.option-btn').forEach(function(b) {
+          b.classList.remove('selected');
+        });
+        
+        // Seleciona novo
+        btn.classList.add('selected');
+        
+        // Atualiza estado
+        state.checks[checkType] = value;
+        
+        // Atualiza visual
+        item.classList.remove('ok', 'problem');
+        item.classList.add(value);
+        
+        var statusIcon = item.querySelector('.check-status');
+        statusIcon.textContent = value === 'ok' ? 'check_circle' : 'error';
+        
+        atualizarProgresso();
+      }
+      
+      function atualizarProblemas(checkType) {
+        var item = document.querySelector('.check-item[data-check="' + checkType + '"]');
+        var chips = item.querySelectorAll('.problem-chip.selected');
+        state.problemas[checkType] = Array.from(chips).map(function(c) {
+          return c.dataset.type;
+        });
+      }
+      
+      function atualizarStatusTemperatura(valor) {
+        var temp = parseFloat(valor);
+        var status = document.getElementById('tempStatus');
+        
+        if (isNaN(temp)) {
+          status.textContent = '-';
+          status.className = 'temp-status';
+          return;
+        }
+        
+        if (temp <= 5) {
+          status.textContent = 'Adequada';
+          status.className = 'temp-status ok';
+        } else if (temp <= 10) {
+          status.textContent = 'Atenção';
+          status.className = 'temp-status warning';
+        } else {
+          status.textContent = 'Inadequada';
+          status.className = 'temp-status danger';
+        }
+      }
+      
+      function atualizarProgresso() {
+        var total = Object.keys(state.checks).length;
+        var concluidos = Object.values(state.checks).filter(function(v) {
+          return v !== null;
+        }).length;
+        
+        document.getElementById('checkProgress').textContent = concluidos;
+        document.getElementById('checkTotal').textContent = total;
+        document.getElementById('progressFill').style.width = (concluidos / total * 100) + '%';
+        
+        // Habilita botão de aceitar se todos verificados
+        var todosOk = Object.values(state.checks).every(function(v) {
+          return v === 'ok';
+        });
+        var todosVerificados = concluidos === total;
+        
+        document.getElementById('btnAceitar').disabled = !todosVerificados;
+      }
+
+      // Carregamento de dados
+      function carregarDados() {
+        showLoading('Carregando entrega...');
+        
+        if (typeof google !== 'undefined' && google.script) {
+          google.script.run
+            .withSuccessHandler(onDadosCarregados)
+            .withFailureHandler(onErro)
+            .api_entrega_getDadosConferencia();
+        } else {
+          // Dados de demonstração
+          setTimeout(function() {
+            onDadosCarregados({
+              success: true,
+              data: {
+                escola: 'EC 01 do Plano Piloto',
+                entrega: {
+                  id: 'ENT_001',
+                  fornecedor: 'Distribuidora Alimentos Ltda',
+                  nf_numero: '001234',
+                  data: new Date().toISOString(),
+                  valor: 5420.50
+                },
+                itens: [
+                  { id: 1, nome: 'Arroz Tipo 1 - 5kg', esperado: 20, unidade: 'pct' },
+                  { id: 2, nome: 'Feijão Carioca - 1kg', esperado: 30, unidade: 'pct' },
+                  { id: 3, nome: 'Óleo de Soja - 900ml', esperado: 15, unidade: 'un' },
+                  { id: 4, nome: 'Leite Integral - 1L', esperado: 50, unidade: 'cx' }
+                ]
+              }
+            });
+          }, 1000);
+        }
+      }
+      
+      function onDadosCarregados(result) {
+        hideLoading();
+        
+        if (!result.success) {
+          showToast(result.error || 'Erro ao carregar', 'error');
+          return;
+        }
+        
+        state.entrega = result.data.entrega;
+        state.itens = result.data.itens.map(function(item) {
+          item.recebido = item.esperado;
+          return item;
+        });
+        
+        // Preenche dados
+        document.getElementById('escolaNome').textContent = result.data.escola;
+        document.getElementById('fornecedorNome').textContent = state.entrega.fornecedor;
+        document.getElementById('nfNumero').textContent = 'NF ' + state.entrega.nf_numero;
+        document.getElementById('dataEntrega').textContent = formatarData(state.entrega.data);
+        document.getElementById('valorNF').textContent = formatarMoeda(state.entrega.valor);
+        
+        renderItens();
+      }
+      
+      function renderItens() {
+        var html = '';
+        state.itens.forEach(function(item, idx) {
+          var status = item.recebido === item.esperado ? 'ok' : 
+                      item.recebido > 0 ? 'partial' : 'missing';
+          var statusIcon = status === 'ok' ? 'check_circle' : 
+                          status === 'partial' ? 'warning' : 'cancel';
+          
+          html += '<div class="item-row" data-idx="' + idx + '">' +
+            '<div class="item-info">' +
+              '<div class="item-name">' + item.nome + '</div>' +
+              '<div class="item-expected">Esperado: ' + item.esperado + ' ' + item.unidade + '</div>' +
+            '</div>' +
+            '<div class="item-qty">' +
+              '<button class="qty-btn" onclick="alterarQtd(' + idx + ', -1)">-</button>' +
+              '<span class="qty-value">' + item.recebido + '</span>' +
+              '<button class="qty-btn" onclick="alterarQtd(' + idx + ', 1)">+</button>' +
+            '</div>' +
+            '<span class="material-icons-round item-status ' + status + '">' + statusIcon + '</span>' +
+          '</div>';
+        });
+        
+        document.getElementById('itemsList').innerHTML = html;
+      }
+      
+      // Função global para alterar quantidade
+      window.alterarQtd = function(idx, delta) {
+        var item = state.itens[idx];
+        item.recebido = Math.max(0, item.recebido + delta);
+        renderItens();
+      };
+      
+      // Captura de foto
+      var fotoTipo = null;
+      
+      window.capturarFoto = function(tipo) {
+        fotoTipo = tipo;
+        document.getElementById('cameraInput').click();
+      };
+      
+      function processarFoto(e) {
+        var file = e.target.files[0];
+        if (!file || !fotoTipo) return;
+        
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+          var container = document.getElementById('photos' + fotoTipo.charAt(0).toUpperCase() + fotoTipo.slice(1));
+          var preview = document.createElement('div');
+          preview.className = 'photo-preview';
+          preview.innerHTML = '<img src="' + ev.target.result + '">' +
+            '<span class="material-icons-round remove" onclick="this.parentElement.remove()">close</span>';
+          container.insertBefore(preview, container.lastElementChild);
+          
+          state.fotos[fotoTipo].push(ev.target.result);
+        };
+        reader.readAsDataURL(file);
+        
+        e.target.value = '';
+      }
+      
+      // Signature Pad
+      function setupSignaturePad() {
+        var canvas = document.getElementById('signaturePad');
+        state.signatureCtx = canvas.getContext('2d');
+        state.signatureCtx.strokeStyle = '#212121';
+        state.signatureCtx.lineWidth = 2;
+        state.signatureCtx.lineCap = 'round';
+        
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+        
+        canvas.addEventListener('touchstart', function(e) {
+          e.preventDefault();
+          startDrawing(e.touches[0]);
+        });
+        canvas.addEventListener('touchmove', function(e) {
+          e.preventDefault();
+          draw(e.touches[0]);
+        });
+        canvas.addEventListener('touchend', stopDrawing);
+      }
+      
+      function startDrawing(e) {
+        state.isDrawing = true;
+        var canvas = document.getElementById('signaturePad');
+        var rect = canvas.getBoundingClientRect();
+        state.signatureCtx.beginPath();
+        state.signatureCtx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+      }
+      
+      function draw(e) {
+        if (!state.isDrawing) return;
+        var canvas = document.getElementById('signaturePad');
+        var rect = canvas.getBoundingClientRect();
+        state.signatureCtx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+        state.signatureCtx.stroke();
+      }
+      
+      function stopDrawing() {
+        state.isDrawing = false;
+      }
+      
+      window.limparAssinatura = function() {
+        var canvas = document.getElementById('signaturePad');
+        state.signatureCtx.clearRect(0, 0, canvas.width, canvas.height);
+      };
+      
+      // Modais
+      function abrirModal(id) {
+        document.getElementById(id).classList.add('show');
+      }
+      
+      window.fecharModal = function(id) {
+        document.getElementById(id).classList.remove('show');
+      };
+      
+      function abrirModalAssinatura() {
+        abrirModal('modalAssinatura');
+      }
+      
+      // Confirmações
+      function confirmarRecebimento() {
+        var nome = document.getElementById('nomeResponsavel').value.trim();
+        var matricula = document.getElementById('matriculaResponsavel').value.trim();
+        
+        if (!nome || !matricula) {
+          showToast('Preencha nome e matrícula', 'error');
+          return;
+        }
+        
+        showLoading('Registrando recebimento...');
+        fecharModal('modalAssinatura');
+        
+        var dados = {
+          entrega_id: state.entrega.id,
+          status: 'ACEITO',
+          checks: state.checks,
+          itens: state.itens,
+          temperatura: document.getElementById('tempValue').value,
+          observacoes: document.getElementById('obsGerais').value,
+          responsavel: { nome: nome, matricula: matricula },
+          assinatura: document.getElementById('signaturePad').toDataURL(),
+          hortaEscolar: coletarDadosHortaReceiving()
+        };
+        
+        if (typeof google !== 'undefined' && google.script) {
+          google.script.run
+            .withSuccessHandler(onRecebimentoConfirmado)
+            .withFailureHandler(onErro)
+            .api_entrega_confirmarRecebimento(dados);
+        } else {
+          setTimeout(function() {
+            onRecebimentoConfirmado({ success: true });
+          }, 1500);
+        }
+      }
+      
+      function confirmarRecusa() {
+        var motivo = document.getElementById('motivoRecusa').value;
+        var detalhe = document.getElementById('detalheRecusa').value.trim();
+        
+        if (!motivo) {
+          showToast('Selecione o motivo da recusa', 'error');
+          return;
+        }
+        
+        showLoading('Registrando recusa...');
+        fecharModal('modalRecusa');
+        
+        var dados = {
+          entrega_id: state.entrega.id,
+          status: 'RECUSADO',
+          motivo: motivo,
+          detalhe: detalhe,
+          checks: state.checks,
+          problemas: state.problemas,
+          fotos: state.fotos
+        };
+        
+        if (typeof google !== 'undefined' && google.script) {
+          google.script.run
+            .withSuccessHandler(onRecusaConfirmada)
+            .withFailureHandler(onErro)
+            .api_entrega_recusar(dados);
+        } else {
+          setTimeout(function() {
+            onRecusaConfirmada({ success: true });
+          }, 1500);
+        }
+      }
+      
+      function onRecebimentoConfirmado(result) {
+        hideLoading();
+        if (result.success) {
+          showToast('Recebimento confirmado!', 'success');
+          setTimeout(function() {
+            if (typeof google !== 'undefined' && google.script) {
+              google.script.host.close();
+            }
+          }, 2000);
+        } else {
+          showToast(result.error || 'Erro ao confirmar', 'error');
+        }
+      }
+      
+      function onRecusaConfirmada(result) {
+        hideLoading();
+        if (result.success) {
+          showToast('Recusa registrada!', 'success');
+          setTimeout(function() {
+            if (typeof google !== 'undefined' && google.script) {
+              google.script.host.close();
+            }
+          }, 2000);
+        } else {
+          showToast(result.error || 'Erro ao registrar', 'error');
+        }
+      }
+      
+      // Utilitários
+      function formatarMoeda(valor) {
+        return 'R$ ' + Number(valor || 0).toLocaleString('pt-BR', {
+          minimumFractionDigits: 2, maximumFractionDigits: 2
+        });
+      }
+      
+      function formatarData(data) {
+        var d = new Date(data);
+        return d.toLocaleDateString('pt-BR');
+      }
+      
+      function showToast(msg, type) {
+        var toast = document.getElementById('toast');
+        document.getElementById('toastIcon').textContent = type === 'error' ? 'error' : 'check_circle';
+        document.getElementById('toastMessage').textContent = msg;
+        toast.className = 'toast ' + (type || '') + ' show';
+        setTimeout(function() { toast.classList.remove('show'); }, 3000);
+      }
+      
+      function showLoading(text) {
+        document.getElementById('loadingText').textContent = text || 'Carregando...';
+        document.getElementById('loadingOverlay').classList.add('show');
+      }
+      
+      function hideLoading() {
+        document.getElementById('loadingOverlay').classList.remove('show');
+      }
+      
+      function onErro(error) {
+        hideLoading();
+        showToast(error.message || 'Erro inesperado', 'error');
+      }
+      
+      // Init
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>

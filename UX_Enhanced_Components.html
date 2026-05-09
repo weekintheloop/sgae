@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UNIAE - Sistema Intuitivo</title>
+  <style>
+    /* ========== VARIÁVEIS E RESET ========== */
+    :root {
+      --primary: #667eea;
+      --primary-dark: #5568d3;
+      --primary-light: #8b9aef;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --info: #3b82f6;
+      --text-primary: #1f2937;
+      --text-secondary: #6b7280;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f9fafb;
+      --bg-tertiary: #f3f4f6;
+      --border: #e5e7eb;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow: 0 4px 6px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+      --radius: 8px;
+      --radius-lg: 12px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* ========== LAYOUT PRINCIPAL ========== */
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ========== SIDEBAR NAVEGAÇÃO ========== */
+    .sidebar {
+      width: 280px;
+      background: var(--bg-primary);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 100;
+      transition: var(--transition);
+    }
+
+    .sidebar.collapsed {
+      width: 80px;
+    }
+
+    .sidebar-header {
+      padding: 24px 20px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+    }
+
+    .sidebar-header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sidebar-header .subtitle {
+      font-size: 12px;
+      opacity: 0.9;
+      margin-top: 4px;
+    }
+
+    .sidebar.collapsed .sidebar-header h1 span:not(.icon) {
+      display: none;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 16px 0;
+    }
+
+    .nav-section {
+      margin-bottom: 24px;
+    }
+
+    .nav-section-title {
+      padding: 8px 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      letter-spacing: 0.5px;
+    }
+
+    .sidebar.collapsed .nav-section-title {
+      display: none;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .nav-item:hover {
+      background: var(--bg-secondary);
+      color: var(--primary);
+    }
+
+    .nav-item.active {
+      background: var(--bg-tertiary);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--primary);
+    }
+
+    .nav-item .icon {
+      font-size: 20px;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    .nav-item .badge {
+      margin-left: auto;
+      background: var(--error);
+      color: white;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    .sidebar.collapsed .nav-item span:not(.icon) {
+      display: none;
+    }
+
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .toggle-sidebar {
+      width: 100%;
+      padding: 10px;
+      background: var(--bg-secondary);
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 14px;
+    }
+
+    .toggle-sidebar:hover {
+      background: var(--bg-tertiary);
+    }
+
+    /* ========== CONTEÚDO PRINCIPAL ========== */
+    .main-content {
+      flex: 1;
+      margin-left: 280px;
+      transition: var(--transition);
+    }
+
+    .sidebar.collapsed + .main-content {
+      margin-left: 80px;
+    }
+
+    /* ========== HEADER ========== */
+    .page-header {
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 32px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .breadcrumb a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .breadcrumb a:hover {
+      color: var(--primary);
+    }
+
+    .breadcrumb .separator {
+      color: var(--border);
+    }
+
+    .breadcrumb .current {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .page-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .page-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    /* ========== BOTÕES MELHORADOS ========== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn:active::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #059669;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--border);
+      color: var(--text-primary);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: rgba(102, 126, 234, 0.05);
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+
+    .btn-lg {
+      padding: 14px 28px;
+      font-size: 16px;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* ========== TOOLTIPS ========== */
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+
+    .tooltip .tooltip-text {
+      visibility: hidden;
+      background: var(--text-primary);
+      color: white;
+      text-align: center;
+      padding: 8px 12px;
+      border-radius: var(--radius);
+      position: absolute;
+      z-index: 1000;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      font-size: 13px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      box-shadow: var(--shadow);
+    }
+
+    .tooltip .tooltip-text::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: var(--text-primary) transparent transparent transparent;
+    }
+
+    .tooltip:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    /* ========== CARDS MELHORADOS ========== */
+    .content-area {
+      padding: 32px;
+    }
+
+    .card {
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      margin-bottom: 24px;
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-body {
+      padding: 24px;
+    }
+
+    /* ========== ESTADOS VAZIOS MELHORADOS ========== */
+    .empty-state {
+      text-align: center;
+      padding: 80px 40px;
+      color: var(--text-secondary);
+    }
+
+    .empty-state-icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+      opacity: 0.5;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .empty-state-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .empty-state-description {
+      font-size: 14px;
+      margin-bottom: 24px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ========== ALERTAS E NOTIFICAÇÕES ========== */
+    .alert {
+      padding: 16px 20px;
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      animation: slideInDown 0.3s ease-out;
+    }
+
+    @keyframes slideInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .alert-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .alert-content {
+      flex: 1;
+    }
+
+    .alert-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .alert-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: var(--transition);
+    }
+
+    .alert-close:hover {
+      opacity: 1;
+    }
+
+    .alert-success {
+      background: #d1fae5;
+      color: #065f46;
+      border-left: 4px solid var(--success);
+    }
+
+    .alert-error {
+      background: #fee2e2;
+      color: #991b1b;
+      border-left: 4px solid var(--error);
+    }
+
+    .alert-warning {
+      background: #fef3c7;
+      color: #92400e;
+      border-left: 4px solid var(--warning);
+    }
+
+    .alert-info {
+      background: #dbeafe;
+      color: #1e40af;
+      border-left: 4px solid var(--info);
+    }
+
+    /* ========== LOADING STATES ========== */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255,255,255,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid var(--bg-tertiary);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      margin-top: 16px;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    /* ========== BADGES ========== */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-success {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .badge-warning {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .badge-info {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    /* ========== HELP HINTS ========== */
+    .help-hint {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--info);
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: help;
+      margin-left: 6px;
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.mobile-open {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      .page-header {
+        padding: 16px 20px;
+      }
+
+      .page-title {
+        font-size: 22px;
+      }
+
+      .content-area {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h1>
+          <span class="icon">🎓</span>
+          <span>UNIAE</span>
+        </h1>
+        <div class="subtitle">Sistema de Gestão</div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-section-title">Principal</div>
+          <a class="nav-item active" onclick="navigateTo('dashboard')">
+            <span class="icon">📊</span>
+            <span>Dashboard</span>
+          </a>
+          <a class="nav-item" onclick="navigateTo('notas')">
+            <span class="icon">🧾</span>
+            <span>Notas Fiscais</span>
+            <span class="badge">12</span>
+          </a>
+          <a class="nav-item" onclick="navigateTo('entregas')">
+            <span class="icon">🚚</span>
+            <span>Entregas</span>
+          </a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Gestão</div>
+          <a class="nav-item" onclick="navigateTo('recusas')">
+            <span class="icon">❌</span>
+            <span>Recusas</span>
+            <span class="badge">3</span>
+          </a>
+          <a class="nav-item" onclick="navigateTo('glosas')">
+            <span class="icon">💰</span>
+            <span>Glosas</span>
+          </a>
+          <a class="nav-item" onclick="navigateTo('fornecedores')">
+            <span class="icon">🏢</span>
+            <span>Fornecedores</span>
+          </a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Relatórios</div>
+          <a class="nav-item" onclick="navigateTo('relatorios')">
+            <span class="icon">📈</span>
+            <span>Análises</span>
+          </a>
+          <a class="nav-item" onclick="navigateTo('configuracoes')">
+            <span class="icon">⚙️</span>
+            <span>Configurações</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="toggle-sidebar" onclick="toggleSidebar()">
+          ◀ Recolher Menu
+        </button>
+      </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-content">
+      <header class="page-header">
+        <nav class="breadcrumb">
+          <a href="#" onclick="navigateTo('dashboard')">Início</a>
+          <span class="separator">›</span>
+          <span class="current">Dashboard</span>
+        </nav>
+
+        <div class="page-title-row">
+          <h1 class="page-title">
+            <span>📊</span>
+            Dashboard
+            <span class="tooltip">
+              <span class="help-hint">?</span>
+              <span class="tooltip-text">Visão geral do sistema com métricas principais</span>
+            </span>
+          </h1>
+
+          <div class="page-actions">
+            <button class="btn btn-outline btn-sm tooltip">
+              <span>🔄</span>
+              <span>Atualizar</span>
+              <span class="tooltip-text">Recarregar dados</span>
+            </button>
+            <button class="btn btn-primary btn-sm">
+              <span>➕</span>
+              <span>Nova Nota Fiscal</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div class="content-area" id="contentArea">
+        <!-- Exemplo de Alerta -->
+        <div class="alert alert-info">
+          <span class="alert-icon">ℹ️</span>
+          <div class="alert-content">
+            <div class="alert-title">Bem-vindo ao UNIAE!</div>
+            <div>Sistema redesenhado para melhor experiência. Explore o menu lateral para navegar.</div>
+          </div>
+          <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+        </div>
+
+        <!-- Exemplo de Card -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <span>📋</span>
+              Métricas Principais
+            </h2>
+            <button class="btn btn-secondary btn-sm">Ver Detalhes</button>
+          </div>
+          <div class="card-body">
+            <p>Conteúdo do card aqui...</p>
+          </div>
+        </div>
+
+        <!-- Exemplo de Estado Vazio -->
+        <div class="card">
+          <div class="card-body">
+            <div class="empty-state">
+              <div class="empty-state-icon">📦</div>
+              <div class="empty-state-title">Nenhum dado disponível</div>
+              <div class="empty-state-description">
+                Comece adicionando sua primeira nota fiscal para ver as informações aqui.
+              </div>
+              <button class="btn btn-primary">
+                <span>➕</span>
+                <span>Adicionar Nota Fiscal</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Navegação
+    function navigateTo(page) {
+      // Remove active de todos
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+      });
+
+      // Adiciona active ao clicado
+      event.currentTarget.classList.add('active');
+
+      // Atualiza breadcrumb e título
+      updatePageHeader(page);
+
+      // Carrega conteúdo
+      loadPageContent(page);
+    }
+
+    function updatePageHeader(page) {
+      const pageNames = {
+        'dashboard': { icon: '📊', name: 'Dashboard' },
+        'notas': { icon: '🧾', name: 'Notas Fiscais' },
+        'entregas': { icon: '🚚', name: 'Entregas' },
+        'recusas': { icon: '❌', name: 'Recusas' },
+        'glosas': { icon: '💰', name: 'Glosas' },
+        'fornecedores': { icon: '🏢', name: 'Fornecedores' },
+        'relatorios': { icon: '📈', name: 'Relatórios' },
+        'configuracoes': { icon: '⚙️', name: 'Configurações' }
+      };
+
+      const pageInfo = pageNames[page] || pageNames['dashboard'];
+
+      document.querySelector('.breadcrumb .current').textContent = pageInfo.name;
+      document.querySelector('.page-title').innerHTML = `
+        <span>${pageInfo.icon}</span>
+        ${pageInfo.name}
+        <span class="tooltip">
+          <span class="help-hint">?</span>
+          <span class="tooltip-text">Ajuda sobre ${pageInfo.name}</span>
+        </span>
+      `;
+    }
+
+    function loadPageContent(page) {
+      const contentArea = document.getElementById('contentArea');
+
+      // Mostra loading
+      showLoading();
+
+      // Simula carregamento (substituir por chamada real ao backend)
+      setTimeout(() => {
+        hideLoading();
+        // Aqui você chamaria google.script.run para carregar dados reais
+      }, 500);
+    }
+
+    // Toggle Sidebar
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('collapsed');
+
+      const btn = event.currentTarget;
+      btn.textContent = sidebar.classList.contains('collapsed') ? '▶ Expandir' : '◀ Recolher Menu';
+    }
+
+    // Loading
+    function showLoading() {
+      const overlay = document.createElement('div');
+      overlay.className = 'loading-overlay';
+      overlay.id = 'loadingOverlay';
+      overlay.innerHTML = `
+        <div style="text-align: center;">
+          <div class="spinner"></div>
+          <div class="loading-text">Carregando...</div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+    }
+
+    function hideLoading() {
+      const overlay = document.getElementById('loadingOverlay');
+      if (overlay) overlay.remove();
+    }
+
+    // Notificações
+    function showNotification(message, type = 'info') {
+      const icons = {
+        success: '✅',
+        error: '❌',
+        warning: '⚠️',
+        info: 'ℹ️'
+      };
+
+      const alert = document.createElement('div');
+      alert.className = `alert alert-${type}`;
+      alert.innerHTML = `
+        <span class="alert-icon">${icons[type]}</span>
+        <div class="alert-content">
+          <div>${message}</div>
+        </div>
+        <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+      `;
+
+      const contentArea = document.getElementById('contentArea');
+      contentArea.insertBefore(alert, contentArea.firstChild);
+
+      // Auto-remove após 5 segundos
+      setTimeout(() => alert.remove(), 5000);
+    }
+
+    // Mobile menu toggle
+    function toggleMobileMenu() {
+      document.getElementById('sidebar').classList.toggle('mobile-open');
+    }
+  </script>
+</body>
+</html>

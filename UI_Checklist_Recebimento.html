@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checklist de Recebimento - UNIAE/CRE-PP</title>
+  <?!= include('DesignSystem'); ?>
+  <style>
+    /* Handled by DesignSystem */
+
+
+    /* Print specific tweaks, keeping most layout logic but using variables where safe */
+    body {
+      font-family: var(--font-family-base, Arial, sans-serif);
+      font-size: 11px;
+      line-height: 1.4;
+      padding: 15px;
+      max-width: 210mm;
+      margin: 0 auto;
+      background: white;
+      /* Force white for print/checklist */
+    }
+
+    .header {
+      text-align: center;
+      border-bottom: 2px solid var(--text-primary);
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
+
+    .header h1 {
+      font-size: 14px;
+      margin-bottom: 5px;
+      color: var(--text-primary);
+    }
+
+    .header p {
+      font-size: 10px;
+      color: var(--text-secondary);
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .info-item {
+      border: 1px solid var(--bg-tertiary);
+      padding: 6px;
+    }
+
+    .info-item label {
+      font-weight: bold;
+      display: block;
+      font-size: 9px;
+      color: var(--text-secondary);
+    }
+
+    .info-item .value {
+      border-bottom: 1px dotted var(--text-secondary);
+      min-height: 16px;
+      margin-top: 2px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 15px;
+      font-size: 10px;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--text-primary);
+      padding: 5px;
+      text-align: left;
+    }
+
+    th {
+      background: var(--bg-secondary);
+      font-weight: bold;
+      color: var(--text-primary);
+    }
+
+    .check-col {
+      width: 25px;
+      text-align: center;
+    }
+
+    .category {
+      background: var(--bg-tertiary);
+      font-weight: bold;
+    }
+
+    .obs-section {
+      border: 1px solid var(--text-primary);
+      padding: 10px;
+      margin-bottom: 15px;
+    }
+
+    .obs-section h3 {
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+
+    .obs-lines {
+      min-height: 60px;
+      border-bottom: 1px dotted var(--text-secondary);
+    }
+
+    .signature-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .signature-box {
+      text-align: center;
+      padding-top: 40px;
+    }
+
+    .signature-line {
+      border-top: 1px solid var(--text-primary);
+      padding-top: 5px;
+      font-size: 10px;
+    }
+
+    .legal-note {
+      font-size: 8px;
+      color: var(--text-secondary);
+      margin-top: 15px;
+      padding: 8px;
+      background: var(--bg-primary);
+      border: 1px solid var(--bg-tertiary);
+    }
+
+    .temp-table {
+      margin-top: 10px;
+    }
+
+    .temp-table td {
+      padding: 3px 8px;
+    }
+
+    @media print {
+      body {
+        padding: 10mm;
+        background: white;
+      }
+
+      .no-print {
+        display: none;
+      }
+    }
+
+    /* Button uses standard classes if possible, but keeping specific overrides for this print view */
+    /* Button uses standard classes from DesignSystem */
+  </style>
+</head>
+
+<body>
+  <button class="btn no-print" onclick="window.print()">🖨️ Imprimir Checklist</button>
+
+  <div class="header">
+    <h1>CHECKLIST DE VERIFICAÇÃO DE QUALIDADE NO RECEBIMENTO</h1>
+    <p>UNIAE/CRE-PP - Programa de Alimentação Escolar do DF</p>
+    <p style="font-size:9px;margin-top:5px;">Conforme Manual de Análise Processual - Seção 3.1 (Tabela 1)</p>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-item"><label>Unidade Escolar:</label>
+      <div class="value"></div>
+    </div>
+    <div class="info-item"><label>Data da Entrega:</label>
+      <div class="value"></div>
+    </div>
+    <div class="info-item"><label>Fornecedor:</label>
+      <div class="value"></div>
+    </div>
+    <div class="info-item"><label>Nº Nota Fiscal:</label>
+      <div class="value"></div>
+    </div>
+    <div class="info-item"><label>Nº Termo de Recebimento:</label>
+      <div class="value"></div>
+    </div>
+    <div class="info-item"><label>Hora da Entrega:</label>
+      <div class="value"></div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:30%;">Categoria</th>
+        <th style="width:45%;">Ponto de Controle / Critério</th>
+        <th class="check-col">OK</th>
+        <th class="check-col">NC</th>
+        <th class="check-col">NA</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="category">
+        <td colspan="5">1. DOCUMENTAÇÃO</td>
+      </tr>
+      <tr>
+        <td>Nota Fiscal / Termo</td>
+        <td>Produtos listados correspondem aos entregues fisicamente</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+      </tr>
+      <tr>
+        <td>Quantidade</td>
+        <td>Quantidade, unidade de medida e marca estão corretas</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+      </tr>
+
+      <tr class="category">
+        <td colspan="5">2. TRANSPORTE</td>
+      </tr>
+      <tr>
+        <td>Veículo</td>
+        <td>Baú fechado, limpo e em bom estado de conservação</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+      </tr>
+      <tr>
+        <td>Refrigeração</td>
+        <td>Veículo refrigerado com refrigeração ativa (se aplicável)</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+      </tr>
+      <tr>
+        <td>Entregador</td>
+        <td>Uniforme limpo e boas práticas de higiene</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+      </tr>
+
+      <tr class="category">
+        <td colspan="5">3. EMBALAGENS</td>
+      </tr>
+      <tr>
+        <td>Integridade</td>
+        <td>Embalagens íntegras, limpas, secas, sem violação</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+      </tr>
+      <tr>
+        <td>Condição</td>
+        <td>Sem amassados, ferrugem (latas) ou estufamento</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+      </tr>
+
+      <tr class="category">
+        <td colspan="5">4. ROTULAGEM</td>
+      </tr>
+      <tr>
+        <td>Informações</td>
+        <td>Rótulo legível com validade, lote e fabricante</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+      </tr>
+      <tr>
+        <td>Validade</td>
+        <td>Produto dentro do prazo de validade</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+      </tr>
+      <tr>
+        <td>Inscrição</td>
+        <td>"PRODUTO INSTITUCIONAL - PROIBIDA A VENDA" presente</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+      </tr>
+
+      <tr class="category">
+        <td colspan="5">5. CARACTERÍSTICAS SENSORIAIS</td>
+      </tr>
+      <tr>
+        <td>Aparência</td>
+        <td>Cor, odor e textura próprios do produto</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+      </tr>
+      <tr>
+        <td>Integridade</td>
+        <td>Ausência de mofo, manchas ou deterioração</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+      </tr>
+      <tr>
+        <td>Hortifrúti</td>
+        <td>Frescos, íntegros, maturação adequada, sem pragas</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+      </tr>
+
+      <tr class="category">
+        <td colspan="5">6. TEMPERATURA (CRÍTICO) - Medir com termômetro</td>
+      </tr>
+      <tr>
+        <td>Congelados</td>
+        <td>Temperatura ≤ -12°C</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+      </tr>
+      <tr>
+        <td>Carnes resfriadas</td>
+        <td>Temperatura ≤ +7°C</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+      </tr>
+      <tr>
+        <td>Pescado resfriado</td>
+        <td>Temperatura ≤ +3°C</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+      </tr>
+      <tr>
+        <td>Outros refrigerados</td>
+        <td>Temperatura ≤ +10°C (ou conforme fabricante)</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+        <td class="check-col">☐</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px;">
+    <div class="info-item"><label>Temperatura Aferida (°C):</label>
+      <div class="value"></div>
+    </div>
+    <div class="info-item"><label>Horário Aferição:</label>
+      <div class="value"></div>
+    </div>
+  </div>
+
+  <div class="obs-section">
+    <h3>PRODUTOS RECUSADOS / NÃO CONFORMIDADES (Obrigatório preencher em caso de recusa)</h3>
+    <table style="margin-bottom:10px;">
+      <tr>
+        <th>Produto</th>
+        <th>Qtd Recusada</th>
+        <th>Motivo da Recusa</th>
+      </tr>
+      <tr>
+        <td style="height:20px;"></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td style="height:20px;"></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td style="height:20px;"></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="obs-section">
+    <h3>OBSERVAÇÕES GERAIS</h3>
+    <div class="obs-lines"></div>
+  </div>
+
+  <div style="margin:15px 0;padding:10px;border:2px solid var(--text-primary);background:var(--warning-light);">
+    <strong>RESULTADO DA CONFERÊNCIA:</strong><br>
+    ☐ CONFORME - Todos os itens verificados e aprovados<br>
+    ☐ PARCIALMENTE CONFORME - Recusa parcial registrada acima<br>
+    ☐ NÃO CONFORME - Entrega recusada integralmente
+  </div>
+
+  <div class="signature-section">
+    <div class="signature-box">
+      <div class="signature-line">
+        Responsável pelo Recebimento<br>
+        Nome: _______________________<br>
+        Matrícula: ___________________
+      </div>
+    </div>
+    <div class="signature-box">
+      <div class="signature-line">
+        Identificação Digital da Unidade Escolar<br><br><br>
+      </div>
+    </div>
+  </div>
+
+  <div class="legal-note">
+    <strong>ATENÇÃO:</strong> É terminantemente proibido assinar Termo de Recebimento em branco ou antes da conclusão da
+    conferência física (Manual, Seção 2.2).
+    O atesto deve conter obrigatoriamente: assinatura digital, matrícula, data e identificação da UE. Em caso de pressão
+    do fornecedor,
+    contate a UNIAE.
+    <br><strong>Base Legal:</strong> Lei 4.320/64 (Arts. 62-63), Lei 14.133/2021, Resolução CD/FNDE nº 06/2020.
+  </div>
+</body>
+
+</html>

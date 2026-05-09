@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#7c3aed">
+  <title>Validação - Analista UNIAE</title>
+  <style>
+    :root {
+      --primary: #7c3aed; --primary-dark: #6d28d9; --primary-light: #f3e8ff;
+      --success: #0d652d; --success-light: #e6f4ea;
+      --error: #c5221f; --error-light: #fce8e6;
+      --warning: #e37400; --warning-light: #fef7e0;
+      --text: #202124; --text-secondary: #5f6368;
+      --bg: #f8f9fa; --surface: #fff; --border: #dadce0;
+      --safe-top: env(safe-area-inset-top, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: calc(100px + var(--safe-bottom)); }
+    .header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: calc(16px + var(--safe-top)) 16px 16px; position: sticky; top: 0; z-index: 100; }
+    .header h1 { font-size: 18px; font-weight: 600; }
+    .header-sub { font-size: 12px; opacity: 0.9; margin-top: 4px; }
+    .container { padding: 16px; max-width: 500px; margin: 0 auto; }
+    .card { background: var(--surface); border-radius: 14px; padding: 16px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .card-title { font-size: 14px; font-weight: 600; margin-bottom: 14px; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 14px; border: 2px solid var(--border); border-radius: 10px; font-size: 16px; font-family: inherit; transition: all 0.2s; }
+    .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+    .alert { padding: 12px 14px; border-radius: 10px; margin-bottom: 14px; font-size: 13px; display: flex; align-items: center; gap: 10px; }
+    .alert-error { background: var(--error-light); color: var(--error); }
+    .alert-success { background: var(--success-light); color: var(--success); }
+    .hidden { display: none !important; }
+</style>
+</head>
+<body>
+  <header class="header">
+    <h1>⚖️ Analista UNIAE</h1>
+    <div class="header-sub">Validação e Autorização de Pagamento</div>
+  </header>
+  <main class="container">
+    <div id="alertBox" class="alert hidden"></div>
+
+    <!-- Lista de NFs para Análise -->
+    <div id="listaView">
+      <div class="card">
+        <div class="card-title">📋 Notas Fiscais para Validação</div>
+        <div class="filtros">
+          <button class="filtro-btn active" onclick="filtrarNFs('todas')">Todas</button>
+          <button class="filtro-btn" onclick="filtrarNFs('com-recebimento')">Com Recebimentos</button>
+        </div>
+        <div id="listaNFs"><p class="empty-state">Carregando...</p></div>
+      </div>
+    </div>
+
+    <!-- Tela de Análise -->
+    <div id="analiseView" class="hidden">
+      <div class="card">
+        <div class="card-title">📄 Nota Fiscal em Análise</div>
+        <div id="infoNF" class="nf-detalhe"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🏫 Recebimentos por Escola (<span id="qtdEscolas">0</span>)</div>
+        <div id="listaRecebimentos"></div>
+      </div>
+
+      <div class="card contabil-card">
+        <div class="card-title">📊 Resumo Contábil</div>
+        <div class="contabil-grid">
+          <div class="contabil-item">
+            <span class="label">Qtd na NF</span>
+            <span class="valor" id="contQtdNF">0</span>
+          </div>
+          <div class="contabil-item">
+            <span class="label">Qtd Recebida</span>
+            <span class="valor" id="contQtdRec">0</span>
+          </div>
+          <div class="contabil-item diferenca">
+            <span class="label">Diferença</span>
+            <span class="valor" id="contDiferenca">0</span>
+          </div>
+        </div>
+        
+        <div class="valores-box">
+          <div class="valor-row">
+            <span>Valor da NF:</span>
+            <span class="valor-nf">R$ <span id="valorNF">0,00</span></span>
+          </div>
+          <div class="valor-row glosa">
+            <span>(-) Valor Glosado:</span>
+            <span>R$ <span id="valorGlosa">0,00</span></span>
+          </div>
+          <div class="valor-row aprovado">
+            <span>(=) Valor a Pagar:</span>
+            <span>R$ <span id="valorPagar">0,00</span></span>
+          </div>
+          <div class="valor-row percentual">
+            <span>Percentual de Glosa:</span>
+            <span><span id="percentualGlosa">0</span>%</span>
+          </div>
+        </div>
+        
+        <div class="validacao-contabil" id="validacaoContabil">
+          <span class="icon">✓</span>
+          <span class="texto">Cálculo validado: Aprovado + Glosa = NF</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">👥 Comissão de Análise</div>
+        <p class="hint">Mínimo 3 membros para autorizar pagamento</p>
+        <div class="membro-input">
+          <input type="text" id="novoMembro" placeholder="Nome do membro da comissão">
+          <button onclick="adicionarMembro()">+</button>
+        </div>
+        <div id="listaMembros" class="membros-lista"></div>
+        <div class="membros-count" id="membrosCount">0/3 membros</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">⚖️ Decisão</div>
+        <div class="decisao-grid">
+          <div class="decisao-btn" onclick="selecionarDecisao('APROVADO_TOTAL', this)">
+            <div class="icon">✅</div>
+            <div class="label">Aprovado Total</div>
+            <div class="desc">Pagamento integral</div>
+          </div>
+          <div class="decisao-btn" onclick="selecionarDecisao('APROVADO_PARCIAL', this)">
+            <div class="icon">⚠️</div>
+            <div class="label">Aprovado Parcial</div>
+            <div class="desc">Com glosa calculada</div>
+          </div>
+          <div class="decisao-btn" onclick="selecionarDecisao('GLOSADO', this)">
+            <div class="icon">📉</div>
+            <div class="label">Glosado</div>
+            <div class="desc">Desconto aplicado</div>
+          </div>
+          <div class="decisao-btn" onclick="selecionarDecisao('REJEITADO', this)">
+            <div class="icon">❌</div>
+            <div class="label">Rejeitado</div>
+            <div class="desc">Sem pagamento</div>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:16px">
+          <label>Justificativa *</label>
+          <textarea id="justificativa" rows="3" placeholder="Descreva a justificativa da decisão..."></textarea>
+        </div>
+      </div>
+
+      <div class="resumo-final">
+        <div class="resumo-titulo">Resumo da Autorização</div>
+        <div class="resumo-linha"><span>Fornecedor:</span><span id="resumoFornecedor">-</span></div>
+        <div class="resumo-linha"><span>Produto:</span><span id="resumoProduto">-</span></div>
+        <div class="resumo-linha"><span>Decisão:</span><span id="resumoDecisao">-</span></div>
+        <div class="resumo-linha destaque"><span>Valor Autorizado:</span><span id="resumoValor">R$ 0,00</span></div>
+      </div>
+    </div>
+  </main>
+
+  <div class="bottom-actions">
+    <button class="btn btn-secondary hidden" id="btnVoltar" onclick="voltarLista()">← Voltar</button>
+    <button class="btn btn-success" id="btnFinalizar" onclick="finalizarAnalise()">✅ Autorizar Pagamento</button>
+  </div>
+
+  <!-- Modal de Confirmação -->
+  <div class="modal-overlay hidden" id="modalConfirm">
+    <div class="modal">
+      <div class="modal-icon">⚖️</div>
+      <div class="modal-title">Confirmar Autorização</div>
+      <div class="modal-text" id="modalResumo"></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="fecharModal()">Revisar</button>
+        <button class="btn btn-success" onclick="executarAnalise()">Autorizar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Sucesso -->
+  <div class="modal-overlay hidden" id="modalSucesso">
+    <div class="modal">
+      <div class="success-check"></div>
+      <div class="modal-title">Pagamento Autorizado!</div>
+      <div class="modal-text" id="modalSucessoText"></div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" onclick="novaAnalise()">Próxima NF</button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .filtros { display: flex; gap: 8px; margin-bottom: 14px; }
+    .filtro-btn { padding: 8px 14px; border: none; background: var(--bg); border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .filtro-btn.active { background: var(--primary); color: white; }
+    
+    .empty-state { text-align: center; padding: 30px; color: var(--text-secondary); }
+    
+    .nf-card { background: var(--bg); border-radius: 12px; padding: 14px; margin-bottom: 10px; border: 2px solid var(--border); cursor: pointer; transition: all 0.2s; }
+    .nf-card:active, .nf-card.selected { border-color: var(--primary); background: var(--primary-light); }
+    .nf-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .nf-numero { font-weight: 700; font-size: 15px; }
+    .nf-valor { font-weight: 700; color: var(--success); }
+    .nf-info { font-size: 13px; color: var(--text-secondary); }
+    .nf-produto { font-size: 14px; font-weight: 500; margin: 6px 0; }
+    .nf-alerta-glosa { margin-top: 8px; padding: 6px 10px; background: var(--warning-light); color: var(--warning); border-radius: 6px; font-size: 11px; font-weight: 600; }
+    
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+    .badge-pendente { background: var(--warning-light); color: var(--warning); }
+    .badge-pronto { background: var(--success-light); color: var(--success); }
+    
+    .nf-detalhe { background: var(--bg); border-radius: 10px; padding: 12px; }
+    .nf-detalhe p { margin: 4px 0; font-size: 13px; }
+    .nf-detalhe strong { color: var(--primary); }
+    
+    .escola-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg); border-radius: 8px; margin-bottom: 6px; }
+    .escola-item .nome { font-size: 13px; }
+    .escola-item .qtd { font-weight: 600; font-size: 14px; }
+    .escola-item .qtd.divergente { color: var(--error); }
+    .escola-item .qtd.conforme { color: var(--success); }
+    
+    .contabil-card { border: 2px solid var(--primary); }
+    .contabil-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    .contabil-item { text-align: center; padding: 12px; background: var(--bg); border-radius: 10px; }
+    .contabil-item .label { display: block; font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; }
+    .contabil-item .valor { display: block; font-size: 20px; font-weight: 700; }
+    .contabil-item.diferenca .valor { color: var(--error); }
+    
+    .valores-box { background: var(--bg); border-radius: 10px; padding: 14px; }
+    .valor-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px; border-bottom: 1px solid var(--border); }
+    .valor-row:last-child { border: none; }
+    .valor-row.glosa { color: var(--error); }
+    .valor-row.aprovado { font-weight: 700; font-size: 16px; color: var(--success); }
+    .valor-row.percentual { font-size: 12px; color: var(--text-secondary); }
+    
+    .validacao-contabil { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding: 10px; background: var(--success-light); border-radius: 8px; font-size: 12px; color: var(--success); }
+    .validacao-contabil.erro { background: var(--error-light); color: var(--error); }
+    .validacao-contabil .icon { font-size: 16px; }
+    
+    .hint { font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; }
+    .membro-input { display: flex; gap: 8px; margin-bottom: 12px; }
+    .membro-input input { flex: 1; }
+    .membro-input button { padding: 0 18px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 20px; font-weight: 600; cursor: pointer; }
+    .membros-lista { display: flex; flex-wrap: wrap; gap: 6px; min-height: 40px; }
+    .membro-tag { display: inline-flex; align-items: center; gap: 6px; background: var(--primary); color: white; padding: 6px 12px; border-radius: 16px; font-size: 12px; }
+    .membro-tag button { background: none; border: none; color: white; font-size: 14px; cursor: pointer; padding: 0; }
+    .membros-count { font-size: 12px; color: var(--text-secondary); margin-top: 8px; }
+    .membros-count.ok { color: var(--success); font-weight: 600; }
+    
+    .decisao-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .decisao-btn { padding: 14px 10px; border: 2px solid var(--border); border-radius: 12px; background: var(--surface); cursor: pointer; text-align: center; transition: all 0.2s; }
+    .decisao-btn:active, .decisao-btn.selected { border-color: var(--primary); background: var(--primary-light); }
+    .decisao-btn .icon { font-size: 28px; margin-bottom: 4px; }
+    .decisao-btn .label { font-size: 12px; font-weight: 700; }
+    .decisao-btn .desc { font-size: 10px; color: var(--text-secondary); margin-top: 2px; }
+    
+    .resumo-final { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border-radius: 14px; padding: 16px; margin-top: 16px; }
+    .resumo-titulo { font-size: 14px; font-weight: 600; margin-bottom: 12px; opacity: 0.9; }
+    .resumo-linha { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; opacity: 0.9; }
+    .resumo-linha.destaque { font-size: 18px; font-weight: 700; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 12px; margin-top: 8px; opacity: 1; }
+    
+    .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.6; }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-secondary { background: var(--bg); color: var(--primary); border: 2px solid var(--primary); }
+    .btn-success { background: var(--success); color: white; }
+    
+    .bottom-actions { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); padding: 14px 16px calc(14px + var(--safe-bottom)); box-shadow: 0 -2px 10px rgba(0,0,0,0.1); display: flex; gap: 10px; }
+    .bottom-actions .btn { flex: 1; }
+    
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+    .modal { background: var(--surface); border-radius: 16px; padding: 24px; max-width: 340px; width: 100%; text-align: center; }
+    .modal-icon { font-size: 48px; margin-bottom: 16px; }
+    .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .modal-text { font-size: 14px; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.5; }
+    .modal-actions { display: flex; gap: 10px; }
+    .modal-actions .btn { flex: 1; padding: 12px; }
+    
+    .success-check { width: 60px; height: 60px; border-radius: 50%; background: var(--success); margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; animation: scaleIn 0.3s ease; }
+    .success-check::after { content: '✓'; color: white; font-size: 32px; font-weight: bold; }
+    @keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
+    
+    .loading { display: inline-block; width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+
+  <script>
+    var nfSelecionada = null;
+    var membros = [];
+    var decisao = null;
+    var todasNFs = [];
+
+    document.addEventListener('DOMContentLoaded', carregarNFs);
+
+    function carregarNFs() {
+      document.getElementById('listaNFs').innerHTML = '<p class="empty-state">Carregando NFs...</p>';
+      google.script.run
+        .withSuccessHandler(function(nfs) { todasNFs = nfs || []; renderizarNFs(todasNFs); })
+        .withFailureHandler(function() { todasNFs = []; renderizarNFs([]); })
+        .listarNFsParaAnalise();
+    }
+
+    function filtrarNFs(filtro) {
+      document.querySelectorAll('.filtro-btn').forEach(function(b) { b.classList.remove('active'); });
+      event.target.classList.add('active');
+      
+      var nfsFiltradas = filtro === 'com-recebimento' 
+        ? todasNFs.filter(function(nf) { return (nf.recebimentos || []).length > 0; })
+        : todasNFs;
+      renderizarNFs(nfsFiltradas);
+    }
+
+    function renderizarNFs(nfs) {
+      if (nfs.length === 0) {
+        document.getElementById('listaNFs').innerHTML = '<p class="empty-state">📭 Nenhuma NF pendente de análise<br><small style="color:var(--text-secondary)">Aguarde os fornecedores lançarem NFs e as escolas registrarem recebimentos</small></p>';
+        return;
+      }
+      var html = '';
+      nfs.forEach(function(nf) {
+        var qtdRec = (nf.recebimentos || []).length;
+        var totalRecebido = nf.totalRecebido || 0;
+        var diferenca = Math.max(0, nf.quantidade - totalRecebido);
+        var temGlosa = diferenca > 0;
+        
+        var badge = qtdRec > 0 
+          ? '<span class="badge badge-pronto">' + qtdRec + ' escola' + (qtdRec > 1 ? 's' : '') + '</span>' 
+          : '<span class="badge badge-pendente">Aguardando recebimentos</span>';
+        
+        var alertaGlosa = temGlosa && qtdRec > 0
+          ? '<div class="nf-alerta-glosa">⚠️ Diferença: ' + diferenca.toFixed(2) + ' ' + nf.unidade + ' (possível glosa)</div>'
+          : '';
+        
+        html += '<div class="nf-card" onclick="selecionarNF(this)" data-nf=\'' + JSON.stringify(nf).replace(/'/g, "&#39;") + '\'>';
+        html += '<div class="nf-header"><span class="nf-numero">NF ' + nf.numero + '</span>' + badge + '</div>';
+        html += '<div class="nf-produto">🥫 ' + nf.produto + '</div>';
+        html += '<div class="nf-info"><strong>NF:</strong> ' + nf.quantidade + ' ' + nf.unidade + ' | <strong>Recebido:</strong> ' + totalRecebido + ' ' + nf.unidade + '</div>';
+        html += alertaGlosa;
+        html += '<div class="nf-header" style="margin-top:8px"><span class="nf-info">' + (nf.fornecedor || nf.cnpj) + '</span><span class="nf-valor">R$ ' + (nf.valorTotal || 0).toLocaleString('pt-BR', {minimumFractionDigits:2}) + '</span></div>';
+        html += '</div>';
+      });
+      document.getElementById('listaNFs').innerHTML = html;
+    }
+
+    function selecionarNF(el) {
+      nfSelecionada = JSON.parse(el.dataset.nf);
+      membros = []; decisao = null;
+      
+      // Info da NF
+      document.getElementById('infoNF').innerHTML = 
+        '<p><strong>NF:</strong> ' + nfSelecionada.numero + ' | Série: ' + (nfSelecionada.serie || '1') + '</p>' +
+        '<p><strong>Chave:</strong> ' + (nfSelecionada.chaveAcesso || '').substring(0,22) + '...</p>' +
+        '<p><strong>Produto:</strong> ' + nfSelecionada.produto + '</p>' +
+        '<p><strong>Fornecedor:</strong> ' + (nfSelecionada.fornecedor || nfSelecionada.cnpj) + '</p>' +
+        (nfSelecionada.notaEmpenho ? '<p><strong>Nota Empenho:</strong> ' + nfSelecionada.notaEmpenho + '</p>' : '');
+      
+      // Recebimentos
+      var recebimentos = nfSelecionada.recebimentos || [];
+      document.getElementById('qtdEscolas').textContent = recebimentos.length;
+      
+      var htmlRec = '';
+      if (recebimentos.length === 0) {
+        htmlRec = '<p class="empty-state" style="padding:16px">Nenhum recebimento registrado</p>';
+      } else {
+        recebimentos.forEach(function(r) {
+          var conforme = r.quantidadeRecebida >= r.quantidadeEsperada;
+          htmlRec += '<div class="escola-item">';
+          htmlRec += '<span class="nome">🏫 ' + r.escola + '</span>';
+          htmlRec += '<span class="qtd ' + (conforme ? 'conforme' : 'divergente') + '">' + (r.quantidadeRecebida || 0) + ' ' + nfSelecionada.unidade + '</span>';
+          htmlRec += '</div>';
+        });
+      }
+      document.getElementById('listaRecebimentos').innerHTML = htmlRec;
+      
+      // Cálculos contábeis
+      var totalRecebido = nfSelecionada.totalRecebido || recebimentos.reduce(function(acc, r) { return acc + (r.quantidadeRecebida || 0); }, 0);
+      var diferenca = Math.max(0, nfSelecionada.quantidade - totalRecebido);
+      var valorGlosa = diferenca * nfSelecionada.valorUnitario;
+      var valorPagar = nfSelecionada.valorTotal - valorGlosa;
+      var percentual = nfSelecionada.valorTotal > 0 ? Math.round((valorGlosa / nfSelecionada.valorTotal) * 10000) / 100 : 0;
+      
+      document.getElementById('contQtdNF').textContent = nfSelecionada.quantidade + ' ' + nfSelecionada.unidade;
+      document.getElementById('contQtdRec').textContent = totalRecebido + ' ' + nfSelecionada.unidade;
+      document.getElementById('contDiferenca').textContent = (diferenca > 0 ? '-' : '') + diferenca + ' ' + nfSelecionada.unidade;
+      
+      document.getElementById('valorNF').textContent = nfSelecionada.valorTotal.toLocaleString('pt-BR', {minimumFractionDigits:2});
+      document.getElementById('valorGlosa').textContent = valorGlosa.toLocaleString('pt-BR', {minimumFractionDigits:2});
+      document.getElementById('valorPagar').textContent = valorPagar.toLocaleString('pt-BR', {minimumFractionDigits:2});
+      document.getElementById('percentualGlosa').textContent = percentual.toFixed(2);
+      
+      // Validação contábil
+      var soma = valorPagar + valorGlosa;
+      var valido = Math.abs(soma - nfSelecionada.valorTotal) < 0.01;
+      var validBox = document.getElementById('validacaoContabil');
+      validBox.className = 'validacao-contabil ' + (valido ? '' : 'erro');
+      validBox.innerHTML = '<span class="icon">' + (valido ? '✓' : '⚠') + '</span><span class="texto">' + 
+        (valido ? 'Cálculo validado: R$ ' + valorPagar.toFixed(2) + ' + R$ ' + valorGlosa.toFixed(2) + ' = R$ ' + nfSelecionada.valorTotal.toFixed(2) : 'Erro no cálculo contábil') + '</span>';
+      
+      // Resumo
+      document.getElementById('resumoFornecedor').textContent = nfSelecionada.fornecedor || nfSelecionada.cnpj;
+      document.getElementById('resumoProduto').textContent = nfSelecionada.produto;
+      document.getElementById('resumoDecisao').textContent = '-';
+      document.getElementById('resumoValor').textContent = 'R$ ' + valorPagar.toLocaleString('pt-BR', {minimumFractionDigits:2});
+      
+      // Mostrar view
+      document.getElementById('listaView').classList.add('hidden');
+      document.getElementById('analiseView').classList.remove('hidden');
+      document.getElementById('btnVoltar').classList.remove('hidden');
+      renderizarMembros();
+    }
+
+    function voltarLista() {
+      nfSelecionada = null; membros = []; decisao = null;
+      document.getElementById('listaView').classList.remove('hidden');
+      document.getElementById('analiseView').classList.add('hidden');
+      document.getElementById('btnVoltar').classList.add('hidden');
+      document.querySelectorAll('.decisao-btn').forEach(function(b) { b.classList.remove('selected'); });
+      document.getElementById('justificativa').value = '';
+      carregarNFs();
+    }
+
+    function adicionarMembro() {
+      var input = document.getElementById('novoMembro');
+      var nome = input.value.trim();
+      if (nome && membros.indexOf(nome) === -1) { 
+        membros.push(nome); 
+        input.value = ''; 
+        renderizarMembros(); 
+      }
+    }
+
+    function removerMembro(idx) { membros.splice(idx, 1); renderizarMembros(); }
+
+    function renderizarMembros() {
+      var html = '';
+      membros.forEach(function(m, i) { 
+        html += '<span class="membro-tag">' + m + '<button onclick="removerMembro(' + i + ')">×</button></span>'; 
+      });
+      document.getElementById('listaMembros').innerHTML = html || '<span style="color:var(--text-secondary);font-size:12px">Nenhum membro adicionado</span>';
+      
+      var count = document.getElementById('membrosCount');
+      count.textContent = membros.length + '/3 membros';
+      count.className = 'membros-count ' + (membros.length >= 3 ? 'ok' : '');
+    }
+
+    function selecionarDecisao(tipo, el) {
+      decisao = tipo;
+      document.querySelectorAll('.decisao-btn').forEach(function(b) { b.classList.remove('selected'); });
+      el.classList.add('selected');
+      document.getElementById('resumoDecisao').textContent = tipo.replace('_', ' ');
+      
+      // Atualizar valor baseado na decisão
+      var totalRecebido = nfSelecionada.totalRecebido || 0;
+      var diferenca = Math.max(0, nfSelecionada.quantidade - totalRecebido);
+      var valorGlosa = diferenca * nfSelecionada.valorUnitario;
+      var valorPagar = tipo === 'REJEITADO' ? 0 : (tipo === 'APROVADO_TOTAL' ? nfSelecionada.valorTotal : nfSelecionada.valorTotal - valorGlosa);
+      document.getElementById('resumoValor').textContent = 'R$ ' + valorPagar.toLocaleString('pt-BR', {minimumFractionDigits:2});
+    }
+
+    function finalizarAnalise() {
+      if (!nfSelecionada) { mostrarAlerta('Selecione uma NF', 'error'); return; }
+      if (membros.length < 3) { mostrarAlerta('Adicione pelo menos 3 membros na comissão', 'error'); return; }
+      if (!decisao) { mostrarAlerta('Selecione a decisão', 'error'); return; }
+      if (!document.getElementById('justificativa').value.trim()) { mostrarAlerta('Informe a justificativa', 'error'); return; }
+      
+      var totalRecebido = nfSelecionada.totalRecebido || 0;
+      var diferenca = Math.max(0, nfSelecionada.quantidade - totalRecebido);
+      var valorGlosa = diferenca * nfSelecionada.valorUnitario;
+      var valorPagar = decisao === 'REJEITADO' ? 0 : (decisao === 'APROVADO_TOTAL' ? nfSelecionada.valorTotal : nfSelecionada.valorTotal - valorGlosa);
+      
+      document.getElementById('modalResumo').innerHTML = 
+        '<strong>NF ' + nfSelecionada.numero + '</strong><br>' +
+        nfSelecionada.produto + '<br><br>' +
+        'Decisão: <strong>' + decisao.replace('_', ' ') + '</strong><br>' +
+        'Comissão: <strong>' + membros.length + ' membros</strong><br><br>' +
+        'Valor NF: R$ ' + nfSelecionada.valorTotal.toLocaleString('pt-BR', {minimumFractionDigits:2}) + '<br>' +
+        'Glosa: R$ ' + valorGlosa.toLocaleString('pt-BR', {minimumFractionDigits:2}) + '<br>' +
+        '<strong style="font-size:16px;color:var(--success)">A Pagar: R$ ' + valorPagar.toLocaleString('pt-BR', {minimumFractionDigits:2}) + '</strong>';
+      
+      document.getElementById('modalConfirm').classList.remove('hidden');
+    }
+
+    function fecharModal() { document.getElementById('modalConfirm').classList.add('hidden'); }
+
+    function executarAnalise() {
+      fecharModal();
+      var btn = document.getElementById('btnFinalizar');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading"></span> Processando...';
+      
+      var totalRecebido = nfSelecionada.totalRecebido || 0;
+      var diferenca = Math.max(0, nfSelecionada.quantidade - totalRecebido);
+      var valorGlosa = Math.round(diferenca * nfSelecionada.valorUnitario * 100) / 100;
+      var valorAprovado = decisao === 'REJEITADO' ? 0 : 
+                          decisao === 'APROVADO_TOTAL' ? nfSelecionada.valorTotal : 
+                          Math.round((nfSelecionada.valorTotal - valorGlosa) * 100) / 100;
+
+      var dados = {
+        nfId: nfSelecionada.id,
+        nfNumero: nfSelecionada.numero,
+        notaEmpenho: nfSelecionada.notaEmpenho || '',
+        fornecedor: nfSelecionada.fornecedor || nfSelecionada.cnpj,
+        produto: nfSelecionada.produto,
+        quantidadeNF: nfSelecionada.quantidade,
+        quantidadeRecebida: totalRecebido,
+        unidade: nfSelecionada.unidade,
+        valorUnitario: nfSelecionada.valorUnitario,
+        valorNF: nfSelecionada.valorTotal,
+        valorGlosa: valorGlosa,
+        valorAprovado: valorAprovado,
+        membrosComissao: membros,
+        decisao: decisao,
+        justificativa: document.getElementById('justificativa').value.trim()
+      };
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          btn.disabled = false;
+          btn.innerHTML = '✅ Autorizar Pagamento';
+          if (res.success) {
+            var resumo = res.resumo || {};
+            document.getElementById('modalSucessoText').innerHTML = 
+              'ID: <strong>' + res.id + '</strong><br>' +
+              'Status: <strong>' + res.status + '</strong><br>' +
+              'Valor Autorizado: <strong>R$ ' + (resumo.valorAprovado || valorAprovado).toLocaleString('pt-BR', {minimumFractionDigits:2}) + '</strong><br>' +
+              '<span style="font-size:11px;color:var(--text-secondary)">Validação: ' + (resumo.validacaoContabil || 'OK') + '</span>';
+            document.getElementById('modalSucesso').classList.remove('hidden');
+          } else { mostrarAlerta(res.error || 'Erro ao processar', 'error'); }
+        })
+        .withFailureHandler(function(err) { 
+          btn.disabled = false; 
+          btn.innerHTML = '✅ Autorizar Pagamento'; 
+          mostrarAlerta('Erro: ' + err.message, 'error'); 
+        })
+        .salvarAnalise(dados);
+    }
+
+    function novaAnalise() {
+      document.getElementById('modalSucesso').classList.add('hidden');
+      voltarLista();
+    }
+
+    function mostrarAlerta(msg, tipo) {
+      var box = document.getElementById('alertBox');
+      box.innerHTML = (tipo === 'error' ? '⚠️ ' : '✅ ') + msg;
+      box.className = 'alert alert-' + tipo;
+      box.classList.remove('hidden'); window.scrollTo(0, 0);
+      setTimeout(function() { box.classList.add('hidden'); }, 4000);
+    }
+  </script>
+</body>
+</html>

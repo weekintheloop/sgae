@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#1c4587">
+  <title>UNIAE - Sistema Simplificado</title>
+  <base target="_top">
+  <!-- Skip link para acessibilidade -->
+  <a href="#main-content" class="skip-link">Pular para conteúdo principal</a>
+  <?!= include('design-system'); ?>
+  <?!= include('Mobile_S20_Adjustments'); ?>
+  <style>
+    /* Handled by DesignSystem */
+    /* * { margin: 0; padding: 0; box-sizing: border-box; } */
+
+    body {
+      /* DesignSystem handles font and reset. Override background if needed but DS uses var(--bg-primary) */
+      background: var(--bg-primary);
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+    }
+
+
+    /* Header compacto */
+    .header {
+      background: var(--gradient-primary);
+      color: var(--text-inverse);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .user-info {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    /* Container principal */
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* AÇÕES RÁPIDAS - O coração da interface */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .action-card {
+      background: var(--bg-surface);
+      border-radius: var(--border-radius-xl);
+      padding: 24px;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition-base);
+      border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .action-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .action-card:active {
+      transform: scale(0.98);
+    }
+
+    .action-card.primary {
+      border-color: var(--primary);
+      background: linear-gradient(135deg, var(--primary-light-dim), rgba(74, 111, 165, 0.05));
+    }
+
+    .action-card .icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .action-card h3 {
+      font-size: 18px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .action-card p {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .action-card .badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--error);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Status resumido */
+    .status-bar {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .status-item {
+      background: var(--bg-surface);
+      padding: 16px 24px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 150px;
+    }
+
+    .status-item .num {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .status-item .label {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .status-item.green .num {
+      color: var(--success);
+    }
+
+    .status-item.yellow .num {
+      color: var(--warning);
+    }
+
+    .status-item.red .num {
+      color: var(--error);
+    }
+
+    .status-item.blue .num {
+      color: var(--primary);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <h1>📋 UNIAE</h1>
+    <div class="user-info" id="userInfo">Carregando...</div>
+  </div>
+
+  <div class="main">
+    <!-- STATUS RÁPIDO - Ver tudo de uma vez -->
+    <div class="status-bar">
+      <div class="status-item blue">
+        <div class="num" id="totalNFs">-</div>
+        <div class="label">Notas Fiscais</div>
+      </div>
+      <div class="status-item yellow">
+        <div class="num" id="pendentes">-</div>
+        <div class="label">Pendentes</div>
+      </div>
+      <div class="status-item green">
+        <div class="num" id="atestadas">-</div>
+        <div class="label">Atestadas</div>
+      </div>
+      <div class="status-item red">
+        <div class="num" id="problemas">-</div>
+        <div class="label">Com Problemas</div>
+      </div>
+    </div>
+
+    <!-- AÇÕES RÁPIDAS - 1 clique pra fazer tudo -->
+    <div class="quick-actions">
+      <div class="action-card primary" onclick="acaoRapida('nova-nf')">
+        <div class="icon">➕</div>
+        <h3>Nova Nota Fiscal</h3>
+        <p>Cadastrar NF rapidamente</p>
+      </div>
+
+      <div class="action-card" onclick="acaoRapida('registrar-entrega')">
+        <div class="icon">🚚</div>
+        <h3>Registrar Entrega</h3>
+        <p>Confirmar recebimento na escola</p>
+        <div class="badge" id="badgeEntregas" style="display:none;">0</div>
+      </div>
+
+      <div class="action-card" onclick="acaoRapida('atestar')">
+        <div class="icon">✅</div>
+        <h3>Atestar NF</h3>
+        <p>Aprovar notas conferidas</p>
+        <div class="badge" id="badgeAtestar" style="display:none;">0</div>
+      </div>
+
+      <div class="action-card" onclick="acaoRapida('recusar')">
+        <div class="icon">❌</div>
+        <h3>Registrar Problema</h3>
+        <p>Recusa ou glosa</p>
+      </div>
+    </div>
+
+    <!-- LISTA INTELIGENTE - Mostra só o que precisa de atenção -->
+    <div class="smart-list" id="smartList">
+      <div class="list-header">
+        <h2>🔔 Precisa da sua atenção</h2>
+        <div class="filters">
+          <button class="filter-btn active" data-filter="todos">Todos</button>
+          <button class="filter-btn" data-filter="urgente">Urgentes</button>
+          <button class="filter-btn" data-filter="hoje">Hoje</button>
+        </div>
+      </div>
+      <div class="list-content" id="listContent">
+        <div class="loading">Carregando...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL SIMPLIFICADO - Formulários mínimos -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 id="modalTitle">Ação</h2>
+        <button class="close-btn" onclick="fecharModal()">×</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <style>
+    /* Lista inteligente */
+    /* Lista inteligente */
+    .smart-list {
+      background: var(--bg-surface);
+      border-radius: var(--border-radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      /* Add shadow for depth consistency */
+    }
+
+    .list-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--bg-tertiary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .list-header h2 {
+      font-size: 16px;
+      color: var(--text-primary);
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+    }
+
+    .filter-btn {
+      padding: 6px 14px;
+      border: none;
+      background: var(--bg-secondary);
+      border-radius: 20px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: var(--transition-base);
+      color: var(--text-secondary);
+    }
+
+    .filter-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .filter-btn:hover:not(.active) {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .list-content {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .list-item {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--bg-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .list-item:hover {
+      background: var(--bg-primary);
+    }
+
+    .list-item:last-child {
+      border-bottom: none;
+    }
+
+    .item-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .item-icon.pending {
+      background: var(--warning-light);
+    }
+
+    .item-icon.success {
+      background: var(--success-light);
+    }
+
+    .item-icon.danger {
+      background: var(--error-light);
+    }
+
+    .item-info {
+      flex: 1;
+    }
+
+    .item-info h4 {
+      font-size: 14px;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+
+    .item-info p {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* .item-action style can be mapped to DS buttons later or kept as specific utility */
+    .item-action {
+      padding: 8px 16px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      /* Use var if needed */
+      font-size: 13px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: var(--transition-base);
+    }
+
+    .item-action:hover {
+      background: var(--primary-dark);
+    }
+
+    .loading {
+      padding: 40px;
+      text-align: center;
+      color: var(--text-secondary);
+    }
+
+    .empty-state {
+      padding: 60px 24px;
+      text-align: center;
+    }
+
+    .empty-state .icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+
+    .empty-state h3 {
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .empty-state p {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    /* Modal simplificado */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background: var(--bg-surface);
+      border-radius: var(--border-radius-xl);
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow: hidden;
+      animation: slideUp 0.3s;
+      box-shadow: var(--shadow-xl);
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--bg-tertiary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h2 {
+      font-size: 18px;
+    }
+
+    .close-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: var(--bg-secondary);
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-base);
+    }
+
+    .close-btn:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      max-height: calc(90vh - 80px);
+    }
+
+    /* Formulários simplificados */
+    .form-simple {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      padding: 12px 16px;
+      border: 2px solid var(--bg-tertiary);
+      border-radius: var(--border-radius-md);
+      font-size: 15px;
+      transition: var(--transition-base);
+      background: var(--bg-surface);
+      color: var(--text-primary);
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .field input::placeholder {
+      color: var(--text-disabled);
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .btn-submit {
+      padding: 14px 24px;
+      background: var(--gradient-primary);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius-lg);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: var(--transition-base);
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-submit:active {
+      transform: scale(0.98);
+    }
+
+    .btn-secondary {
+      padding: 12px 20px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: none;
+      border-radius: var(--border-radius-md);
+      font-size: 14px;
+      cursor: pointer;
+      transition: var(--transition-base);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-tertiary);
+    }
+
+    /* Quick select - escolha rápida */
+    .quick-select {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .quick-option {
+      padding: 16px;
+      border: 2px solid var(--bg-tertiary);
+      border-radius: var(--border-radius-xl);
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition-base);
+    }
+
+    .quick-option:hover {
+      border-color: var(--primary);
+      background: var(--bg-primary);
+      /* Fallback or define in root if missing */
+    }
+
+    .quick-option.selected {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: white;
+    }
+
+    .quick-option .opt-icon {
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+
+    .quick-option .opt-label {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    /* Toast notifications */
+    /* Toast notifications - consider using global UX.toast instead of local CSS if possible, but modernizing local for now */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text-primary);
+      color: var(--text-inverse);
+      padding: 14px 24px;
+      border-radius: var(--border-radius-lg);
+      font-size: 14px;
+      z-index: 2000;
+      animation: toastIn 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .toast.success {
+      background: var(--success);
+    }
+
+    .toast.error {
+      background: var(--error);
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, 20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+
+    /* Responsivo */
+    @media (max-width: 600px) {
+      .quick-actions {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .action-card {
+        padding: 16px;
+      }
+
+      .action-card .icon {
+        font-size: 32px;
+      }
+
+      .action-card h3 {
+        font-size: 14px;
+      }
+
+      .action-card p {
+        display: none;
+      }
+
+      .status-bar {
+        flex-wrap: wrap;
+      }
+
+      .status-item {
+        min-width: calc(50% - 8px);
+      }
+
+      .field-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <script>
+    // ============================================
+    // ESTADO GLOBAL
+    // ============================================
+    let dados = { nfs: [], entregas: [], pendentes: [] };
+    let filtroAtual = 'todos';
+
+    // ============================================
+    // INICIALIZAÇÃO
+    // ============================================
+    document.addEventListener('DOMContentLoaded', init);
+
+    function init() {
+      carregarDados();
+      setupFiltros();
+    }
+
+    function carregarDados() {
+      // Carregar métricas
+      google.script.run
+        .withSuccessHandler(function (r) {
+          if (r && r.success) {
+            document.getElementById('totalNFs').textContent = r.data.notasFiscais || 0;
+            document.getElementById('pendentes').textContent = r.data.pendentes || 0;
+            document.getElementById('atestadas').textContent = r.data.atestadas || 0;
+            document.getElementById('problemas').textContent = (r.data.recusas || 0) + (r.data.glosas || 0);
+
+            // Badges de ação
+            if (r.data.aguardandoEntrega > 0) {
+              document.getElementById('badgeEntregas').style.display = 'block';
+              document.getElementById('badgeEntregas').textContent = r.data.aguardandoEntrega;
+            }
+            if (r.data.prontoAtestar > 0) {
+              document.getElementById('badgeAtestar').style.display = 'block';
+              document.getElementById('badgeAtestar').textContent = r.data.prontoAtestar;
+            }
+          }
+        })
+        .withFailureHandler(handleError)
+        .getDashboardMetricsSimplified();
+
+      // Carregar lista de pendências
+      carregarListaPendencias();
+
+      // Info do usuário
+      google.script.run
+        .withSuccessHandler(function (r) {
+          if (r && r.success) {
+            document.getElementById('userInfo').textContent = r.session.nome.split(' ')[0];
+          }
+        })
+        .api_auth_getSession();
+    }
+
+    function carregarListaPendencias() {
+      google.script.run
+        .withSuccessHandler(function (r) {
+          if (r && r.success && r.data.length > 0) {
+            renderizarLista(r.data);
+          } else {
+            mostrarEstadoVazio();
+          }
+        })
+        .withFailureHandler(function () {
+          mostrarEstadoVazio();
+        })
+        .getItensPendentes(filtroAtual);
+    }
+
+    function renderizarLista(itens) {
+      const container = document.getElementById('listContent');
+      container.innerHTML = itens.map(item => `
+        <div class="list-item" onclick="abrirItem('${item.id}', '${item.tipo}')">
+          <div class="item-icon ${item.urgente ? 'danger' : 'pending'}">
+            ${item.tipo === 'nf' ? '🧾' : item.tipo === 'entrega' ? '🚚' : '⚠️'}
+          </div>
+          <div class="item-info">
+            <h4>${item.titulo}</h4>
+            <p>${item.subtitulo}</p>
+          </div>
+          <button class="item-action" onclick="event.stopPropagation(); acaoItem('${item.id}', '${item.acao}')">${item.acaoLabel}</button>
+        </div>
+      `).join('');
+    }
+
+    function mostrarEstadoVazio() {
+      document.getElementById('listContent').innerHTML = `
+        <div class="empty-state">
+          <div class="icon">🎉</div>
+          <h3>Tudo em dia!</h3>
+          <p>Não há itens pendentes no momento</p>
+        </div>
+      `;
+    }
+
+    function setupFiltros() {
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          filtroAtual = this.dataset.filter;
+          document.getElementById('listContent').innerHTML = '<div class="loading">Carregando...</div>';
+          carregarListaPendencias();
+        });
+      });
+    }
+
+    // ============================================
+    // AÇÕES RÁPIDAS - 1 CLIQUE
+    // ============================================
+    function acaoRapida(tipo) {
+      switch (tipo) {
+        case 'nova-nf':
+          abrirModalNovaNF();
+          break;
+        case 'registrar-entrega':
+          abrirModalEntrega();
+          break;
+        case 'atestar':
+          abrirModalAtestar();
+          break;
+        case 'recusar':
+          abrirModalRecusar();
+          break;
+      }
+    }
+
+    // ============================================
+    // MODAL - NOVA NF (SIMPLIFICADO)
+    // ============================================
+    function abrirModalNovaNF() {
+      document.getElementById('modalTitle').textContent = '➕ Nova Nota Fiscal';
+      document.getElementById('modalBody').innerHTML = `
+        <form class="form-simple" onsubmit="salvarNF(event)">
+          <div class="field">
+            <label>Número da NF *</label>
+            <input type="text" id="nf_numero" required placeholder="Ex: 123456" autofocus>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Valor (R$) *</label>
+              <input type="number" id="nf_valor" step="0.01" required placeholder="0,00">
+            </div>
+            <div class="field">
+              <label>Data *</label>
+              <input type="date" id="nf_data" required value="${hoje()}">
+            </div>
+          </div>
+          <div class="field">
+            <label>Fornecedor *</label>
+            <input type="text" id="nf_fornecedor" required placeholder="Nome do fornecedor" list="fornecedores">
+            <datalist id="fornecedores"></datalist>
+          </div>
+          <div class="field">
+            <label>Nota de Empenho</label>
+            <input type="text" id="nf_empenho" placeholder="Opcional">
+          </div>
+          <button type="submit" class="btn-submit">Salvar NF</button>
+        </form>
+      `;
+      abrirModal();
+      carregarFornecedores();
+    }
+
+    function salvarNF(e) {
+      e.preventDefault();
+      const dados = {
+        notaFiscal: document.getElementById('nf_numero').value,
+        valorTotal: parseFloat(document.getElementById('nf_valor').value),
+        dataEmissao: document.getElementById('nf_data').value,
+        fornecedor: document.getElementById('nf_fornecedor').value,
+        notaEmpenho: document.getElementById('nf_empenho').value,
+        status: 'Recebida'
+      };
+
+      mostrarLoading();
+      google.script.run
+        .withSuccessHandler(function (r) {
+          if (r.success) {
+            toast('✅ NF cadastrada com sucesso!', 'success');
+            fecharModal();
+            carregarDados();
+          } else {
+            toast('❌ ' + r.message, 'error');
+          }
+        })
+        .withFailureHandler(handleError)
+        .createNotaFiscalSimplificado(dados);
+    }
+
+    // ============================================
+    // MODAL - REGISTRAR ENTREGA (SUPER SIMPLES)
+    // ============================================
+    function abrirModalEntrega() {
+      document.getElementById('modalTitle').textContent = '🚚 Registrar Entrega';
+      document.getElementById('modalBody').innerHTML = `
+        <form class="form-simple" onsubmit="salvarEntrega(event)">
+          <div class="field">
+            <label>Selecione a NF *</label>
+            <select id="ent_nf" required onchange="preencherDadosNF()">
+              <option value="">Carregando...</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Escola *</label>
+            <input type="text" id="ent_escola" required placeholder="Nome da escola" list="escolas">
+            <datalist id="escolas"></datalist>
+          </div>
+          <div class="field">
+            <label>Tudo OK?</label>
+            <div class="quick-select">
+              <div class="quick-option selected" onclick="selecionarOpcao(this, 'ent_ok', 'sim')">
+                <div class="opt-icon">✅</div>
+                <div class="opt-label">Sim, conforme</div>
+              </div>
+              <div class="quick-option" onclick="selecionarOpcao(this, 'ent_ok', 'nao')">
+                <div class="opt-icon">⚠️</div>
+                <div class="opt-label">Tem problema</div>
+              </div>
+            </div>
+            <input type="hidden" id="ent_ok" value="sim">
+          </div>
+          <div class="field" id="campo_problema" style="display:none;">
+            <label>Qual o problema?</label>
+            <textarea id="ent_problema" rows="2" placeholder="Descreva brevemente"></textarea>
+          </div>
+          <button type="submit" class="btn-submit">Confirmar Entrega</button>
+        </form>
+      `;
+      abrirModal();
+      carregarNFsPendentes();
+      carregarEscolas();
+    }
+
+    function selecionarOpcao(el, inputId, valor) {
+      el.parentElement.querySelectorAll('.quick-option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      document.getElementById(inputId).value = valor;
+
+      // Mostrar/esconder campo de problema
+      if (inputId === 'ent_ok') {
+        document.getElementById('campo_problema').style.display = valor === 'nao' ? 'block' : 'none';
+      }
+    }
+
+    function salvarEntrega(e) {
+      e.preventDefault();
+      const dados = {
+        notaFiscalId: document.getElementById('ent_nf').value,
+        unidadeEscolar: document.getElementById('ent_escola').value,
+        dataEntrega: hoje(),
+        conforme: document.getElementById('ent_ok').value === 'sim',
+        observacoes: document.getElementById('ent_problema')?.value || ''
+      };
+
+      mostrarLoading();
+      google.script.run
+        .withSuccessHandler(function (r) {
+          if (r.success) {
+            toast('✅ Entrega registrada!', 'success');
+            fecharModal();
+            carregarDados();
+          } else {
+            toast('❌ ' + r.message, 'error');
+          }
+        })
+        .withFailureHandler(handleError)
+        .registrarEntregaSimplificada(dados);
+    }
+
+    // ============================================
+    // MODAL - ATESTAR (1 CLIQUE)
+    // ============================================
+    function abrirModalAtestar() {
+      document.getElementById('modalTitle').textContent = '✅ Atestar Notas Fiscais';
+      document.getElementById('modalBody').innerHTML = `
+        <div class="form-simple">
+          <p style="color:#666;margin-bottom:16px;">Selecione as NFs para atestar em lote:</p>
+          <div id="lista_atestar">Carregando...</div>
+          <button type="button" class="btn-submit" onclick="atestarSelecionadas()">Atestar Selecionadas</button>
+        </div>
+      `;
+      abrirModal();
+      carregarNFsParaAtestar();
+    }
+
+    function carregarNFsParaAtestar() {
+      google.script.run
+        .withSuccessHandler(function (r) {
+          if (r.success && r.data.length > 0) {
+            document.getElementById('lista_atestar').innerHTML = r.data.map(nf => `
+              <label style="display:flex;align-items:center;gap:12px;padding:12px;border:1px solid #eee;border-radius:10px;margin-bottom:8px;cursor:pointer;">
+                <input type="checkbox" value="${nf.id}" checked style="width:20px;height:20px;">
+                <div style="flex:1;">
+                  <strong>NF ${nf.numero}</strong> - R$ ${nf.valor.toFixed(2)}
+                  <div style="font-size:12px;color:#888;">${nf.fornecedor}</div>
+                </div>
+              </label>
+            `).join('');
+          } else {
+            document.getElementById('lista_atestar').innerHTML = '<p style="text-align:center;color:#888;">Nenhuma NF pronta para atestar</p>';
+          }
+        })
+        .withFailureHandler(handleError)
+        .getNFsProntasParaAtestar();
+    }
+
+    function atestarSelecionadas() {
+      const checkboxes = document.querySelectorAll('#lista_atestar input[type="checkbox"]:checked');
+      const ids = Array.from(checkboxes).map(cb => cb.value);
+
+      if (ids.length === 0) {
+        toast('Selecione pelo menos uma NF', 'error');
+        return;
+      }
+
+      mostrarLoading();
+      google.script.run
+        .withSuccessHandler(function (r) {
+          if (r.success) {
+            toast(`✅ ${ids.length} NF(s) atestada(s)!`, 'success');
+            fecharModal();
+            carregarDados();
+          } else {
+            toast('❌ ' + r.message, 'error');
+          }
+        })
+        .withFailureHandler(handleError)
+        .atestarNFsEmLote(ids);
+    }
+
+    // ============================================
+    // MODAL - RECUSAR/GLOSAR
+    // ============================================
+    function abrirModalRecusar() {
+      document.getElementById('modalTitle').textContent = '❌ Registrar Problema';
+      document.getElementById('modalBody').innerHTML = `
+        <form class="form-simple" onsubmit="salvarProblema(event)">
+          <div class="field">
+            <label>Tipo de Problema</label>
+            <div class="quick-select">
+              <div class="quick-option selected" onclick="selecionarOpcao(this, 'prob_tipo', 'recusa')">
+                <div class="opt-icon">🚫</div>
+                <div class="opt-label">Recusa</div>
+              </div>
+              <div class="quick-option" onclick="selecionarOpcao(this, 'prob_tipo', 'glosa')">
+                <div class="opt-icon">💰</div>
+                <div class="opt-label">Glosa</div>
+              </div>
+            </div>
+            <input type="hidden" id="prob_tipo" value="recusa">
+          </div>
+          <div class="field">
+            <label>Nota Fiscal *</label>
+            <select id="prob_nf" required>
+              <option value="">Carregando...</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Motivo *</label>
+            <select id="prob_motivo" required>
+              <option value="">Selecione...</option>
+              <option value="qualidade">Problema de qualidade</option>
+              <option value="quantidade">Quantidade incorreta</option>
+              <option value="validade">Prazo de validade</option>
+              <option value="temperatura">Temperatura inadequada</option>
+              <option value="embalagem">Embalagem danificada</option>
+              <option value="outro">Outro</option>
+            </select>
+          </div>
+          <div class="field" id="campo_valor_glosa" style="display:none;">
+            <label>Valor da Glosa (R$)</label>
+            <input type="number" id="prob_valor" step="0.01" placeholder="0,00">
+          </div>
+          <div class="field">
+            <label>Observações</label>
+            <textarea id="prob_obs" rows="2" placeholder="Detalhes adicionais"></textarea>
+          </div>
+          <button type="submit" class="btn-submit">Registrar</button>
+        </form>
+      `;
+      abrirModal();
+      carregarTodasNFs();
+
+      // Mostrar campo de valor quando for glosa
+      document.getElementById('prob_tipo').addEventListener('change', function () {
+        document.getElementById('campo_valor_glosa').style.display = this.value === 'glosa' ? 'block' : 'none';
+      });
+    }
+
+    function salvarProblema(e) {
+      e.preventDefault();
+      const tipo = document.getElementById('prob_tipo').value;
+      const dados = {
+        notaFiscalId: document.getElementById('prob_nf').value,
+        motivo: document.getElementById('prob_motivo').value,
+        observacoes: document.getElementById('prob_obs').value,
+        valorGlosa: tipo === 'glosa' ? parseFloat(document.getElementById('prob_valor').value || 0) : 0
+      };
+
+      mostrarLoading();
+      const funcao = tipo === 'recusa' ? 'registrarRecusaSimplificada' : 'registrarGlosaSimplificada';
+      google.script.run
+        .withSuccessHandler(function (r) {
+          if (r.success) {
+            toast(`✅ ${tipo === 'recusa' ? 'Recusa' : 'Glosa'} registrada!`, 'success');
+            fecharModal();
+            carregarDados();
+          } else {
+            toast('❌ ' + r.message, 'error');
+          }
+        })
+        .withFailureHandler(handleError)
+      [funcao](dados);
+    }
+
+    // ============================================
+    // HELPERS - CARREGAR DADOS PARA SELECTS
+    // ============================================
+    function carregarFornecedores() {
+      google.script.run
+        .withSuccessHandler(function (r) {
+          if (r.success) {
+            const datalist = document.getElementById('fornecedores');
+            datalist.innerHTML = r.data.map(f => `<option value="${f.nome}">`).join('');
+          }
+        })
+        .listarFornecedoresAtivos();
+    }
+
+    function carregarEscolas() {
+      google.script.run
+        .withSuccessHandler(function (r) {
+          if (r.success) {
+            const datalist = document.getElementById('escolas');
+            datalist.innerHTML = r.data.map(e => `<option value="${e.nome}">`).join('');
+          }
+        })
+        .listarEscolasAtivas();
+    }
+
+    function carregarNFsPendentes() {
+      google.script.run
+        .withSuccessHandler(function (r) {
+          const select = document.getElementById('ent_nf');
+          if (r.success && r.data.length > 0) {
+            select.innerHTML = '<option value="">Selecione a NF...</option>' +
+              r.data.map(nf => `<option value="${nf.id}">NF ${nf.numero} - ${nf.fornecedor} - R$ ${nf.valor.toFixed(2)}</option>`).join('');
+          } else {
+            select.innerHTML = '<option value="">Nenhuma NF pendente</option>';
+          }
+        })
+        .getNFsAguardandoEntrega();
+    }
+
+    function carregarTodasNFs() {
+      google.script.run
+        .withSuccessHandler(function (r) {
+          const select = document.getElementById('prob_nf');
+          if (r.success && r.data.length > 0) {
+            select.innerHTML = '<option value="">Selecione a NF...</option>' +
+              r.data.map(nf => `<option value="${nf.id}">NF ${nf.numero} - ${nf.fornecedor}</option>`).join('');
+          } else {
+            select.innerHTML = '<option value="">Nenhuma NF encontrada</option>';
+          }
+        })
+        .listNotasFiscais(50);
+    }
+
+    // ============================================
+    // UTILITÁRIOS
+    // ============================================
+    function abrirModal() {
+      document.getElementById('modal').classList.add('active');
+    }
+
+    function fecharModal() {
+      document.getElementById('modal').classList.remove('active');
+    }
+
+    function hoje() {
+      return new Date().toISOString().split('T')[0];
+    }
+
+    function toast(msg, tipo) {
+      const t = document.createElement('div');
+      t.className = 'toast ' + (tipo || '');
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 3000);
+    }
+
+    function mostrarLoading() {
+      document.querySelector('.modal-body').innerHTML = '<div class="loading" style="padding:60px;"><div style="width:40px;height:40px;border:4px solid #eee;border-top-color:#667eea;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto;"></div><p style="margin-top:16px;color:#888;">Processando...</p></div>';
+    }
+
+    function handleError(error) {
+      toast('❌ Erro: ' + error.message, 'error');
+      console.error(error);
+    }
+
+    function abrirItem(id, tipo) {
+      // Abre detalhes do item
+      console.log('Abrir item:', id, tipo);
+    }
+
+    function acaoItem(id, acao) {
+      // Executa ação rápida no item
+      console.log('Ação:', id, acao);
+    }
+
+    // Fechar modal ao clicar fora
+    document.getElementById('modal').addEventListener('click', function (e) {
+      if (e.target === this) fecharModal();
+    });
+
+    // Atalhos de teclado
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') fecharModal();
+      if (e.ctrlKey && e.key === 'n') { e.preventDefault(); acaoRapida('nova-nf'); }
+      if (e.ctrlKey && e.key === 'e') { e.preventDefault(); acaoRapida('registrar-entrega'); }
+      if (e.ctrlKey && e.key === 'a') { e.preventDefault(); acaoRapida('atestar'); }
+    });
+
+    // Integrar com sistema UX global se disponível
+    if (typeof UX !== 'undefined') {
+      // Substituir toast local pelo global
+      window.toast = function (msg, tipo) {
+        if (tipo === 'success') UX.toast.success(msg);
+        else if (tipo === 'error') UX.toast.error(msg);
+        else UX.toast.info(msg);
+      };
+    }
+  </script>
+
+  <!-- Incluir sistema de melhorias UX -->
+  <?!= include('UI_UX_Improvements'); ?>
+</body>
+
+</html>

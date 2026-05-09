@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#4285f4">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Login - UNIAE CRE</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --primary: #4285f4;
+      --primary-dark: #3367d6;
+      --success: #34a853;
+      --error: #ea4335;
+      --warning: #fbbc04;
+      --text: #202124;
+      --text-light: #5f6368;
+      --border: #dadce0;
+      --bg: #ffffff;
+      --bg-light: #f8f9fa;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    html {
+      height: -webkit-fill-available;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(160deg, var(--primary) 0%, var(--primary-dark) 100%);
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: calc(24px + var(--safe-top)) 20px calc(24px + var(--safe-bottom)) 20px;
+      overscroll-behavior-y: contain;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .card {
+      background: var(--bg);
+      border-radius: 24px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      padding: 36px 24px;
+      animation: slideUp 0.4s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .logo-icon {
+      width: 72px;
+      height: 72px;
+      background: var(--primary);
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      color: white;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 16px rgba(66, 133, 244, 0.3);
+    }
+
+    h1 {
+      font-size: 26px;
+      color: var(--text);
+      text-align: center;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 15px;
+      margin-bottom: 32px;
+      line-height: 1.4;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 16px 18px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 16px;
+      transition: all 0.2s ease;
+      background: var(--bg);
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(66, 133, 244, 0.12);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 18px;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 56px;
+      touch-action: manipulation;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+      box-shadow: 0 2px 8px rgba(66, 133, 244, 0.3);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      display: none;
+      animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .alert-error {
+      background: #fce8e6;
+      color: var(--error);
+      border-left: 4px solid var(--error);
+    }
+
+    .alert-success {
+      background: #e6f4ea;
+      color: var(--success);
+      border-left: 4px solid var(--success);
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 12px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .forgot-password {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .forgot-password a {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 12px;
+      display: inline-block;
+      min-height: 48px;
+      line-height: 24px;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 32px;
+      color: white;
+      font-size: 13px;
+      opacity: 0.95;
+      line-height: 1.6;
+    }
+
+    .footer p {
+      margin-bottom: 4px;
+    }
+
+    /* Samsung S20+ optimizations (1440x3200, 20:9) */
+    @media (max-width: 480px) {
+      .card {
+        padding: 32px 24px;
+        border-radius: 20px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .logo-icon {
+        width: 68px;
+        height: 68px;
+        font-size: 34px;
+        border-radius: 18px;
+      }
+    }
+
+    /* Tall screens (20:9 aspect ratio like S20+) */
+    @media (min-aspect-ratio: 18/9) {
+      body {
+        padding-top: calc(40px + var(--safe-top));
+        padding-bottom: calc(40px + var(--safe-bottom));
+      }
+
+      .logo {
+        margin-bottom: 40px;
+      }
+
+      .card {
+        padding: 40px 28px;
+      }
+    }
+
+    /* Prevent zoom on input focus */
+    @media screen and (max-width: 767px) {
+      input {
+        font-size: 16px;
+      }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 0;
+      background: transparent;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="logo">
+        <div class="logo-icon">🍎</div>
+        <h1>UNIAE CRE</h1>
+        <p class="subtitle">Sistema de Gestão de Alimentação Escolar</p>
+      </div>
+
+      <div id="alert" class="alert"></div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="seu@email.com" required autocomplete="email"
+            autofocus>
+        </div>
+
+        <div class="form-group">
+          <label for="senha">Senha</label>
+          <input type="password" id="senha" name="senha" placeholder="••••••••" required
+            autocomplete="current-password">
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="btnLogin">
+          <span id="btnText">Entrar</span>
+        </button>
+      </form>
+
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Autenticando...</p>
+      </div>
+
+      <div class="forgot-password">
+        <a href="#" onclick="recuperarSenha(); return false;">Esqueci minha senha</a>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>CRE PP/Cruzeiro - UNIAE</p>
+      <p>© 2025 - Todos os direitos reservados</p>
+    </div>
+  </div>
+
+  <script>
+    'use strict';
+
+    // ========================================================================
+    // CONFIGURAÇÃO
+    // ========================================================================
+
+    const CONFIG = {
+      maxTentativas: 5,
+      timeoutLogin: 10000 // 10 segundos
+    };
+
+    let tentativasLogin = 0;
+
+    // ========================================================================
+    // INICIALIZAÇÃO
+    // ========================================================================
+
+    document.addEventListener('DOMContentLoaded', function () {
+      // Verificar se já está logado
+      const sessao = localStorage.getItem('sessao_id');
+      if (sessao) {
+        verificarSessaoExistente(sessao);
+      }
+
+      // Configurar form
+      document.getElementById('loginForm').addEventListener('submit', handleLogin);
+
+      // Limpar mensagens ao digitar
+      document.getElementById('email').addEventListener('input', limparAlerta);
+      document.getElementById('senha').addEventListener('input', limparAlerta);
+
+      // Prevenir zoom no iOS
+      document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('focus', function () {
+          this.style.fontSize = '16px';
+        });
+      });
+    });
+
+    // ========================================================================
+    // HANDLERS
+    // ========================================================================
+
+    function handleLogin(event) {
+      event.preventDefault();
+
+      // Validar tentativas
+      if (tentativasLogin >= CONFIG.maxTentativas) {
+        mostrarErro('Muitas tentativas. Aguarde alguns minutos.');
+        return;
+      }
+
+      // Coletar dados
+      const email = document.getElementById('email').value.trim();
+      const senha = document.getElementById('senha').value;
+
+      // Validar
+      if (!validarEmail(email)) {
+        mostrarErro('Email inválido');
+        return;
+      }
+
+      if (senha.length < 6) {
+        mostrarErro('Senha deve ter no mínimo 6 caracteres');
+        return;
+      }
+
+      // Fazer login
+      realizarLogin(email, senha);
+    }
+
+    function realizarLogin(email, senha) {
+      mostrarLoading(true);
+      limparAlerta();
+
+      // Timeout de segurança
+      const timeout = setTimeout(() => {
+        mostrarLoading(false);
+        mostrarErro('Tempo esgotado. Tente novamente.');
+      }, CONFIG.timeoutLogin);
+
+      google.script.run
+        .withSuccessHandler(function (resultado) {
+          clearTimeout(timeout);
+          handleLoginSuccess(resultado);
+        })
+        .withFailureHandler(function (erro) {
+          clearTimeout(timeout);
+          handleLoginError(erro);
+        })
+        .fazerLogin(email, senha);
+    }
+
+    function handleLoginSuccess(resultado) {
+      mostrarLoading(false);
+
+      if (resultado.success) {
+        // Salvar sessão
+        localStorage.setItem('sessao_id', resultado.sessao);
+        localStorage.setItem('usuario', JSON.stringify(resultado.usuario));
+
+        // Mostrar sucesso
+        mostrarSucesso('Login realizado! Redirecionando...');
+
+        // Redirecionar após 1 segundo
+        setTimeout(() => {
+          redirecionarPorTipo(resultado.usuario.tipo);
+        }, 1000);
+
+      } else {
+        tentativasLogin++;
+        mostrarErro(resultado.message);
+
+        if (tentativasLogin >= CONFIG.maxTentativas) {
+          document.getElementById('btnLogin').disabled = true;
+          setTimeout(() => {
+            tentativasLogin = 0;
+            document.getElementById('btnLogin').disabled = false;
+          }, 300000); // 5 minutos
+        }
+      }
+    }
+
+    function handleLoginError(erro) {
+      mostrarLoading(false);
+      mostrarErro('Erro ao conectar. Verifique sua conexão.');
+      console.error('Erro:', erro);
+    }
+
+    // ========================================================================
+    // FUNÇÕES AUXILIARES
+    // ========================================================================
+
+    function validarEmail(email) {
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return regex.test(email);
+    }
+
+    function mostrarLoading(mostrar) {
+      document.getElementById('loginForm').style.display = mostrar ? 'none' : 'block';
+      document.getElementById('loading').style.display = mostrar ? 'block' : 'none';
+    }
+
+    function mostrarErro(mensagem) {
+      const alert = document.getElementById('alert');
+      alert.className = 'alert alert-error';
+      alert.textContent = mensagem;
+      alert.style.display = 'block';
+    }
+
+    function mostrarSucesso(mensagem) {
+      const alert = document.getElementById('alert');
+      alert.className = 'alert alert-success';
+      alert.textContent = mensagem;
+      alert.style.display = 'block';
+    }
+
+    function limparAlerta() {
+      document.getElementById('alert').style.display = 'none';
+    }
+
+    function redirecionarPorTipo(tipo) {
+      const urls = {
+        'ANALISTA': '?page=dashboard_analista',
+        'ESCOLA': '?page=dashboard_escola',
+        'FORNECEDOR': '?page=dashboard_fornecedor',
+        'NUTRICIONISTA': '?page=dashboard_nutricionista'
+      };
+
+      window.location.href = urls[tipo] || '?page=dashboard';
+    }
+
+    function verificarSessaoExistente(sessaoId) {
+      google.script.run
+        .withSuccessHandler(function (sessao) {
+          if (sessao) {
+            redirecionarPorTipo(sessao.usuario.tipo);
+          } else {
+            localStorage.removeItem('sessao_id');
+            localStorage.removeItem('usuario');
+          }
+        })
+        .withFailureHandler(function () {
+          localStorage.removeItem('sessao_id');
+          localStorage.removeItem('usuario');
+        })
+        .verificarSessao(sessaoId);
+    }
+
+    function recuperarSenha() {
+      const email = prompt('Digite seu email para recuperação de senha:');
+
+      if (email && validarEmail(email)) {
+        mostrarLoading(true);
+        google.script.run
+          .withSuccessHandler(function (result) {
+            mostrarLoading(false);
+            if (result.success) {
+              mostrarSucesso(result.message);
+            } else {
+              mostrarErro(result.error);
+            }
+          })
+          .withFailureHandler(function (error) {
+            mostrarLoading(false);
+            mostrarErro('Erro: ' + error.message);
+          })
+          .recoverPassword(email);
+      } else if (email) {
+        mostrarErro('Email inválido');
+      }
+    }
+
+    // Prevenir back button após login
+    window.history.pushState(null, '', window.location.href);
+    window.onpopstate = function () {
+      window.history.pushState(null, '', window.location.href);
+    };
+  </script>
+</body>
+
+</html>

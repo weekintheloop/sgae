@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notificação de Qualidade - Alimentos Perecíveis</title>
+  <base target="_top">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4f46e5; --primary-light: #818cf8; --primary-dark: #3730a3;
+      --success: #10b981; --success-light: #d1fae5;
+      --warning: #f59e0b; --warning-light: #fef3c7;
+      --danger: #ef4444; --danger-light: #fee2e2;
+      --info: #3b82f6; --info-light: #dbeafe;
+      --gray-50: #f9fafb; --gray-100: #f3f4f6; --gray-200: #e5e7eb;
+      --gray-300: #d1d5db; --gray-500: #6b7280; --gray-700: #374151; --gray-900: #111827;
+      --radius: 12px; --shadow: 0 1px 3px rgba(0,0,0,0.1); --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--gray-50); color: var(--gray-900); line-height: 1.5; }
+    .header { background: linear-gradient(135deg, var(--danger) 0%, #b91c1c 100%); color: white; padding: 16px 24px; }
+    .header h1 { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+    .header p { font-size: 12px; opacity: 0.9; margin-top: 4px; }
+    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+    .card { background: white; border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); margin-bottom: 20px; }
+    .card-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; color: var(--gray-700); }
+    .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--gray-700); }
+    .form-group label .required { color: var(--danger); }
+    .form-control { width: 100%; padding: 10px 12px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 14px; }
+    .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
+    select.form-control { cursor: pointer; background: white; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; border: none; }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-outline { background: white; border: 1px solid var(--gray-300); color: var(--gray-700); }
+    .alert { padding: 14px 16px; border-radius: 8px; margin-bottom: 16px; display: flex; align-items: flex-start; gap: 12px; font-size: 14px; }
+    .alert-warning { background: var(--warning-light); color: #92400e; border: 1px solid #fcd34d; }
+    .alert-danger { background: var(--danger-light); color: #991b1b; border: 1px solid #fca5a5; }
+    .tabs { display: flex; gap: 4px; border-bottom: 2px solid var(--gray-200); margin-bottom: 20px; }
+    .tab { padding: 12px 20px; background: none; border: none; font-size: 14px; font-weight: 500; color: var(--gray-500); cursor: pointer; position: relative; }
+    .tab.active { color: var(--danger); }
+    .tab.active::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 2px; background: var(--danger); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .checkbox-group { display: flex; flex-wrap: wrap; gap: 12px; }
+    .checkbox-item { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--gray-50); border-radius: 6px; }
+    .checkbox-item input { width: 16px; height: 16px; }
+    .checkbox-item label { font-size: 13px; cursor: pointer; }
+    .actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <h1><span class="material-symbols-outlined">report_problem</span>Notificação de Qualidade de Alimento Perecível</h1>
+    <p>Conforme Nota Técnica N.º 1/2025 - SEE/SUAPE/DIAE/GPAE</p>
+  </header>
+
+  <div class="container">
+    <div class="alert alert-warning">
+      <span class="material-symbols-outlined">gavel</span>
+      <div>
+        <strong>Base Legal:</strong> RDC ANVISA 216/2004, Lei 11.947/2009, Resolução FNDE 06/2020, Manual de Alimentação Escolar do DF.
+        <br>Documentação obrigatória: Cópia do recibo, registro fotográfico e formulário preenchido.
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="mostrarTab('vencido')">
+        <span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle;">event_busy</span> Alimento Vencido
+      </button>
+      <button class="tab" onclick="mostrarTab('improprio')">
+        <span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle;">dangerous</span> Alimento Impróprio
+      </button>
+      <button class="tab" onclick="mostrarTab('alteracao')">
+        <span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle;">change_circle</span> Alteração Qualidade
+      </button>
+    </div>
+
+    <!-- Tab: Alimento Vencido -->
+    <div class="tab-content active" id="tab-vencido">
+      <form id="form-vencido">
+        <div class="card">
+          <div class="card-title"><span class="material-symbols-outlined">school</span>Dados da Unidade Escolar</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Unidade Escolar <span class="required">*</span></label>
+              <input type="text" class="form-control" name="unidadeEscolar" required>
+            </div>
+            <div class="form-group">
+              <label>CRE Regional</label>
+              <select class="form-control" name="creRegional">
+                <option value="">Selecione...</option>
+                <option value="PLANO_PILOTO">Plano Piloto/Cruzeiro</option>
+                <option value="GAMA">Gama</option>
+                <option value="TAGUATINGA">Taguatinga</option>
+                <option value="BRAZLANDIA">Brazlândia</option>
+                <option value="SOBRADINHO">Sobradinho</option>
+                <option value="PLANALTINA">Planaltina</option>
+                <option value="NUCLEO_BANDEIRANTE">Núcleo Bandeirante</option>
+                <option value="CEILANDIA">Ceilândia</option>
+                <option value="GUARA">Guará</option>
+                <option value="SAMAMBAIA">Samambaia</option>
+                <option value="SANTA_MARIA">Santa Maria</option>
+                <option value="PARANOA">Paranoá</option>
+                <option value="SAO_SEBASTIAO">São Sebastião</option>
+                <option value="RECANTO_EMAS">Recanto das Emas</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="material-symbols-outlined">inventory_2</span>Dados do Produto Vencido</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Produto <span class="required">*</span></label>
+              <input type="text" class="form-control" name="produto" required placeholder="Nome do produto">
+            </div>
+            <div class="form-group">
+              <label>Quantidade <span class="required">*</span></label>
+              <input type="number" class="form-control" name="quantidade" required step="0.01">
+            </div>
+            <div class="form-group">
+              <label>Unidade de Medida</label>
+              <select class="form-control" name="unidadeMedida">
+                <option value="KG">Quilograma (kg)</option>
+                <option value="UN">Unidade</option>
+                <option value="L">Litro</option>
+                <option value="PCT">Pacote</option>
+                <option value="CX">Caixa</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Lote</label>
+              <input type="text" class="form-control" name="lote">
+            </div>
+            <div class="form-group">
+              <label>Data de Validade <span class="required">*</span></label>
+              <input type="date" class="form-control" name="dataValidade" required>
+            </div>
+            <div class="form-group">
+              <label>Data de Identificação do Vencimento <span class="required">*</span></label>
+              <input type="date" class="form-control" name="dataVencimento" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nº do Recibo de Entrega <span class="required">*</span></label>
+              <input type="text" class="form-control" name="numeroRecibo" required>
+            </div>
+            <div class="form-group">
+              <label>Data do Recibo</label>
+              <input type="date" class="form-control" name="dataRecibo">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="material-symbols-outlined">warehouse</span>Armazenamento Temporário (até descarte)</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Tipo de Armazenamento <span class="required">*</span></label>
+              <select class="form-control" name="tipoArmazenamento" required>
+                <option value="">Selecione...</option>
+                <option value="AMBIENTE">Ambiente (sacos pretos identificados)</option>
+                <option value="CONGELADO">Congelado (sacos pretos identificados, sob congelamento)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Local de Armazenamento</label>
+              <input type="text" class="form-control" name="localArmazenamento" placeholder="Ex: Depósito, Freezer 1">
+            </div>
+          </div>
+          <div class="alert alert-danger" style="margin-top:12px;">
+            <span class="material-symbols-outlined">warning</span>
+            <div>Os produtos devem ser acondicionados em sacos pretos e identificados como <strong>"IMPRÓPRIOS PARA O CONSUMO"</strong> até a visita técnica do nutricionista.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="material-symbols-outlined">attach_file</span>Documentação Obrigatória (Seção 4.2)</div>
+          <div class="checkbox-group">
+            <div class="checkbox-item">
+              <input type="checkbox" id="doc-recibo-v" name="copiaRecibo">
+              <label for="doc-recibo-v">Cópia do recibo de entrega</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="doc-foto-v" name="registroFotografico">
+              <label for="doc-foto-v">Registro fotográfico</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="material-symbols-outlined">person</span>Responsável pelo Registro</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nome Completo <span class="required">*</span></label>
+              <input type="text" class="form-control" name="responsavelRegistro" required>
+            </div>
+            <div class="form-group">
+              <label>Matrícula <span class="required">*</span></label>
+              <input type="text" class="form-control" name="matriculaResponsavel" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Observações</label>
+            <textarea class="form-control" name="observacoes" rows="3"></textarea>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn btn-outline" onclick="limparFormulario('form-vencido')">Limpar</button>
+          <button type="submit" class="btn btn-danger">
+            <span class="material-symbols-outlined">send</span> Registrar Notificação
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Tab: Alimento Impróprio -->
+    <div class="tab-content" id="tab-improprio">
+      <form id="form-improprio">
+        <div class="card">
+          <div class="card-title"><span class="material-symbols-outlined">school</span>Dados da Unidade Escolar</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Unidade Escolar <span class="required">*</span></label>
+              <input type="text" class="form-control" name="unidadeEscolar" required>
+            </div>
+            <div class="form-group">
+              <label>CRE Regional</label>
+              <select class="form-control" name="creRegional">
+                <option value="">Selecione...</option>
+                <option value="PLANO_PILOTO">Plano Piloto/Cruzeiro</option>
+                <option value="GAMA">Gama</option>
+                <option value="TAGUATINGA">Taguatinga</option>
+                <option value="CEILANDIA">Ceilândia</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="material-symbols-outlined">inventory_2</span>Dados do Produto</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Produto <span class="required">*</span></label>
+              <input type="text" class="form-control" name="produto" required>
+            </div>
+            <div class="form-group">
+              <label>Quantidade <span class="required">*</span></label>
+              <input type="number" class="form-control" name="quantidade" required step="0.01">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Lote</label>
+              <input type="text" class="form-control" name="lote">
+            </div>
+            <div class="form-group">
+              <label>Data de Validade</label>
+              <input type="date" class="form-control" name="dataValidade">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="material-symbols-outlined">error</span>Origem do Problema (Seção 5.2)</div>
+          <div class="form-group">
+            <label>Origem <span class="required">*</span></label>
+            <select class="form-control" name="origemProblema" required>
+              <option value="">Selecione...</option>
+              <option value="RECEBIMENTO_INADEQUADO">Recebimento inadequado / Vício oculto</option>
+              <option value="FALHA_ESTOQUE">Falha no estoque, armazenagem e/ou conservação</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Descrição do Problema <span class="required">*</span></label>
+            <textarea class="form-control" name="descricaoProblema" rows="3" required placeholder="Descreva detalhadamente o problema identificado"></textarea>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="material-symbols-outlined">checklist</span>Características Identificadas (Seção 5.1)</div>
+          <div class="checkbox-group">
+            <div class="checkbox-item">
+              <input type="checkbox" id="carac-deterioracao" name="deterioracaoVisivel">
+              <label for="carac-deterioracao">Deterioração visível</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="carac-cor" name="alteracaoCor">
+              <label for="carac-cor">Alteração de cor</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="carac-odor" name="alteracaoOdor">
+              <label for="carac-odor">Alteração de odor</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="carac-textura" name="alteracaoTextura">
+              <label for="carac-textura">Alteração de textura</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="carac-aroma" name="alteracaoAroma">
+              <label for="carac-aroma">Alteração de aroma</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="carac-fisica" name="contaminacaoFisica">
+              <label for="carac-fisica">Contaminação física</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="carac-quimica" name="contaminacaoQuimica">
+              <label for="carac-quimica">Contaminação química</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="carac-biologica" name="contaminacaoBiologica">
+              <label for="carac-biologica">Contaminação biológica</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="carac-pragas" name="presencaPragasUrbanas">
+              <label for="carac-pragas">Presença de pragas urbanas</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="material-symbols-outlined">thermostat</span>Temperatura (se aplicável)</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Temperatura Aferida (°C)</label>
+              <input type="number" class="form-control" name="temperaturaAferida" step="0.1">
+            </div>
+            <div class="form-group">
+              <label>Temperatura Esperada (°C)</label>
+              <input type="number" class="form-control" name="temperaturaEsperada" step="0.1">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="material-symbols-outlined">person</span>Responsável pelo Registro</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nome Completo <span class="required">*</span></label>
+              <input type="text" class="form-control" name="responsavelRegistro" required>
+            </div>
+            <div class="form-group">
+              <label>Matrícula <span class="required">*</span></label>
+              <input type="text" class="form-control" name="matriculaResponsavel" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn btn-outline" onclick="limparFormulario('form-improprio')">Limpar</button>
+          <button type="submit" class="btn btn-danger">
+            <span class="material-symbols-outlined">send</span> Registrar Notificação
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Tab: Alteração de Qualidade -->
+    <div class="tab-content" id="tab-alteracao">
+      <form id="form-alteracao">
+        <div class="card">
+          <div class="card-title"><span class="material-symbols-outlined">info</span>Informações Gerais</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Unidade Escolar <span class="required">*</span></label>
+              <input type="text" class="form-control" name="unidadeEscolar" required>
+            </div>
+            <div class="form-group">
+              <label>CRE Regional</label>
+              <select class="form-control" name="creRegional">
+                <option value="">Selecione...</option>
+                <option value="PLANO_PILOTO">Plano Piloto/Cruzeiro</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Produto <span class="required">*</span></label>
+              <input type="text" class="form-control" name="produto" required>
+            </div>
+            <div class="form-group">
+              <label>Quantidade</label>
+              <input type="number" class="form-control" name="quantidade" step="0.01">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Fornecedor</label>
+              <input type="text" class="form-control" name="fornecedor">
+            </div>
+            <div class="form-group">
+              <label>CNPJ Fornecedor</label>
+              <input type="text" class="form-control" name="cnpjFornecedor">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="material-symbols-outlined">edit_note</span>Descrição da Alteração</div>
+          <div class="form-group">
+            <label>Descreva a alteração identificada <span class="required">*</span></label>
+            <textarea class="form-control" name="descricaoAlteracao" rows="4" required placeholder="Ex: Espinhas pontuais em peixe, alterações sutis no gosto do queijo ou do pão..."></textarea>
+          </div>
+          <div class="alert alert-warning">
+            <span class="material-symbols-outlined">info</span>
+            <div>Conforme Seção 6.1: Alguns elementos inerentes ao alimento não o tornam impróprio. Contudo, quaisquer alterações devem ser notificadas para apuração.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="material-symbols-outlined">science</span>Análise Laboratorial (Seção 6.3)</div>
+          <div class="checkbox-group">
+            <div class="checkbox-item">
+              <input type="checkbox" id="analise-lab" name="solicitarAnaliseLaboratorial">
+              <label for="analise-lab">Solicitar análise microbiológica (em caso de dúvida sobre qualidade sanitária)</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="material-symbols-outlined">person</span>Responsável pelo Registro</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nome Completo <span class="required">*</span></label>
+              <input type="text" class="form-control" name="responsavelRegistro" required>
+            </div>
+            <div class="form-group">
+              <label>Matrícula <span class="required">*</span></label>
+              <input type="text" class="form-control" name="matriculaResponsavel" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn btn-outline" onclick="limparFormulario('form-alteracao')">Limpar</button>
+          <button type="submit" class="btn btn-danger">
+            <span class="material-symbols-outlined">send</span> Registrar Notificação
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function mostrarTab(tabId) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+      event.target.closest('.tab').classList.add('active');
+      document.getElementById('tab-' + tabId).classList.add('active');
+    }
+
+    function limparFormulario(formId) {
+      document.getElementById(formId).reset();
+    }
+
+    // Form submissions
+    document.getElementById('form-vencido').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const dados = Object.fromEntries(formData.entries());
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            alert('Notificação registrada com sucesso! ID: ' + result.id);
+            limparFormulario('form-vencido');
+          } else {
+            alert('Erro: ' + result.error);
+          }
+        })
+        .withFailureHandler(function(error) {
+          alert('Erro ao registrar: ' + error.message);
+        })
+        .registrarAlimentoVencido(dados);
+    });
+
+    document.getElementById('form-improprio').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const dados = Object.fromEntries(formData.entries());
+
+      // Converter checkboxes
+      ['deterioracaoVisivel', 'alteracaoCor', 'alteracaoOdor', 'alteracaoTextura',
+       'alteracaoAroma', 'contaminacaoFisica', 'contaminacaoQuimica',
+       'contaminacaoBiologica', 'presencaPragasUrbanas'].forEach(campo => {
+        dados[campo] = document.querySelector(`[name="${campo}"]`).checked;
+      });
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            alert('Notificação registrada com sucesso! ID: ' + result.id);
+            limparFormulario('form-improprio');
+          } else {
+            alert('Erro: ' + result.error);
+          }
+        })
+        .withFailureHandler(function(error) {
+          alert('Erro ao registrar: ' + error.message);
+        })
+        .registrarAlimentoImproprio(dados);
+    });
+
+    document.getElementById('form-alteracao').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const dados = Object.fromEntries(formData.entries());
+      dados.solicitarAnaliseLaboratorial = document.querySelector('[name="solicitarAnaliseLaboratorial"]').checked;
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            alert('Notificação registrada com sucesso! ID: ' + result.id);
+            limparFormulario('form-alteracao');
+          } else {
+            alert('Erro: ' + result.error);
+          }
+        })
+        .withFailureHandler(function(error) {
+          alert('Erro ao registrar: ' + error.message);
+        })
+        .registrarAlteracaoQualidade(dados);
+    });
+  </script>
+</body>
+</html>

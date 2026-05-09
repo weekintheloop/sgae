@@ -1,0 +1,465 @@
+<!--
+  UI_Header_Enhanced.html
+  Cabeçalho Aprimorado - Alimentação Escolar CRE-PP
+  @version 2.0.0
+  
+  Estrutura:
+  - Menu-sanduíche à esquerda + Logo "AE"
+  - 5 botões de ação rápida à direita
+  - Indicador de status offline
+  
+  Baseado em Diretrizes de Layout.md
+-->
+
+<style>
+/* ============================================
+   HEADER PRINCIPAL
+   ============================================ */
+.ae-header {
+  background: var(--ae-gradient-primary);
+  color: var(--ae-text-inverse);
+  position: sticky;
+  top: 0;
+  z-index: var(--ae-z-sticky);
+  box-shadow: var(--ae-shadow-md);
+}
+
+.ae-header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--ae-space-4);
+}
+
+/* Linha Principal */
+.ae-header-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ae-space-3) 0;
+  min-height: 60px;
+}
+
+/* Logo Section */
+.ae-header-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--ae-space-3);
+}
+
+.ae-menu-toggle {
+  width: var(--ae-touch-min);
+  height: var(--ae-touch-min);
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--ae-text-inverse);
+  border-radius: var(--ae-radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--ae-transition-fast);
+}
+
+.ae-menu-toggle:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.ae-menu-toggle i {
+  font-size: 20px;
+}
+
+.ae-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--ae-space-2);
+}
+
+.ae-logo-icon {
+  font-size: 28px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.ae-logo-text {
+  font-size: var(--ae-font-2xl);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.ae-logo-subtitle {
+  font-size: var(--ae-font-xs);
+  opacity: 0.85;
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .ae-logo-subtitle {
+    display: block;
+  }
+}
+</style>
+
+<style>
+/* Header Actions */
+.ae-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ae-space-2);
+}
+
+.ae-header-btn {
+  width: var(--ae-touch-min);
+  height: var(--ae-touch-min);
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--ae-text-inverse);
+  border-radius: var(--ae-radius-full);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--ae-transition-fast);
+  position: relative;
+}
+
+.ae-header-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.ae-header-btn:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
+}
+
+.ae-header-btn i {
+  font-size: 18px;
+}
+
+/* Badge de Notificação */
+.ae-header-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  background: var(--ae-accent);
+  color: var(--ae-text-inverse);
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: var(--ae-radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--ae-shadow-sm);
+}
+
+.ae-header-badge.hidden {
+  display: none;
+}
+
+/* Indicador de Status Online/Offline */
+.ae-network-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--ae-radius-full);
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  border: 2px solid var(--ae-primary-dark);
+}
+
+.ae-network-indicator.online {
+  background: #4CAF50;
+}
+
+.ae-network-indicator.offline {
+  background: var(--ae-accent);
+  animation: ae-blink 1s ease-in-out infinite;
+}
+
+@keyframes ae-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Breadcrumb / Page Title */
+.ae-header-breadcrumb {
+  display: none;
+  padding: var(--ae-space-2) 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (min-width: 768px) {
+  .ae-header-breadcrumb {
+    display: flex;
+  }
+}
+
+.ae-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--ae-space-2);
+  font-size: var(--ae-font-sm);
+}
+
+.ae-breadcrumb-item {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: color var(--ae-transition-fast);
+}
+
+.ae-breadcrumb-item:hover {
+  color: var(--ae-text-inverse);
+}
+
+.ae-breadcrumb-separator {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.ae-breadcrumb-current {
+  color: var(--ae-text-inverse);
+  font-weight: 500;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 480px) {
+  .ae-header-main {
+    padding: var(--ae-space-2) 0;
+  }
+  
+  .ae-header-btn {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .ae-header-btn i {
+    font-size: 16px;
+  }
+  
+  .ae-logo-text {
+    font-size: var(--ae-font-xl);
+  }
+}
+</style>
+
+<!-- ============================================
+     HTML DO HEADER
+     ============================================ -->
+<header class="ae-header" role="banner">
+  <div class="ae-header-container">
+    <!-- Linha Principal -->
+    <div class="ae-header-main">
+      <!-- Logo e Menu -->
+      <div class="ae-header-logo">
+        <button class="ae-menu-toggle" id="ae-menu-toggle" 
+                aria-label="Abrir menu de navegação" 
+                aria-expanded="false" 
+                aria-controls="sidebar"
+                onclick="AEHeader.toggleSidebar()">
+          <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="ae-logo">
+          <span class="ae-logo-icon">🍎</span>
+          <div>
+            <div class="ae-logo-text">AE</div>
+            <div class="ae-logo-subtitle">Alimentação Escolar</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Ações do Header (5 botões) -->
+      <div class="ae-header-actions">
+        <!-- 1. Notificações -->
+        <button class="ae-header-btn" 
+                id="btn-notifications"
+                aria-label="Notificações" 
+                title="Notificações"
+                onclick="AEDrawers.open('notifications')">
+          <i class="fas fa-bell"></i>
+          <span class="ae-header-badge" id="badge-notifications">3</span>
+        </button>
+        
+        <!-- 2. Busca Global -->
+        <button class="ae-header-btn" 
+                id="btn-search"
+                aria-label="Buscar" 
+                title="Buscar (Ctrl+K)"
+                onclick="AEDrawers.open('search')">
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <!-- 3. Calendário -->
+        <button class="ae-header-btn" 
+                id="btn-calendar"
+                aria-label="Calendário" 
+                title="Calendário de Cardápios"
+                onclick="AEDrawers.open('calendar')">
+          <i class="fas fa-calendar-alt"></i>
+        </button>
+        
+        <!-- 4. Status de Rede -->
+        <button class="ae-header-btn" 
+                id="btn-network"
+                aria-label="Status de Rede" 
+                title="Status de Sincronização"
+                onclick="AEDrawers.open('network')">
+          <i class="fas fa-cloud" id="network-icon-header"></i>
+          <span class="ae-network-indicator online" id="network-indicator"></span>
+        </button>
+        
+        <!-- 5. Perfil -->
+        <button class="ae-header-btn" 
+                id="btn-profile"
+                aria-label="Minha Conta" 
+                title="Minha Conta"
+                onclick="AEDrawers.open('profile')">
+          <i class="fas fa-user"></i>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Breadcrumb (Desktop) -->
+    <nav class="ae-header-breadcrumb" aria-label="Breadcrumb">
+      <ol class="ae-breadcrumb">
+        <li><a href="#" class="ae-breadcrumb-item" onclick="AEHeader.goHome()">Início</a></li>
+        <li class="ae-breadcrumb-separator">/</li>
+        <li class="ae-breadcrumb-current" id="current-page-title">Dashboard</li>
+      </ol>
+    </nav>
+  </div>
+</header>
+
+<!-- ============================================
+     JAVASCRIPT DO HEADER
+     ============================================ -->
+<script>
+/**
+ * AEHeader - Controlador do Cabeçalho
+ */
+var AEHeader = (function() {
+  'use strict';
+  
+  var state = {
+    sidebarOpen: false,
+    isOnline: navigator.onLine
+  };
+  
+  /**
+   * Inicializa o header
+   */
+  function init() {
+    bindEvents();
+    updateNetworkIndicator();
+    setupKeyboardShortcuts();
+    console.log('AEHeader inicializado');
+  }
+  
+  function bindEvents() {
+    // Network status
+    window.addEventListener('online', function() {
+      state.isOnline = true;
+      updateNetworkIndicator();
+    });
+    
+    window.addEventListener('offline', function() {
+      state.isOnline = false;
+      updateNetworkIndicator();
+    });
+  }
+  
+  function setupKeyboardShortcuts() {
+    document.addEventListener('keydown', function(e) {
+      // Ctrl+K para busca
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        AEDrawers.open('search');
+      }
+    });
+  }
+  
+  /**
+   * Toggle do sidebar
+   */
+  function toggleSidebar() {
+    state.sidebarOpen = !state.sidebarOpen;
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('sidebarOverlay');
+    var toggle = document.getElementById('ae-menu-toggle');
+    
+    if (sidebar) {
+      sidebar.classList.toggle('open', state.sidebarOpen);
+    }
+    if (overlay) {
+      overlay.classList.toggle('active', state.sidebarOpen);
+    }
+    if (toggle) {
+      toggle.setAttribute('aria-expanded', state.sidebarOpen);
+    }
+  }
+  
+  /**
+   * Atualiza indicador de rede
+   */
+  function updateNetworkIndicator() {
+    var indicator = document.getElementById('network-indicator');
+    var icon = document.getElementById('network-icon-header');
+    
+    if (indicator) {
+      indicator.className = 'ae-network-indicator ' + (state.isOnline ? 'online' : 'offline');
+    }
+    if (icon) {
+      icon.className = 'fas fa-' + (state.isOnline ? 'cloud' : 'cloud-slash');
+    }
+  }
+  
+  /**
+   * Atualiza badge de notificações
+   */
+  function updateNotificationBadge(count) {
+    var badge = document.getElementById('badge-notifications');
+    if (badge) {
+      if (count > 0) {
+        badge.textContent = count > 99 ? '99+' : count;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+  }
+  
+  /**
+   * Atualiza título da página atual
+   */
+  function setPageTitle(title) {
+    var el = document.getElementById('current-page-title');
+    if (el) {
+      el.textContent = title;
+    }
+    document.title = title + ' | AE - Alimentação Escolar';
+  }
+  
+  /**
+   * Navega para home
+   */
+  function goHome() {
+    if (typeof AEMenu !== 'undefined') {
+      AEMenu.navigate('dashboard-cre');
+    }
+    setPageTitle('Dashboard');
+  }
+  
+  // API Pública
+  return {
+    init: init,
+    toggleSidebar: toggleSidebar,
+    updateNotificationBadge: updateNotificationBadge,
+    setPageTitle: setPageTitle,
+    goHome: goHome
+  };
+})();
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', AEHeader.init);
+</script>

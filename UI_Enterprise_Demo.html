@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UNIAE Enterprise Deluxe - Demo</title>
+  <base target="_top">
+  <?!= include('UI_Enterprise_Deluxe'); ?>
+</head>
+<body>
+  <div class="enterprise-app">
+
+    <!-- Header -->
+    <header class="enterprise-header">
+      <div class="enterprise-header-inner">
+        <a href="#" class="enterprise-logo">
+          <div class="enterprise-logo-icon">
+            <span class="material-symbols-outlined">hub</span>
+          </div>
+          <span class="enterprise-logo-text">UNIAE</span>
+        </a>
+
+        <nav class="enterprise-nav md:hidden">
+          <a href="#" class="enterprise-nav-item active">
+            <span class="material-symbols-outlined">dashboard</span>
+            Dashboard
+          </a>
+          <a href="#" class="enterprise-nav-item">
+            <span class="material-symbols-outlined">inventory_2</span>
+            Estoque
+          </a>
+          <a href="#" class="enterprise-nav-item">
+            <span class="material-symbols-outlined">receipt_long</span>
+            Notas Fiscais
+          </a>
+          <a href="#" class="enterprise-nav-item">
+            <span class="material-symbols-outlined">analytics</span>
+            Relatórios
+          </a>
+        </nav>
+
+        <div class="enterprise-header-actions">
+          <button class="enterprise-btn enterprise-btn-icon enterprise-btn-ghost" onclick="EnterpriseTheme.toggle()">
+            <span class="material-symbols-outlined">dark_mode</span>
+          </button>
+
+          <button class="enterprise-btn enterprise-btn-icon enterprise-btn-ghost">
+            <span class="material-symbols-outlined">notifications</span>
+          </button>
+
+          <div class="enterprise-dropdown">
+            <button class="enterprise-user-card" data-dropdown-toggle style="cursor: pointer; background: none; border: none;">
+              <div class="enterprise-avatar">JD</div>
+              <div class="enterprise-user-info md:hidden">
+                <div class="enterprise-user-name">João da Silva</div>
+                <div class="enterprise-user-role">Administrador</div>
+              </div>
+            </button>
+            <div class="enterprise-dropdown-menu right">
+              <div class="enterprise-dropdown-header">Minha Conta</div>
+              <a href="#" class="enterprise-dropdown-item">
+                <span class="material-symbols-outlined">person</span>
+                Perfil
+              </a>
+              <a href="#" class="enterprise-dropdown-item">
+                <span class="material-symbols-outlined">settings</span>
+                Configurações
+              </a>
+              <div class="enterprise-dropdown-divider"></div>
+              <a href="#" class="enterprise-dropdown-item danger">
+                <span class="material-symbols-outlined">logout</span>
+                Sair
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="enterprise-container py-6">
+
+      <!-- Page Header -->
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <nav class="enterprise-breadcrumbs mb-2">
+            <a href="#" class="enterprise-breadcrumb-item">Home</a>
+            <span class="enterprise-breadcrumb-separator">/</span>
+            <span class="enterprise-breadcrumb-item active">Dashboard</span>
+          </nav>
+          <h1 class="text-3xl font-bold text-primary">Dashboard Enterprise</h1>
+          <p class="text-secondary mt-1">Visão geral do sistema UNIAE</p>
+        </div>
+        <div class="flex gap-3">
+          <button class="enterprise-btn enterprise-btn-secondary">
+            <span class="material-symbols-outlined">download</span>
+            Exportar
+          </button>
+          <button class="enterprise-btn enterprise-btn-gradient">
+            <span class="material-symbols-outlined">add</span>
+            Nova Entrada
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="enterprise-grid grid-cols-4 mb-6">
+        <div class="enterprise-card enterprise-stat-card animate-fade-in-up stagger-1">
+          <div class="enterprise-stat-icon primary">
+            <span class="material-symbols-outlined">inventory_2</span>
+          </div>
+          <div>
+            <div class="enterprise-stat-value">2,847</div>
+            <div class="enterprise-stat-label">Itens em Estoque</div>
+          </div>
+          <div class="enterprise-stat-trend up">
+            <span class="material-symbols-outlined" style="font-size: 16px;">trending_up</span>
+            +12.5%
+          </div>
+        </div>
+
+        <div class="enterprise-card enterprise-stat-card animate-fade-in-up stagger-2">
+          <div class="enterprise-stat-icon success">
+            <span class="material-symbols-outlined">check_circle</span>
+          </div>
+          <div>
+            <div class="enterprise-stat-value">156</div>
+            <div class="enterprise-stat-label">Entregas Concluídas</div>
+          </div>
+          <div class="enterprise-stat-trend up">
+            <span class="material-symbols-outlined" style="font-size: 16px;">trending_up</span>
+            +8.2%
+          </div>
+        </div>
+
+        <div class="enterprise-card enterprise-stat-card animate-fade-in-up stagger-3">
+          <div class="enterprise-stat-icon warning">
+            <span class="material-symbols-outlined">pending</span>
+          </div>
+          <div>
+            <div class="enterprise-stat-value">23</div>
+            <div class="enterprise-stat-label">Pendentes</div>
+          </div>
+          <div class="enterprise-stat-trend down">
+            <span class="material-symbols-outlined" style="font-size: 16px;">trending_down</span>
+            -3.1%
+          </div>
+        </div>
+
+        <div class="enterprise-card enterprise-stat-card animate-fade-in-up stagger-4">
+          <div class="enterprise-stat-icon error">
+            <span class="material-symbols-outlined">warning</span>
+          </div>
+          <div>
+            <div class="enterprise-stat-value">5</div>
+            <div class="enterprise-stat-label">Alertas</div>
+          </div>
+          <div class="enterprise-badge enterprise-badge-danger">Urgente</div>
+        </div>
+      </div>
+
+      <!-- Main Grid -->
+      <div class="enterprise-grid grid-cols-3 mb-6">
+
+        <!-- Chart Card -->
+        <div class="enterprise-card" style="grid-column: span 2;">
+          <div class="enterprise-card-header">
+            <div>
+              <h3 class="enterprise-card-title">Movimentação Mensal</h3>
+              <p class="enterprise-card-subtitle">Entradas e saídas do estoque</p>
+            </div>
+            <div class="enterprise-chart-legend">
+              <div class="enterprise-chart-legend-item">
+                <div class="enterprise-chart-legend-dot" style="background: var(--enterprise-accent);"></div>
+                Entradas
+              </div>
+              <div class="enterprise-chart-legend-item">
+                <div class="enterprise-chart-legend-dot" style="background: var(--color-success);"></div>
+                Saídas
+              </div>
+            </div>
+          </div>
+          <div class="enterprise-card-body">
+            <div class="enterprise-sparkline" style="height: 200px;">
+              <div class="enterprise-sparkline-bar" style="height: 60%;"></div>
+              <div class="enterprise-sparkline-bar" style="height: 80%;"></div>
+              <div class="enterprise-sparkline-bar" style="height: 45%;"></div>
+              <div class="enterprise-sparkline-bar" style="height: 90%;"></div>
+              <div class="enterprise-sparkline-bar" style="height: 70%;"></div>
+              <div class="enterprise-sparkline-bar" style="height: 85%;"></div>
+              <div class="enterprise-sparkline-bar" style="height: 55%;"></div>
+              <div class="enterprise-sparkline-bar" style="height: 75%;"></div>
+              <div class="enterprise-sparkline-bar" style="height: 95%;"></div>
+              <div class="enterprise-sparkline-bar" style="height: 65%;"></div>
+              <div class="enterprise-sparkline-bar" style="height: 80%;"></div>
+              <div class="enterprise-sparkline-bar" style="height: 70%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity Timeline -->
+        <div class="enterprise-card">
+          <div class="enterprise-card-header">
+            <h3 class="enterprise-card-title">Atividade Recente</h3>
+          </div>
+          <div class="enterprise-card-body">
+            <div class="enterprise-timeline">
+              <div class="enterprise-timeline-item">
+                <div class="enterprise-timeline-dot success"></div>
+                <div class="enterprise-timeline-content">
+                  <div class="enterprise-timeline-title">Entrega confirmada</div>
+                  <div class="enterprise-timeline-time">Há 5 minutos</div>
+                </div>
+              </div>
+              <div class="enterprise-timeline-item">
+                <div class="enterprise-timeline-dot"></div>
+                <div class="enterprise-timeline-content">
+                  <div class="enterprise-timeline-title">Nova NF cadastrada</div>
+                  <div class="enterprise-timeline-time">Há 15 minutos</div>
+                </div>
+              </div>
+              <div class="enterprise-timeline-item">
+                <div class="enterprise-timeline-dot warning"></div>
+                <div class="enterprise-timeline-content">
+                  <div class="enterprise-timeline-title">Estoque baixo: Arroz</div>
+                  <div class="enterprise-timeline-time">Há 1 hora</div>
+                </div>
+              </div>
+              <div class="enterprise-timeline-item">
+                <div class="enterprise-timeline-dot"></div>
+                <div class="enterprise-timeline-content">
+                  <div class="enterprise-timeline-title">Relatório gerado</div>
+                  <div class="enterprise-timeline-time">Há 2 horas</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs Demo -->
+      <div class="enterprise-card mb-6">
+        <div class="enterprise-card-header">
+          <h3 class="enterprise-card-title">Componentes Interativos</h3>
+        </div>
+        <div class="enterprise-card-body">
+          <div class="enterprise-tabs" data-tabs="demo-tabs">
+            <button class="enterprise-tab active" data-tab="buttons">Botões</button>
+            <button class="enterprise-tab" data-tab="forms">Formulários</button>
+            <button class="enterprise-tab" data-tab="alerts">Alertas</button>
+            <button class="enterprise-tab" data-tab="badges">Badges</button>
+          </div>
+
+          <!-- Buttons Tab -->
+          <div class="enterprise-tab-content active" data-tab-content="demo-tabs" data-tab-panel="buttons">
+            <h4 class="font-semibold mb-4">Variações de Botões</h4>
+            <div class="flex flex-wrap gap-3 mb-6">
+              <button class="enterprise-btn enterprise-btn-primary">Primary</button>
+              <button class="enterprise-btn enterprise-btn-secondary">Secondary</button>
+              <button class="enterprise-btn enterprise-btn-ghost">Ghost</button>
+              <button class="enterprise-btn enterprise-btn-outline">Outline</button>
+              <button class="enterprise-btn enterprise-btn-gradient">Gradient</button>
+            </div>
+
+            <h4 class="font-semibold mb-4">Status</h4>
+            <div class="flex flex-wrap gap-3 mb-6">
+              <button class="enterprise-btn enterprise-btn-success">Success</button>
+              <button class="enterprise-btn enterprise-btn-warning">Warning</button>
+              <button class="enterprise-btn enterprise-btn-danger">Danger</button>
+              <button class="enterprise-btn enterprise-btn-primary" disabled>Disabled</button>
+            </div>
+
+            <h4 class="font-semibold mb-4">Tamanhos</h4>
+            <div class="flex flex-wrap items-center gap-3 mb-6">
+              <button class="enterprise-btn enterprise-btn-primary enterprise-btn-xs">Extra Small</button>
+              <button class="enterprise-btn enterprise-btn-primary enterprise-btn-sm">Small</button>
+              <button class="enterprise-btn enterprise-btn-primary">Default</button>
+              <button class="enterprise-btn enterprise-btn-primary enterprise-btn-lg">Large</button>
+              <button class="enterprise-btn enterprise-btn-primary enterprise-btn-xl">Extra Large</button>
+            </div>
+
+            <h4 class="font-semibold mb-4">Com Ícones</h4>
+            <div class="flex flex-wrap gap-3">
+              <button class="enterprise-btn enterprise-btn-primary">
+                <span class="material-symbols-outlined">add</span>
+                Adicionar
+              </button>
+              <button class="enterprise-btn enterprise-btn-success">
+                <span class="material-symbols-outlined">check</span>
+                Confirmar
+              </button>
+              <button class="enterprise-btn enterprise-btn-danger">
+                <span class="material-symbols-outlined">delete</span>
+                Excluir
+              </button>
+              <button class="enterprise-btn enterprise-btn-icon enterprise-btn-secondary">
+                <span class="material-symbols-outlined">more_vert</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Forms Tab -->
+          <div class="enterprise-tab-content" data-tab-content="demo-tabs" data-tab-panel="forms">
+            <div class="enterprise-grid grid-cols-2 gap-6">
+              <div>
+                <div class="enterprise-form-group">
+                  <label class="enterprise-label enterprise-label-required">Nome Completo</label>
+                  <input type="text" class="enterprise-input" placeholder="Digite seu nome">
+                </div>
+
+                <div class="enterprise-form-group">
+                  <label class="enterprise-label">Email</label>
+                  <div class="enterprise-input-wrapper">
+                    <span class="enterprise-input-icon material-symbols-outlined">mail</span>
+                    <input type="email" class="enterprise-input" placeholder="seu@email.com">
+                  </div>
+                </div>
+
+                <div class="enterprise-form-group">
+                  <label class="enterprise-label">Categoria</label>
+                  <select class="enterprise-input enterprise-select">
+                    <option>Selecione uma opção</option>
+                    <option>Alimentos</option>
+                    <option>Bebidas</option>
+                    <option>Limpeza</option>
+                  </select>
+                </div>
+
+                <div class="enterprise-form-group">
+                  <label class="enterprise-label">Observações</label>
+                  <textarea class="enterprise-input enterprise-textarea" placeholder="Digite suas observações..."></textarea>
+                </div>
+              </div>
+
+              <div>
+                <div class="enterprise-form-group">
+                  <label class="enterprise-label">Input com Erro</label>
+                  <input type="text" class="enterprise-input error" value="Valor inválido">
+                  <span class="enterprise-form-error">
+                    <span class="material-symbols-outlined" style="font-size: 14px;">error</span>
+                    Este campo contém um erro
+                  </span>
+                </div>
+
+                <div class="enterprise-form-group">
+                  <label class="enterprise-label">Checkboxes</label>
+                  <div class="flex flex-col gap-3">
+                    <label class="enterprise-checkbox">
+                      <input type="checkbox" checked>
+                      <span>Opção selecionada</span>
+                    </label>
+                    <label class="enterprise-checkbox">
+                      <input type="checkbox">
+                      <span>Opção não selecionada</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="enterprise-form-group">
+                  <label class="enterprise-label">Toggle Switch</label>
+                  <label class="enterprise-toggle">
+                    <input type="checkbox" checked>
+                    <div class="enterprise-toggle-track">
+                      <div class="enterprise-toggle-thumb"></div>
+                    </div>
+                    <span class="text-sm">Notificações ativas</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alerts Tab -->
+          <div class="enterprise-tab-content" data-tab-content="demo-tabs" data-tab-panel="alerts">
+            <div class="enterprise-alert enterprise-alert-info">
+              <span class="enterprise-alert-icon material-symbols-outlined">info</span>
+              <div class="enterprise-alert-content">
+                <div class="enterprise-alert-title">Informação</div>
+                <div class="enterprise-alert-message">Esta é uma mensagem informativa para o usuário.</div>
+              </div>
+            </div>
+
+            <div class="enterprise-alert enterprise-alert-success">
+              <span class="enterprise-alert-icon material-symbols-outlined">check_circle</span>
+              <div class="enterprise-alert-content">
+                <div class="enterprise-alert-title">Sucesso!</div>
+                <div class="enterprise-alert-message">Operação realizada com sucesso.</div>
+              </div>
+            </div>
+
+            <div class="enterprise-alert enterprise-alert-warning">
+              <span class="enterprise-alert-icon material-symbols-outlined">warning</span>
+              <div class="enterprise-alert-content">
+                <div class="enterprise-alert-title">Atenção</div>
+                <div class="enterprise-alert-message">Verifique os dados antes de continuar.</div>
+              </div>
+            </div>
+
+            <div class="enterprise-alert enterprise-alert-danger">
+              <span class="enterprise-alert-icon material-symbols-outlined">error</span>
+              <div class="enterprise-alert-content">
+                <div class="enterprise-alert-title">Erro</div>
+                <div class="enterprise-alert-message">Ocorreu um erro ao processar sua solicitação.</div>
+              </div>
+            </div>
+
+            <h4 class="font-semibold mb-4 mt-6">Toast Notifications</h4>
+            <div class="flex gap-3">
+              <button class="enterprise-btn enterprise-btn-success" onclick="EnterpriseToast.success('Sucesso!', 'Operação realizada com sucesso.')">
+                Toast Success
+              </button>
+              <button class="enterprise-btn enterprise-btn-danger" onclick="EnterpriseToast.error('Erro!', 'Algo deu errado.')">
+                Toast Error
+              </button>
+              <button class="enterprise-btn enterprise-btn-warning" onclick="EnterpriseToast.warning('Atenção!', 'Verifique os dados.')">
+                Toast Warning
+              </button>
+              <button class="enterprise-btn enterprise-btn-primary" onclick="EnterpriseToast.info('Info', 'Mensagem informativa.')">
+                Toast Info
+              </button>
+            </div>
+          </div>
+
+          <!-- Badges Tab -->
+          <div class="enterprise-tab-content" data-tab-content="demo-tabs" data-tab-panel="badges">
+            <h4 class="font-semibold mb-4">Badges</h4>
+            <div class="flex flex-wrap gap-3 mb-6">
+              <span class="enterprise-badge enterprise-badge-primary">Primary</span>
+              <span class="enterprise-badge enterprise-badge-success">Success</span>
+              <span class="enterprise-badge enterprise-badge-warning">Warning</span>
+              <span class="enterprise-badge enterprise-badge-danger">Danger</span>
+              <span class="enterprise-badge enterprise-badge-neutral">Neutral</span>
+            </div>
+
+            <h4 class="font-semibold mb-4">Badges com Dot</h4>
+            <div class="flex flex-wrap gap-3 mb-6">
+              <span class="enterprise-badge enterprise-badge-dot enterprise-badge-success">Online</span>
+              <span class="enterprise-badge enterprise-badge-dot enterprise-badge-warning">Pendente</span>
+              <span class="enterprise-badge enterprise-badge-dot enterprise-badge-danger">Offline</span>
+            </div>
+
+            <h4 class="font-semibold mb-4">Tags</h4>
+            <div class="flex flex-wrap gap-2 mb-6">
+              <span class="enterprise-tag">
+                Alimentos
+                <button class="enterprise-tag-remove">×</button>
+              </span>
+              <span class="enterprise-tag">
+                Bebidas
+                <button class="enterprise-tag-remove">×</button>
+              </span>
+              <span class="enterprise-tag">
+                Limpeza
+                <button class="enterprise-tag-remove">×</button>
+              </span>
+            </div>
+
+            <h4 class="font-semibold mb-4">Avatar Group</h4>
+            <div class="enterprise-avatar-group">
+              <div class="enterprise-avatar" style="background: var(--gradient-royal);">AB</div>
+              <div class="enterprise-avatar" style="background: var(--gradient-emerald);">CD</div>
+              <div class="enterprise-avatar" style="background: var(--gradient-sunset);">EF</div>
+              <div class="enterprise-avatar" style="background: var(--gradient-gold);">+5</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Demo -->
+      <div class="enterprise-card mb-6">
+        <div class="enterprise-card-header">
+          <div>
+            <h3 class="enterprise-card-title">Últimas Notas Fiscais</h3>
+            <p class="enterprise-card-subtitle">Registros mais recentes do sistema</p>
+          </div>
+          <div class="flex gap-2">
+            <div class="enterprise-search" style="width: 250px;">
+              <span class="enterprise-search-icon material-symbols-outlined">search</span>
+              <input type="text" class="enterprise-search-input" placeholder="Buscar...">
+            </div>
+            <button class="enterprise-btn enterprise-btn-secondary">
+              <span class="material-symbols-outlined">filter_list</span>
+              Filtros
+            </button>
+          </div>
+        </div>
+        <div class="enterprise-table-container">
+          <table class="enterprise-table">
+            <thead>
+              <tr>
+                <th class="sortable">Número NF</th>
+                <th class="sortable">Fornecedor</th>
+                <th class="sortable">Data</th>
+                <th>Valor</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>NF-2024-001</strong></td>
+                <td>
+                  <div class="enterprise-user-card">
+                    <div class="enterprise-avatar enterprise-avatar-sm" style="background: var(--gradient-ocean);">AB</div>
+                    <div class="enterprise-user-info">
+                      <div class="enterprise-user-name">Alimentos Brasil LTDA</div>
+                    </div>
+                  </div>
+                </td>
+                <td>04/12/2024</td>
+                <td>R$ 15.750,00</td>
+                <td><span class="enterprise-badge enterprise-badge-success">Aprovada</span></td>
+                <td>
+                  <div class="enterprise-table-actions">
+                    <button class="enterprise-btn enterprise-btn-icon enterprise-btn-ghost enterprise-btn-xs">
+                      <span class="material-symbols-outlined">visibility</span>
+                    </button>
+                    <button class="enterprise-btn enterprise-btn-icon enterprise-btn-ghost enterprise-btn-xs">
+                      <span class="material-symbols-outlined">edit</span>
+                    </button>
+                    <button class="enterprise-btn enterprise-btn-icon enterprise-btn-ghost enterprise-btn-xs">
+                      <span class="material-symbols-outlined">delete</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>NF-2024-002</strong></td>
+                <td>
+                  <div class="enterprise-user-card">
+                    <div class="enterprise-avatar enterprise-avatar-sm" style="background: var(--gradient-emerald);">DL</div>
+                    <div class="enterprise-user-info">
+                      <div class="enterprise-user-name">Distribuidora Leste</div>
+                    </div>
+                  </div>
+                </td>
+                <td>03/12/2024</td>
+                <td>R$ 8.320,00</td>
+                <td><span class="enterprise-badge enterprise-badge-warning">Pendente</span></td>
+                <td>
+                  <div class="enterprise-table-actions">
+                    <button class="enterprise-btn enterprise-btn-icon enterprise-btn-ghost enterprise-btn-xs">
+                      <span class="material-symbols-outlined">visibility</span>
+                    </button>
+                    <button class="enterprise-btn enterprise-btn-icon enterprise-btn-ghost enterprise-btn-xs">
+                      <span class="material-symbols-outlined">edit</span>
+                    </button>
+                    <button class="enterprise-btn enterprise-btn-icon enterprise-btn-ghost enterprise-btn-xs">
+                      <span class="material-symbols-outlined">delete</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>NF-2024-003</strong></td>
+                <td>
+                  <div class="enterprise-user-card">
+                    <div class="enterprise-avatar enterprise-avatar-sm" style="background: var(--gradient-sunset);">FC</div>
+                    <div class="enterprise-user-info">
+                      <div class="enterprise-user-name">Frigorífico Central</div>
+                    </div>
+                  </div>
+                </td>
+                <td>02/12/2024</td>
+                <td>R$ 22.100,00</td>
+                <td><span class="enterprise-badge enterprise-badge-success">Aprovada</span></td>
+                <td>
+                  <div class="enterprise-table-actions">
+                    <button class="enterprise-btn enterprise-btn-icon enterprise-btn-ghost enterprise-btn-xs">
+                      <span class="material-symbols-outlined">visibility</span>
+                    </button>
+                    <button class="enterprise-btn enterprise-btn-icon enterprise-btn-ghost enterprise-btn-xs">
+                      <span class="material-symbols-outlined">edit</span>
+                    </button>
+                    <button class="enterprise-btn enterprise-btn-icon enterprise-btn-ghost enterprise-btn-xs">
+                      <span class="material-symbols-outlined">delete</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>NF-2024-004</strong></td>
+                <td>
+                  <div class="enterprise-user-card">
+                    <div class="enterprise-avatar enterprise-avatar-sm" style="background: var(--gradient-gold);">HO</div>
+                    <div class="enterprise-user-info">
+                      <div class="enterprise-user-name">Hortifruti Orgânico</div>
+                    </div>
+                  </div>
+                </td>
+                <td>01/12/2024</td>
+                <td>R$ 5.890,00</td>
+                <td><span class="enterprise-badge enterprise-badge-danger">Recusada</span></td>
+                <td>
+                  <div class="enterprise-table-actions">
+                    <button class="enterprise-btn enterprise-btn-icon enterprise-btn-ghost enterprise-btn-xs">
+                      <span class="material-symbols-outlined">visibility</span>
+                    </button>
+                    <button class="enterprise-btn enterprise-btn-icon enterprise-btn-ghost enterprise-btn-xs">
+                      <span class="material-symbols-outlined">edit</span>
+                    </button>
+                    <button class="enterprise-btn enterprise-btn-icon enterprise-btn-ghost enterprise-btn-xs">
+                      <span class="material-symbols-outlined">delete</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="enterprise-card-footer">
+          <div class="flex items-center justify-between w-full">
+            <span class="text-sm text-secondary">Mostrando 1-4 de 156 registros</span>
+            <nav class="enterprise-pagination">
+              <button class="enterprise-pagination-item" disabled>
+                <span class="material-symbols-outlined">chevron_left</span>
+              </button>
+              <button class="enterprise-pagination-item active">1</button>
+              <button class="enterprise-pagination-item">2</button>
+              <button class="enterprise-pagination-item">3</button>
+              <button class="enterprise-pagination-item">...</button>
+              <button class="enterprise-pagination-item">39</button>
+              <button class="enterprise-pagination-item">
+                <span class="material-symbols-outlined">chevron_right</span>
+              </button>
+            </nav>
+          </div>
+        </div>
+      </div>
+
+      <!-- More Components -->
+      <div class="enterprise-grid grid-cols-2 mb-6">
+
+        <!-- Accordion -->
+        <div class="enterprise-card">
+          <div class="enterprise-card-header">
+            <h3 class="enterprise-card-title">FAQ - Accordion</h3>
+          </div>
+          <div class="enterprise-card-body p-0">
+            <div class="enterprise-accordion">
+              <div class="enterprise-accordion-item active">
+                <button class="enterprise-accordion-header">
+                  Como cadastrar uma nova nota fiscal?
+                  <span class="enterprise-accordion-icon material-symbols-outlined">expand_more</span>
+                </button>
+                <div class="enterprise-accordion-content">
+                  <div class="enterprise-accordion-body">
+                    Para cadastrar uma nova nota fiscal, acesse o menu "Notas Fiscais" e clique no botão "Nova NF". Preencha todos os campos obrigatórios e clique em "Salvar".
+                  </div>
+                </div>
+              </div>
+              <div class="enterprise-accordion-item">
+                <button class="enterprise-accordion-header">
+                  Como gerar relatórios?
+                  <span class="enterprise-accordion-icon material-symbols-outlined">expand_more</span>
+                </button>
+                <div class="enterprise-accordion-content">
+                  <div class="enterprise-accordion-body">
+                    Acesse o menu "Relatórios", selecione o tipo de relatório desejado, defina o período e clique em "Gerar". O relatório será exportado em PDF ou Excel.
+                  </div>
+                </div>
+              </div>
+              <div class="enterprise-accordion-item">
+                <button class="enterprise-accordion-header">
+                  Como alterar minha senha?
+                  <span class="enterprise-accordion-icon material-symbols-outlined">expand_more</span>
+                </button>
+                <div class="enterprise-accordion-content">
+                  <div class="enterprise-accordion-body">
+                    Clique no seu avatar no canto superior direito, selecione "Configurações" e depois "Alterar Senha". Digite sua senha atual e a nova senha duas vezes.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stepper -->
+        <div class="enterprise-card">
+          <div class="enterprise-card-header">
+            <h3 class="enterprise-card-title">Processo de Aprovação</h3>
+          </div>
+          <div class="enterprise-card-body">
+            <div class="enterprise-stepper">
+              <div class="enterprise-step completed">
+                <div class="enterprise-step-indicator">
+                  <span class="material-symbols-outlined" style="font-size: 16px;">check</span>
+                </div>
+                <div class="enterprise-step-label">Cadastro</div>
+              </div>
+              <div class="enterprise-step completed">
+                <div class="enterprise-step-indicator">
+                  <span class="material-symbols-outlined" style="font-size: 16px;">check</span>
+                </div>
+                <div class="enterprise-step-label">Análise</div>
+              </div>
+              <div class="enterprise-step active">
+                <div class="enterprise-step-indicator">3</div>
+                <div class="enterprise-step-label">Aprovação</div>
+              </div>
+              <div class="enterprise-step">
+                <div class="enterprise-step-indicator">4</div>
+                <div class="enterprise-step-label">Conclusão</div>
+              </div>
+            </div>
+
+            <div class="mt-8">
+              <h4 class="font-semibold mb-4">Progresso Geral</h4>
+              <div class="enterprise-progress mb-2">
+                <div class="enterprise-progress-bar" style="width: 75%;"></div>
+              </div>
+              <span class="text-sm text-secondary">75% concluído</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- File Upload -->
+      <div class="enterprise-card mb-6">
+        <div class="enterprise-card-header">
+          <h3 class="enterprise-card-title">Upload de Arquivos</h3>
+        </div>
+        <div class="enterprise-card-body">
+          <div class="enterprise-file-upload">
+            <input type="file" hidden multiple>
+            <div class="enterprise-file-upload-icon">
+              <span class="material-symbols-outlined">cloud_upload</span>
+            </div>
+            <div class="enterprise-file-upload-title">
+              Arraste arquivos aqui ou <span class="enterprise-file-upload-link">clique para selecionar</span>
+            </div>
+            <div class="enterprise-file-upload-subtitle">
+              Suporta PDF, XML, JPG, PNG até 10MB
+            </div>
+          </div>
+
+          <div class="enterprise-file-item">
+            <div class="enterprise-file-item-icon">
+              <span class="material-symbols-outlined">description</span>
+            </div>
+            <div class="enterprise-file-item-info">
+              <div class="enterprise-file-item-name">nota_fiscal_001.pdf</div>
+              <div class="enterprise-file-item-size">2.4 MB</div>
+            </div>
+            <button class="enterprise-file-item-remove">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- Modal Demo -->
+  <div id="demo-modal" class="enterprise-modal-backdrop">
+    <div class="enterprise-modal">
+      <div class="enterprise-modal-header">
+        <h3 class="enterprise-modal-title">Modal Enterprise</h3>
+        <button class="enterprise-modal-close" data-modal-close>
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="enterprise-modal-body">
+        <p class="text-secondary">Este é um exemplo de modal enterprise com design premium.</p>
+      </div>
+      <div class="enterprise-modal-footer">
+        <button class="enterprise-btn enterprise-btn-secondary" onclick="EnterpriseModal.hide('demo-modal')">Cancelar</button>
+        <button class="enterprise-btn enterprise-btn-primary" onclick="EnterpriseModal.hide('demo-modal')">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

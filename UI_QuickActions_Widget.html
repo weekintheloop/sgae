@@ -1,0 +1,196 @@
+<!--
+  WIDGET DE AÇÕES RÁPIDAS
+  Botão flutuante com acesso às ações mais usadas
+  Pode ser incluído em qualquer página: <?!= include('UI_QuickActions_Widget'); ?>
+-->
+<style>
+  /* Botão flutuante */
+  .fab-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+  }
+
+  .fab-main {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .fab-main:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(102,126,234,0.5);
+  }
+
+  .fab-main.active {
+    transform: rotate(45deg);
+  }
+
+  /* Menu de ações */
+  .fab-menu {
+    position: absolute;
+    bottom: 70px;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s;
+  }
+
+  .fab-container.open .fab-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .fab-action {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    padding: 12px 16px;
+    border-radius: 28px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    border: none;
+    font-size: 14px;
+  }
+
+  .fab-action:hover {
+    transform: translateX(-4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  .fab-action .icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+  .fab-action.nf .icon { background: #e8f0fe; }
+  .fab-action.entrega .icon { background: #e6f4ea; }
+  .fab-action.atestar .icon { background: #fef7e0; }
+  .fab-action.problema .icon { background: #fce8e6; }
+
+  /* Tooltip de ajuda */
+  .fab-tooltip {
+    position: absolute;
+    bottom: -40px;
+    right: 0;
+    background: #1a1a2e;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .fab-main:hover + .fab-tooltip,
+  .fab-container:not(.open) .fab-main:focus + .fab-tooltip {
+    opacity: 1;
+  }
+
+  /* Responsivo */
+  @media (max-width: 600px) {
+    .fab-container { bottom: 16px; right: 16px; }
+    .fab-main { width: 48px; height: 48px; font-size: 20px; }
+    .fab-action { padding: 10px 14px; font-size: 13px; }
+  }
+</style>
+
+<div class="fab-container" id="fabContainer">
+  <div class="fab-menu">
+    <button class="fab-action nf" onclick="quickAction('nova-nf')">
+      <span class="icon">➕</span>
+      <span>Nova NF</span>
+    </button>
+    <button class="fab-action entrega" onclick="quickAction('entrega')">
+      <span class="icon">🚚</span>
+      <span>Entrega</span>
+    </button>
+    <button class="fab-action atestar" onclick="quickAction('atestar')">
+      <span class="icon">✅</span>
+      <span>Atestar</span>
+    </button>
+    <button class="fab-action problema" onclick="quickAction('problema')">
+      <span class="icon">❌</span>
+      <span>Problema</span>
+    </button>
+  </div>
+  <button class="fab-main" onclick="toggleFab()" aria-label="Ações rápidas">➕</button>
+  <div class="fab-tooltip">Ações rápidas (Ctrl+Q)</div>
+</div>
+
+<script>
+  // Toggle do menu
+  function toggleFab() {
+    const container = document.getElementById('fabContainer');
+    container.classList.toggle('open');
+    const btn = container.querySelector('.fab-main');
+    btn.textContent = container.classList.contains('open') ? '✕' : '➕';
+  }
+
+  // Fechar ao clicar fora
+  document.addEventListener('click', function(e) {
+    const container = document.getElementById('fabContainer');
+    if (!container.contains(e.target) && container.classList.contains('open')) {
+      toggleFab();
+    }
+  });
+
+  // Atalho de teclado
+  document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.key === 'q') {
+      e.preventDefault();
+      toggleFab();
+    }
+  });
+
+  // Executar ação
+  function quickAction(tipo) {
+    toggleFab();
+
+    // Se existe função acaoRapida (do dashboard intuitivo)
+    if (typeof acaoRapida === 'function') {
+      acaoRapida(tipo);
+    } else {
+      // Fallback: chamar backend
+      switch(tipo) {
+        case 'nova-nf':
+          google.script.run.abrirNovaNFDireto();
+          break;
+        case 'entrega':
+          google.script.run.abrirEntregaDireto();
+          break;
+        case 'atestar':
+          google.script.run.abrirAtestarDireto();
+          break;
+        case 'problema':
+          google.script.run.abrirProblemaDireto();
+          break;
+      }
+    }
+  }
+</script>

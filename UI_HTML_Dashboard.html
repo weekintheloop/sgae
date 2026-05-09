@@ -1,0 +1,1748 @@
+/**
+ * UI_HTML_DASHBOARD
+ * Consolidado de: dashboard.html, AdvancedDashboard.html, index.html
+ * @version 2.0.0
+ * @created 2025-11-04
+ */
+
+
+// ---- dashboard.html ----
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - CRE PP/Cruzeiro UNIAE</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+    .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
+    header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 24px 32px; display: flex; justify-content: space-between; align-items: center; }
+    header h1 { font-size: 24px; font-weight: 600; }
+    header .subtitle { font-size: var(--font-sm); opacity: 0.9; margin-top: var(--space-1); }
+    .btn { padding: 10px 20px; border: none; border-radius: 8px; font-size: var(--font-sm); font-weight: 500; cursor: pointer; transition: all 0.3s; }
+    .btn-primary { background: #667eea; color: white; }
+    .btn-primary:hover { background: #5568d3; transform: translateY(-2px); }
+    .btn-success { background: var(--success); color: white; }
+    .btn-success:hover { background: var(--success-dark); }
+    .btn-danger { background: var(--error); color: white; }
+    .btn-danger:hover { background: var(--error-dark); }
+    .btn-secondary { background: var(--text-secondary); color: white; }
+    .btn-secondary:hover { background: var(--text-secondary); }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+    nav.tabs { background: var(--bg-primary); border-bottom: 2px solid var(--bg-tertiary); display: flex; padding: 0 32px; overflow-x: auto; }
+    nav.tabs button { padding: 16px 24px; background: none; border: none; border-bottom: 3px solid transparent; font-size: var(--font-sm); font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: all 0.3s; white-space: nowrap; }
+    nav.tabs button:hover { color: #667eea; background: rgba(102, 126, 234, 0.05); }
+    nav.tabs button.active { color: #667eea; border-bottom-color: #667eea; }
+    .content { padding: 32px; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 32px; }
+    .metric-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: transform 0.3s; }
+    .metric-card:hover { transform: translateY(-4px); }
+    .metric-card.green { background: linear-gradient(135deg, var(--success) 0%, var(--success-dark) 100%); }
+    .metric-card.red { background: linear-gradient(135deg, var(--error) 0%, var(--error-dark) 100%); }
+    .metric-card.yellow { background: linear-gradient(135deg, var(--warning) 0%, var(--warning-dark) 100%); }
+    .metric-card.blue { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); }
+    .metric-card.indigo { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); }
+    .metric-icon { font-size: 32px; margin-bottom: 12px; }
+    .metric-value { font-size: 36px; font-weight: 700; margin-bottom: 8px; }
+    .metric-label { font-size: var(--font-sm); opacity: 0.9; }
+    .card { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 24px; margin-bottom: var(--space-6); }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 2px solid var(--bg-tertiary); }
+    .card-title { font-size: 18px; font-weight: 600; color: var(--text-primary); }
+    table { width: 100%; border-collapse: collapse; margin-top: var(--space-4); }
+    thead { background: var(--bg-primary); }
+    th { padding: 12px; text-align: left; font-weight: 600; color: var(--text-secondary); font-size: 13px; }
+    td { padding: 12px; border-bottom: 1px solid var(--bg-tertiary); font-size: var(--font-sm); }
+    tbody tr:hover { background: var(--bg-primary); }
+    .badge { padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+    .badge-success { background: var(--success-light); color: var(--success-dark); }
+    .badge-warning { background: var(--warning-light); color: var(--warning-dark); }
+    .badge-danger { background: var(--error-light); color: var(--error-dark); }
+    .alert { padding: 16px; border-radius: 8px; margin-bottom: 20px; display: none; }
+    .alert.show { display: block; }
+    .alert-success { background: var(--success-light); color: var(--success-dark); border-left: 4px solid var(--success); }
+    .alert-error { background: var(--error-light); color: var(--error-dark); border-left: 4px solid var(--error); }
+    .loading { text-align: center; padding: var(--space-10); }
+    .spinner { border: 4px solid var(--bg-secondary); border-top: 4px solid #667eea; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 16px; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--text-secondary); }
+    @media (max-width: 768px) { .metrics-grid { grid-template-columns: 1fr; } header { flex-direction: column; gap: 16px; } }
+  </style>
+  <link rel="stylesheet" href="design-system.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>📋 CRE PP/Cruzeiro - UNIAE</h1>
+        <div class="subtitle">Sistema de Gestão de Notas Fiscais e Entregas</div>
+      </div>
+      <div><button class="btn btn-secondary btn-sm" onclick="location.reload()">🔄 Atualizar</button></div>
+    </header>
+
+    <nav class="tabs">
+      <button class="active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+      <button onclick="switchTab('notas')">🧾 Notas Fiscais</button>
+      <button onclick="switchTab('entregas')">🚚 Entregas</button>
+      <button onclick="switchTab('recusas')">❌ Recusas</button>
+      <button onclick="switchTab('glosas')">💰 Glosas</button>
+      <button onclick="switchTab('relatorios')">📈 Relatórios</button>
+    </nav>
+
+    <div class="content">
+      <div id="alertContainer"></div>
+
+      <div id="tab-dashboard" class="tab-content active">
+        <div class="metrics-grid">
+          <div class="metric-card"><div class="metric-icon">🧾</div><div class="metric-value" id="metricNFs">-</div><div class="metric-label">Notas Fiscais</div></div>
+          <div class="metric-card green"><div class="metric-icon">🚚</div><div class="metric-value" id="metricEntregas">-</div><div class="metric-label">Entregas</div></div>
+          <div class="metric-card red"><div class="metric-icon">❌</div><div class="metric-value" id="metricRecusas">-</div><div class="metric-label">Recusas</div></div>
+          <div class="metric-card yellow"><div class="metric-icon">💰</div><div class="metric-value" id="metricGlosas">-</div><div class="metric-label">Glosas</div></div>
+          <div class="metric-card blue"><div class="metric-icon">💵</div><div class="metric-value" id="metricValorTotal">R$ -</div><div class="metric-label">Valor Total</div></div>
+          <div class="metric-card indigo"><div class="metric-icon">🏢</div><div class="metric-value" id="metricFornecedores">-</div><div class="metric-label">Fornecedores</div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h2 class="card-title">Bem-vindo ao Dashboard</h2></div>
+          <p class="mb-4">Navegue pelas abas acima para gerenciar Notas Fiscais, Entregas, Recusas e Glosas.</p>
+          <p style="color:var(--text-secondary);">Use o menu lateral no Google Sheets para executar análises, relatórios e outras funções avançadas.</p>
+        </div>
+      </div>
+
+      <div id="tab-notas" class="tab-content">
+        <div class="card">
+          <div class="card-header"><h2 class="card-title">Notas Fiscais</h2></div>
+          <div class="loading" id="loadingNFs"><div class="spinner"></div><div>Carregando notas fiscais...</div></div>
+          <div id="tableNFs"></div>
+        </div>
+      </div>
+
+      <div id="tab-entregas" class="tab-content">
+        <div class="card">
+          <div class="card-header"><h2 class="card-title">Entregas</h2></div>
+          <div class="loading" id="loadingEntregas"><div class="spinner"></div><div>Carregando entregas...</div></div>
+          <div id="tableEntregas"></div>
+        </div>
+      </div>
+
+      <div id="tab-recusas" class="tab-content">
+        <div class="card">
+          <div class="card-header"><h2 class="card-title">Recusas</h2></div>
+          <div class="loading" id="loadingRecusas"><div class="spinner"></div><div>Carregando recusas...</div></div>
+          <div id="tableRecusas"></div>
+        </div>
+      </div>
+
+      <div id="tab-glosas" class="tab-content">
+        <div class="card">
+          <div class="card-header"><h2 class="card-title">Glosas</h2></div>
+          <div class="loading" id="loadingGlosas"><div class="spinner"></div><div>Carregando glosas...</div></div>
+          <div id="tableGlosas"></div>
+        </div>
+      </div>
+
+      <div id="tab-relatorios" class="tab-content">
+        <div class="card">
+          <div class="card-header"><h2 class="card-title">Relatórios e Análises</h2></div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px;">
+            <button class="btn btn-primary" onclick="runVerificacoes()">🔍 Verificar Irregularidades</button>
+            <button class="btn btn-success" onclick="runTendencias()">📈 Identificar Tendências</button>
+          </div>
+          <div id="relatoriosResult"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================================================
+    // NAVEGAÇÃO E UI
+    // ============================================================================
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
+      document.querySelectorAll('nav.tabs button').forEach(function(b) { b.classList.remove('active'); });
+      document.getElementById('tab-' + tabName).classList.add('active');
+      event.target.classList.add('active');
+
+      if (tabName === 'dashboard') loadDashboardComplete();
+      else if (tabName === 'notas') loadNotasFiscais();
+      else if (tabName === 'entregas') loadEntregas();
+      else if (tabName === 'recusas') loadRecusas();
+      else if (tabName === 'glosas') loadGlosas();
+      else if (tabName === 'relatorios') loadRelatorios();
+    }
+
+    function showAlert(msg, type) {
+      var div = document.createElement('div');
+      div.className = 'alert alert-' + type + ' show';
+      div.textContent = msg;
+      document.getElementById('alertContainer').appendChild(div);
+      setTimeout(function() { div.remove(); }, 5000);
+    }
+
+    // ============================================================================
+    // DASHBOARD COMPLETO COM TODAS AS MÉTRICAS
+    // ============================================================================
+
+    function loadDashboardComplete() {
+      google.script.run
+        .withSuccessHandler(function(r) {
+          if (r.success) {
+            // Métricas básicas
+            document.getElementById('metricNFs').textContent = r.data.notasFiscais || '0';
+            document.getElementById('metricEntregas').textContent = r.data.entregas || '0';
+            document.getElementById('metricRecusas').textContent = r.data.recusas || '0';
+            document.getElementById('metricGlosas').textContent = r.data.glosas || '0';
+            document.getElementById('metricValorTotal').textContent = 'R$ ' + formatNumber(r.data.valorTotalNFs || 0);
+            document.getElementById('metricFornecedores').textContent = r.data.fornecedores || '0';
+
+            // Carregar alertas se disponíveis
+            if (r.data.alertas && r.data.alertas.length > 0) {
+              displayAlertas(r.data.alertas);
+            }
+
+            // Exibir resumo executivo se disponível
+            if (r.data.resumoExecutivo) {
+              displayResumoExecutivo(r.data.resumoExecutivo);
+            }
+          }
+        })
+        .withFailureHandler(function(e) {
+          showAlert('Erro ao carregar métricas: ' + e.message, 'error');
+        })
+        .getDashboardMetricsComplete();
+    }
+
+    function displayAlertas(alertas) {
+      var container = document.getElementById('alertContainer');
+      alertas.slice(0, 3).forEach(function(alerta) {
+        var div = document.createElement('div');
+        div.className = 'alert alert-warning show';
+        div.innerHTML = '<strong>' + alerta.nivel.icone + ' ' + alerta.titulo + '</strong><br>' + alerta.descricao;
+        container.appendChild(div);
+      });
+    }
+
+    function displayResumoExecutivo(resumo) {
+      // Adicionar indicador de status geral no dashboard
+      var statusBadge = document.createElement('div');
+      statusBadge.style.cssText = 'position:fixed;top:20px;right:20px;padding:10px 20px;background:var(--success);color:white;border-radius:8px;font-weight:600;z-index:1000;';
+      statusBadge.textContent = 'Status: ' + resumo.statusGeral + ' (' + resumo.pontuacaoGeral + '/100)';
+
+      if (resumo.statusGeral === 'CRÍTICO') statusBadge.style.background = 'var(--error)';
+      else if (resumo.statusGeral === 'ATENÇÃO') statusBadge.style.background = 'var(--warning)';
+      else if (resumo.statusGeral === 'REGULAR') statusBadge.style.background = 'var(--primary)';
+
+      document.body.appendChild(statusBadge);
+    }
+
+    function formatNumber(num) {
+      return Number(num).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // ============================================================================
+    // NOTAS FISCAIS - CRUD COMPLETO
+    // ============================================================================
+
+    function loadNotasFiscais() {
+      document.getElementById('loadingNFs').style.display = 'block';
+      google.script.run
+        .withSuccessHandler(function(r) {
+          document.getElementById('loadingNFs').style.display = 'none';
+          if (r.success && r.data && r.data.length > 0) {
+            var html = '<div class="mb-4"><button class="btn btn-primary" onclick="showCreateNFForm()">➕ Nova NF</button> ';
+            html += '<button class="btn btn-secondary" onclick="showSearchNFForm()">🔍 Buscar</button> ';
+            html += '<button class="btn btn-secondary" onclick="importFromGmail()">📥 Importar Gmail</button></div>';
+            html += '<table><thead><tr><th>NF</th><th>Data</th><th>Fornecedor</th><th>Valor</th><th>Status</th><th>Ações</th></tr></thead><tbody>';
+
+            r.data.forEach(function(item) {
+              var statusClass = item.Status_NF === 'Atestada' ? 'badge-success' :
+                               item.Status_NF === 'Glosada' ? 'badge-danger' : 'badge-warning';
+              html += '<tr>';
+              html += '<td>' + (item.Numero_NF || '-') + '</td>';
+              html += '<td>' + formatDate(item.Data_Emissao) + '</td>';
+              html += '<td>' + (item.Fornecedor_Nome || '-') + '</td>';
+              html += '<td>R$ ' + formatNumber(item.Valor_Total || 0) + '</td>';
+              html += '<td><span class="badge ' + statusClass + '">' + (item.Status_NF || 'Pendente') + '</span></td>';
+              html += '<td>';
+              html += '<button class="btn btn-sm btn-primary" onclick="editNF(' + item.rowIndex + ')">✏️</button> ';
+              html += '<button class="btn btn-sm btn-danger" onclick="deleteNF(' + item.rowIndex + ')">🗑️</button>';
+              html += '</td>';
+              html += '</tr>';
+            });
+            html += '</tbody></table>';
+            document.getElementById('tableNFs').innerHTML = html;
+          } else {
+            document.getElementById('tableNFs').innerHTML = '<div class="empty-state"><div style="font-size:64px;margin-bottom:16px;">📋</div><div>Nenhuma nota fiscal cadastrada</div><button class="btn btn-primary" onclick="showCreateNFForm()">➕ Criar Primeira NF</button></div>';
+          }
+        })
+        .withFailureHandler(function(e) {
+          document.getElementById('loadingNFs').style.display = 'none';
+          showAlert('Erro ao carregar notas: ' + e.message, 'error');
+        })
+        .listNotasFiscais(100);
+    }
+
+    function showCreateNFForm() {
+      var html = '<div class="card"><h3>Nova Nota Fiscal</h3>';
+      html += '<form id="formNF">';
+      html += '<label>Número NF:</label><input type="text" id="numeroNF" required><br>';
+      html += '<label>Fornecedor:</label><input type="text" id="fornecedor" required><br>';
+      html += '<label>Valor Total:</label><input type="number" id="valorTotal" step="0.01" required><br>';
+      html += '<label>Data Emissão:</label><input type="date" id="dataEmissao" required><br>';
+      html += '<label>Nota Empenho:</label><input type="text" id="notaEmpenho"><br>';
+      html += '<button type="button" class="btn btn-primary" onclick="createNF()">Salvar</button> ';
+      html += '<button type="button" class="btn btn-secondary" onclick="loadNotasFiscais()">Cancelar</button>';
+      html += '</form></div>';
+      document.getElementById('tableNFs').innerHTML = html;
+    }
+
+    function createNF() {
+      var data = {
+        notaFiscal: document.getElementById('numeroNF').value,
+        fornecedor: document.getElementById('fornecedor').value,
+        valorTotal: parseFloat(document.getElementById('valorTotal').value),
+        dataEmissao: document.getElementById('dataEmissao').value,
+        notaEmpenho: document.getElementById('notaEmpenho').value,
+        status: 'Recebida'
+      };
+
+      google.script.run
+        .withSuccessHandler(function(r) {
+          if (r.success) {
+            showAlert('Nota fiscal criada com sucesso!', 'success');
+            loadNotasFiscais();
+          } else {
+            showAlert('Erro: ' + r.message, 'error');
+          }
+        })
+        .withFailureHandler(function(e) { showAlert('Erro: ' + e.message, 'error'); })
+        .createNotaFiscal(data);
+    }
+
+    function editNF(rowIndex) {
+      showAlert('Função de edição em desenvolvimento', 'info');
+    }
+
+    function deleteNF(rowIndex) {
+      if (confirm('Tem certeza que deseja deletar esta nota fiscal?')) {
+        google.script.run
+          .withSuccessHandler(function(r) {
+            if (r.success) {
+              showAlert('Nota fiscal deletada', 'success');
+              loadNotasFiscais();
+            } else {
+              showAlert('Erro: ' + r.message, 'error');
+            }
+          })
+          .withFailureHandler(function(e) { showAlert('Erro: ' + e.message, 'error'); })
+          .deleteNotaFiscal(rowIndex);
+      }
+    }
+
+    function showSearchNFForm() {
+      var html = '<div class="card"><h3>Buscar Notas Fiscais</h3>';
+      html += '<form id="formSearch">';
+      html += '<label>Fornecedor:</label><input type="text" id="searchFornecedor"><br>';
+      html += '<label>Data Início:</label><input type="date" id="searchDataInicio"><br>';
+      html += '<label>Data Fim:</label><input type="date" id="searchDataFim"><br>';
+      html += '<label>Status:</label><select id="searchStatus"><option value="">Todos</option><option value="Recebida">Recebida</option><option value="Conferida">Conferida</option><option value="Atestada">Atestada</option></select><br>';
+      html += '<button type="button" class="btn btn-primary" onclick="searchNFs()">Buscar</button> ';
+      html += '<button type="button" class="btn btn-secondary" onclick="loadNotasFiscais()">Cancelar</button>';
+      html += '</form></div>';
+      document.getElementById('tableNFs').innerHTML = html;
+    }
+
+    function searchNFs() {
+      var filtros = {
+        fornecedor: document.getElementById('searchFornecedor').value,
+        dataInicio: document.getElementById('searchDataInicio').value,
+        dataFim: document.getElementById('searchDataFim').value,
+        status: document.getElementById('searchStatus').value
+      };
+
+      google.script.run
+        .withSuccessHandler(function(r) {
+          if (r.success) {
+            showAlert('Encontrados ' + r.data.length + ' resultados', 'success');
+            // Exibir resultados (similar ao loadNotasFiscais)
+            loadNotasFiscais();
+          }
+        })
+        .withFailureHandler(function(e) { showAlert('Erro: ' + e.message, 'error'); })
+        .searchNotasFiscais(filtros);
+    }
+
+    function importFromGmail() {
+      if (confirm('Deseja importar notas fiscais do Gmail? Esta operação pode demorar alguns minutos.')) {
+        showAlert('Importação iniciada...', 'info');
+        google.script.run
+          .withSuccessHandler(function(r) {
+            if (r.success) {
+              showAlert('Importação concluída!', 'success');
+              loadNotasFiscais();
+            }
+          })
+          .withFailureHandler(function(e) { showAlert('Erro: ' + e.message, 'error'); })
+          .importNotasFiscaisFromGmail();
+      }
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '-';
+      var d = new Date(dateStr);
+      return d.toLocaleDateString('pt-BR');
+    }
+
+    // ============================================================================
+    // ENTREGAS - CRUD COMPLETO
+    // ============================================================================
+
+    function loadEntregas() {
+      document.getElementById('loadingEntregas').style.display = 'block';
+      google.script.run
+        .withSuccessHandler(function(r) {
+          document.getElementById('loadingEntregas').style.display = 'none';
+          if (r.success && r.data && r.data.length > 0) {
+            var html = '<div class="mb-4"><button class="btn btn-primary" onclick="showCreateEntregaForm()">➕ Nova Entrega</button></div>';
+            html += '<table><thead><tr><th>Data</th><th>Fornecedor</th><th>Unidade</th><th>Produto</th><th>Qtd Entregue</th><th>Status</th><th>Ações</th></tr></thead><tbody>';
+            r.data.forEach(function(item) {
+              var badgeClass = item.Status_Entrega === 'Entregue' ? 'badge-success' :
+                              item.Status_Entrega === 'Parcial' ? 'badge-warning' : 'badge-danger';
+              html += '<tr>';
+              html += '<td>' + formatDate(item.Data_Entrega) + '</td>';
+              html += '<td>' + (item.Fornecedor_Nome || '-') + '</td>';
+              html += '<td>' + (item.Unidade_Escolar || '-') + '</td>';
+              html += '<td>' + (item.Produto_Nome || '-') + '</td>';
+              html += '<td>' + (item.Quantidade_Entregue || '-') + ' ' + (item.Unidade_Medida || '') + '</td>';
+              html += '<td><span class="badge ' + badgeClass + '">' + (item.Status_Entrega || '-') + '</span></td>';
+              html += '<td><button class="btn btn-sm btn-danger" onclick="deleteEntrega(' + item.rowIndex + ')">🗑️</button></td>';
+              html += '</tr>';
+            });
+            html += '</tbody></table>';
+            document.getElementById('tableEntregas').innerHTML = html;
+          } else {
+            document.getElementById('tableEntregas').innerHTML = '<div class="empty-state"><div style="font-size:64px;margin-bottom:16px;">🚚</div><div>Nenhuma entrega registrada</div><button class="btn btn-primary" onclick="showCreateEntregaForm()">➕ Registrar Primeira Entrega</button></div>';
+          }
+        })
+        .withFailureHandler(function(e) {
+          document.getElementById('loadingEntregas').style.display = 'none';
+          showAlert('Erro ao carregar entregas: ' + e.message, 'error');
+        })
+        .listEntregas(100);
+    }
+
+    function showCreateEntregaForm() {
+      var html = '<div class="card"><h3>Nova Entrega</h3>';
+      html += '<form id="formEntrega">';
+      html += '<label>Data:</label><input type="date" id="dataEntrega" required><br>';
+      html += '<label>Fornecedor:</label><input type="text" id="fornecedorEntrega" required><br>';
+      html += '<label>Unidade Escolar:</label><input type="text" id="unidadeEscolar" required><br>';
+      html += '<label>Produto:</label><input type="text" id="produtoEntrega" required><br>';
+      html += '<label>Qtd Solicitada:</label><input type="number" id="qtdSolicitada" step="0.01" required><br>';
+      html += '<label>Qtd Entregue:</label><input type="number" id="qtdEntregue" step="0.01" required><br>';
+      html += '<label>Unidade:</label><input type="text" id="unidadeMedida" value="kg"><br>';
+      html += '<label>Qualidade OK?</label><select id="qualidadeOK"><option value="S">Sim</option><option value="N">Não</option></select><br>';
+      html += '<label>Responsável:</label><input type="text" id="responsavelEntrega"><br>';
+      html += '<button type="button" class="btn btn-primary" onclick="createEntrega()">Salvar</button> ';
+      html += '<button type="button" class="btn btn-secondary" onclick="loadEntregas()">Cancelar</button>';
+      html += '</form></div>';
+      document.getElementById('tableEntregas').innerHTML = html;
+    }
+
+    function createEntrega() {
+      var data = {
+        dataEntrega: document.getElementById('dataEntrega').value,
+        fornecedor: document.getElementById('fornecedorEntrega').value,
+        unidadeEscolar: document.getElementById('unidadeEscolar').value,
+        produto: document.getElementById('produtoEntrega').value,
+        quantidadeSolicitada: parseFloat(document.getElementById('qtdSolicitada').value),
+        quantidadeEntregue: parseFloat(document.getElementById('qtdEntregue').value),
+        unidade: document.getElementById('unidadeMedida').value,
+        qualidadeOK: document.getElementById('qualidadeOK').value,
+        responsavel: document.getElementById('responsavelEntrega').value
+      };
+
+      google.script.run
+        .withSuccessHandler(function(r) {
+          if (r.success) {
+            showAlert('Entrega registrada com sucesso!', 'success');
+            loadEntregas();
+          } else {
+            showAlert('Erro: ' + r.message, 'error');
+          }
+        })
+        .withFailureHandler(function(e) { showAlert('Erro: ' + e.message, 'error'); })
+        .registerEntregaWithQuality(data);
+    }
+
+    function deleteEntrega(rowIndex) {
+      if (confirm('Tem certeza que deseja deletar esta entrega?')) {
+        google.script.run
+          .withSuccessHandler(function(r) {
+            if (r.success) {
+              showAlert('Entrega deletada', 'success');
+              loadEntregas();
+            }
+          })
+          .withFailureHandler(function(e) { showAlert('Erro: ' + e.message, 'error'); })
+          .deleteEntrega(rowIndex);
+      }
+    }
+
+    // ============================================================================
+    // RECUSAS - CRUD COMPLETO
+    // ============================================================================
+
+    function loadRecusas() {
+      document.getElementById('loadingRecusas').style.display = 'block';
+      google.script.run
+        .withSuccessHandler(function(r) {
+          document.getElementById('loadingRecusas').style.display = 'none';
+          if (r.success && r.data && r.data.length > 0) {
+            var html = '<div class="mb-4"><button class="btn btn-primary" onclick="showCreateRecusaForm()">➕ Nova Recusa</button></div>';
+            html += '<table><thead><tr><th>Data</th><th>Unidade</th><th>Fornecedor</th><th>Produto</th><th>Motivo</th><th>Quantidade</th><th>Ações</th></tr></thead><tbody>';
+            r.data.forEach(function(item) {
+              html += '<tr>';
+              html += '<td>' + formatDate(item.Data_Recusa) + '</td>';
+              html += '<td>' + (item.Unidade_Escolar || '-') + '</td>';
+              html += '<td>' + (item.Fornecedor_Nome || '-') + '</td>';
+              html += '<td>' + (item.Produto_Nome || '-') + '</td>';
+              html += '<td>' + (item.Motivo_Recusa || '-') + '</td>';
+              html += '<td>' + (item.Quantidade_Recusada || '-') + '</td>';
+              html += '<td><button class="btn btn-sm btn-danger" onclick="deleteRecusa(' + item.rowIndex + ')">🗑️</button></td>';
+              html += '</tr>';
+            });
+            html += '</tbody></table>';
+            document.getElementById('tableRecusas').innerHTML = html;
+          } else {
+            document.getElementById('tableRecusas').innerHTML = '<div class="empty-state"><div style="font-size:64px;margin-bottom:16px;">❌</div><div>Nenhuma recusa registrada</div></div>';
+          }
+        })
+        .withFailureHandler(function(e) {
+          document.getElementById('loadingRecusas').style.display = 'none';
+          showAlert('Erro ao carregar recusas: ' + e.message, 'error');
+        })
+        .listRecusas(100);
+    }
+
+    function showCreateRecusaForm() {
+      showAlert('Formulário de recusa em desenvolvimento', 'info');
+    }
+
+    function deleteRecusa(rowIndex) {
+      if (confirm('Tem certeza que deseja deletar esta recusa?')) {
+        google.script.run
+          .withSuccessHandler(function(r) {
+            if (r.success) {
+              showAlert('Recusa deletada', 'success');
+              loadRecusas();
+            }
+          })
+          .withFailureHandler(function(e) { showAlert('Erro: ' + e.message, 'error'); })
+          .deleteRecusa(rowIndex);
+      }
+    }
+
+    // ============================================================================
+    // GLOSAS - CRUD COMPLETO
+    // ============================================================================
+
+    function loadGlosas() {
+      document.getElementById('loadingGlosas').style.display = 'block';
+      google.script.run
+        .withSuccessHandler(function(r) {
+          document.getElementById('loadingGlosas').style.display = 'none';
+          if (r.success && r.data && r.data.length > 0) {
+            var html = '<div class="mb-4"><button class="btn btn-primary" onclick="showCreateGlosaForm()">➕ Nova Glosa</button></div>';
+            html += '<table><thead><tr><th>Data</th><th>NF</th><th>Fornecedor</th><th>Produto</th><th>Quantidade</th><th>Valor Unit.</th><th>Valor Total</th><th>Motivo</th><th>Ações</th></tr></thead><tbody>';
+            r.data.forEach(function(item) {
+              html += '<tr>';
+              html += '<td>' + formatDate(item.Data_Glosa) + '</td>';
+              html += '<td>' + (item.Numero_NF || '-') + '</td>';
+              html += '<td>' + (item.Fornecedor_Nome || '-') + '</td>';
+              html += '<td>' + (item.Produto_Item || '-') + '</td>';
+              html += '<td>' + (item.Quantidade_Glosada || '-') + '</td>';
+              html += '<td>R$ ' + formatNumber(item.Valor_Unitario || 0) + '</td>';
+              html += '<td>R$ ' + formatNumber(item.Valor_Total_Glosa || 0) + '</td>';
+              html += '<td>' + (item.Motivo_Glosa || '-') + '</td>';
+              html += '<td><button class="btn btn-sm btn-danger" onclick="deleteGlosa(' + item.rowIndex + ')">🗑️</button></td>';
+              html += '</tr>';
+            });
+            html += '</tbody></table>';
+            document.getElementById('tableGlosas').innerHTML = html;
+          } else {
+            document.getElementById('tableGlosas').innerHTML = '<div class="empty-state"><div style="font-size:64px;margin-bottom:16px;">💰</div><div>Nenhuma glosa registrada</div></div>';
+          }
+        })
+        .withFailureHandler(function(e) {
+          document.getElementById('loadingGlosas').style.display = 'none';
+          showAlert('Erro ao carregar glosas: ' + e.message, 'error');
+        })
+        .listGlosas(100);
+    }
+
+    function showCreateGlosaForm() {
+      showAlert('Formulário de glosa em desenvolvimento', 'info');
+    }
+
+    function deleteGlosa(rowIndex) {
+      if (confirm('Tem certeza que deseja deletar esta glosa?')) {
+        google.script.run
+          .withSuccessHandler(function(r) {
+            if (r.success) {
+              showAlert('Glosa deletada', 'success');
+              loadGlosas();
+            }
+          })
+          .withFailureHandler(function(e) { showAlert('Erro: ' + e.message, 'error'); })
+          .deleteGlosa(rowIndex);
+      }
+    }
+
+    // ============================================================================
+    // RELATÓRIOS E ANÁLISES
+    // ============================================================================
+
+    function loadRelatorios() {
+      var html = '<div class="card">';
+      html += '<h3>Análises Disponíveis</h3>';
+      html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:24px;">';
+      html += '<button class="btn btn-primary" onclick="runVerificacoes()">🔍 Verificar Irregularidades</button>';
+      html += '<button class="btn btn-success" onclick="runTendencias()">📈 Identificar Tendências</button>';
+      html += '<button class="btn btn-secondary" onclick="runAnaliseGenerativa()">🤖 Análise Generativa</button>';
+      html += '<button class="btn btn-secondary" onclick="gerarRelatorioComissao()">📄 Relatório Comissão</button>';
+      html += '<button class="btn btn-secondary" onclick="gerarAtesto()">📋 Atesto GEVMON</button>';
+      html += '<button class="btn btn-secondary" onclick="gerarDemonstrativo()">📊 Demonstrativo Consumo</button>';
+      html += '</div>';
+      html += '<div id="relatoriosResult"></div>';
+      html += '</div>';
+      document.getElementById('tab-relatorios').innerHTML = html;
+    }
+
+    function runVerificacoes() {
+      showAlert('Executando verificação de irregularidades...', 'info');
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            var html = '<div class="card"><h3>Resultado da Verificação</h3>';
+            html += '<p><strong>Registros processados:</strong> ' + (result.data.resumo ? result.data.resumo.registros_processados : 0) + '</p>';
+            html += '<p><strong>Problemas detectados:</strong> ' + (result.data.problemas ? result.data.problemas.length : 0) + '</p>';
+            html += '<pre style="background:var(--bg-primary);padding:16px;border-radius:8px;overflow-x:auto;max-height:400px;">' + JSON.stringify(result.data, null, 2) + '</pre></div>';
+            document.getElementById('relatoriosResult').innerHTML = html;
+          } else {
+            showAlert('Erro: ' + result.message, 'error');
+          }
+        })
+        .withFailureHandler(function(e) { showAlert('Erro: ' + e.message, 'error'); })
+        .runDeterministicAnalysis({});
+    }
+
+    function runTendencias() {
+      showAlert('Identificando tendências...', 'info');
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            var html = '<div class="card"><h3>Análise de Tendências</h3>';
+            html += '<h4>Top Fornecedores (Crescimento)</h4><ul>';
+            (result.data.topIncreasing || []).forEach(function(item) {
+              html += '<li>' + item.fornecedor + ' - R$ ' + formatNumber(item.total) + ' (' + item.qtd + ' entregas)</li>';
+            });
+            html += '</ul><h4>Fornecedores em Declínio</h4><ul>';
+            (result.data.topDecreasing || []).forEach(function(item) {
+              html += '<li>' + item.fornecedor + ' - R$ ' + formatNumber(item.total) + ' (' + item.qtd + ' entregas)</li>';
+            });
+            html += '</ul></div>';
+            document.getElementById('relatoriosResult').innerHTML = html;
+          } else {
+            showAlert('Erro: ' + result.message, 'error');
+          }
+        })
+        .withFailureHandler(function(e) { showAlert('Erro: ' + e.message, 'error'); })
+        .runTrendAnalysis({});
+    }
+
+    function runAnaliseGenerativa() {
+      showAlert('Análise generativa em desenvolvimento', 'info');
+    }
+
+    function gerarRelatorioComissao() {
+      showAlert('Gerando relatório da comissão...', 'info');
+      google.script.run
+        .withSuccessHandler(function(r) {
+          if (r.success) {
+            showAlert('Relatório gerado com sucesso!', 'success');
+          }
+        })
+        .withFailureHandler(function(e) { showAlert('Erro: ' + e.message, 'error'); })
+        .generateConsolidatedReport('comissao', {});
+    }
+
+    function gerarAtesto() {
+      showAlert('Gerando atesto GEVMON...', 'info');
+      google.script.run
+        .withSuccessHandler(function(r) {
+          if (r.success) {
+            showAlert('Atesto gerado com sucesso!', 'success');
+          }
+        })
+        .withFailureHandler(function(e) { showAlert('Erro: ' + e.message, 'error'); })
+        .generateConsolidatedReport('atesto', {});
+    }
+
+    function gerarDemonstrativo() {
+      showAlert('Gerando demonstrativo de consumo...', 'info');
+      google.script.run
+        .withSuccessHandler(function(r) {
+          if (r.success) {
+            showAlert('Demonstrativo gerado com sucesso!', 'success');
+          }
+        })
+        .withFailureHandler(function(e) { showAlert('Erro: ' + e.message, 'error'); })
+        .generateConsolidatedReport('consumo', {});
+    }
+
+    // ============================================================================
+    // INICIALIZAÇÃO
+    // ============================================================================
+
+    window.onload = function() { loadDashboardComplete(); };
+  </script>
+</body>
+</html>
+
+
+// ---- AdvancedDashboard.html ----
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Avançado - UNIAE</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #1c4587;
+      --primary-light: #4a6fa5;
+      --secondary: #4CAF50;
+      --accent: #FF9800;
+      --error: #F44336;
+      --warning: #FFC107;
+      --success: #4CAF50;
+      --background: #f5f7fa;
+      --surface: var(--text-inverse);
+      --text-primary: #2c3e50;
+      --text-secondary: #7f8c8d;
+      --border: #e1e8ed;
+      --shadow: rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--background);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* HEADER */
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 12px var(--shadow);
+    }
+
+    .header h1 {
+      font-size: 32px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .header p {
+      opacity: 0.9;
+      font-size: var(--font-base);
+    }
+
+    /* METRICS GRID */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .metric-card {
+      background: var(--surface);
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px var(--shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-left: 4px solid var(--primary);
+    }
+
+    .metric-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 20px var(--shadow);
+    }
+
+    .metric-card.success {
+      border-left-color: var(--success);
+    }
+
+    .metric-card.warning {
+      border-left-color: var(--warning);
+    }
+
+    .metric-card.error {
+      border-left-color: var(--error);
+    }
+
+    .metric-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-4);
+    }
+
+    .metric-icon {
+      font-size: 32px;
+      opacity: 0.8;
+    }
+
+    .metric-trend {
+      font-size: var(--font-sm);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    .metric-trend.up {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .metric-trend.down {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .metric-value {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .metric-label {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* CHARTS SECTION */
+    .charts-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .chart-card {
+      background: var(--surface);
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+
+    .chart-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--text-primary);
+    }
+
+    .chart-placeholder {
+      height: 300px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    /* TABLE */
+    .table-card {
+      background: var(--surface);
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px var(--shadow);
+      margin-bottom: 30px;
+    }
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .table-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .table-actions {
+      display: flex;
+      gap: var(--space-3);
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: var(--font-sm);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-light);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: var(--text-secondary);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #5a6c7d;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: var(--background);
+    }
+
+    th {
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: var(--font-sm);
+      border-bottom: 2px solid var(--border);
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+      font-size: var(--font-sm);
+    }
+
+    tbody tr:hover {
+      background: var(--background);
+    }
+
+    .badge {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      display: inline-block;
+    }
+
+    .badge-success {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .badge-warning {
+      background: var(--text-inverse)3cd;
+      color: #856404;
+    }
+
+    .badge-error {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .badge-info {
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+
+    /* ACTIVITY FEED */
+    .activity-feed {
+      background: var(--surface);
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+
+    .activity-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--text-primary);
+    }
+
+    .activity-item {
+      display: flex;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+
+    .activity-icon {
+      font-size: 24px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--background);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .activity-content {
+      flex: 1;
+    }
+
+    .activity-text {
+      font-size: var(--font-sm);
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .activity-time {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* QUICK ACTIONS */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+    .action-card {
+      background: var(--surface);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px var(--shadow);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .action-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 20px var(--shadow);
+      border-color: var(--primary);
+    }
+
+    .action-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .action-label {
+      font-size: var(--font-base);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    /* LOADING */
+    .loading {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .loading.active {
+      display: flex;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .charts-section {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-actions {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="design-system.css">
+</head>
+<body>
+  <div class="container">
+    <!-- HEADER -->
+    <div class="header">
+      <h1>📊 Dashboard Avançado UNIAE</h1>
+      <p>Visão completa do sistema de gestão de notas fiscais e entregas</p>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="quick-actions">
+      <div class="action-card" onclick="registrarNF()">
+        <div class="action-icon">📋</div>
+        <div class="action-label">Registrar NF</div>
+      </div>
+      <div class="action-card" onclick="verificarConformidade()">
+        <div class="action-icon">⚖️</div>
+        <div class="action-label">Conformidade</div>
+      </div>
+      <div class="action-card" onclick="gerarRelatorio()">
+        <div class="action-icon">📄</div>
+        <div class="action-label">Relatórios</div>
+      </div>
+      <div class="action-card" onclick="buscarAvancada()">
+        <div class="action-icon">🔍</div>
+        <div class="action-label">Busca Avançada</div>
+      </div>
+    </div>
+
+    <!-- METRICS -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-header">
+          <div class="metric-icon">📋</div>
+          <div class="metric-trend up">↑ 12%</div>
+        </div>
+        <div class="metric-value" id="metric-nfs">0</div>
+        <div class="metric-label">Notas Fiscais</div>
+      </div>
+
+      <div class="metric-card success">
+        <div class="metric-header">
+          <div class="metric-icon">✅</div>
+          <div class="metric-trend up">↑ 8%</div>
+        </div>
+        <div class="metric-value" id="metric-aprovadas">0</div>
+        <div class="metric-label">Aprovadas</div>
+      </div>
+
+      <div class="metric-card warning">
+        <div class="metric-header">
+          <div class="metric-icon">⏳</div>
+          <div class="metric-trend down">↓ 5%</div>
+        </div>
+        <div class="metric-value" id="metric-pendentes">0</div>
+        <div class="metric-label">Pendentes</div>
+      </div>
+
+      <div class="metric-card error">
+        <div class="metric-header">
+          <div class="metric-icon">❌</div>
+          <div class="metric-trend down">↓ 15%</div>
+        </div>
+        <div class="metric-value" id="metric-problemas">0</div>
+        <div class="metric-label">Com Problemas</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-header">
+          <div class="metric-icon">💰</div>
+          <div class="metric-trend up">↑ 20%</div>
+        </div>
+        <div class="metric-value" id="metric-valor">R$ 0</div>
+        <div class="metric-label">Valor Total</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-header">
+          <div class="metric-icon">🏢</div>
+          <div class="metric-trend up">↑ 3%</div>
+        </div>
+        <div class="metric-value" id="metric-fornecedores">0</div>
+        <div class="metric-label">Fornecedores</div>
+      </div>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="charts-section">
+      <div class="chart-card">
+        <div class="chart-title">📈 Notas Fiscais por Mês</div>
+        <div class="chart-placeholder">Gráfico de Linhas</div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">📊 Top 5 Fornecedores</div>
+        <div class="chart-placeholder">Gráfico de Barras</div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">🥧 Status das NFs</div>
+        <div class="chart-placeholder">Gráfico de Pizza</div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">⚖️ Score de Conformidade</div>
+        <div class="chart-placeholder">Gauge Chart</div>
+      </div>
+    </div>
+
+    <!-- RECENT ACTIVITY -->
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-title">📋 Notas Fiscais Recentes</div>
+        <div class="table-actions">
+          <button class="btn btn-secondary" onclick="filtrarTabela()">🔍 Filtrar</button>
+          <button class="btn btn-primary" onclick="exportarTabela()">📥 Exportar</button>
+        </div>
+      </div>
+      <table id="nfs-table">
+        <thead>
+          <tr>
+            <th>NF</th>
+            <th>Data</th>
+            <th>Fornecedor</th>
+            <th>Valor</th>
+            <th>Status</th>
+            <th>Conformidade</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="nfs-tbody">
+          <tr>
+            <td colspan="7" style="text-align: center; padding: var(--space-10);">
+              Carregando dados...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ACTIVITY FEED -->
+    <div class="activity-feed">
+      <div class="activity-title">🔔 Atividades Recentes</div>
+      <div id="activity-list">
+        <div class="activity-item">
+          <div class="activity-icon">📋</div>
+          <div class="activity-content">
+            <div class="activity-text">Nova NF registrada: #12345</div>
+            <div class="activity-time">Há 5 minutos</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon">✅</div>
+          <div class="activity-content">
+            <div class="activity-text">NF #12344 aprovada pela comissão</div>
+            <div class="activity-time">Há 15 minutos</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon">⚠️</div>
+          <div class="activity-content">
+            <div class="activity-text">Divergência detectada na NF #12343</div>
+            <div class="activity-time">Há 1 hora</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <script>
+    // FUNÇÕES DE CARREGAMENTO
+    function loadDashboardData() {
+      showLoading();
+
+      google.script.run
+        .withSuccessHandler(updateDashboard)
+        .withFailureHandler(handleError)
+        .getDashboardMetrics();
+    }
+
+    function updateDashboard(data) {
+      if (data && data.success) {
+        document.getElementById('metric-nfs').textContent = data.data.totalNFs || '0';
+        document.getElementById('metric-aprovadas').textContent = data.data.totalAprovadas || '0';
+        document.getElementById('metric-pendentes').textContent = data.data.totalPendentes || '0';
+        document.getElementById('metric-problemas').textContent = data.data.totalProblemas || '0';
+        document.getElementById('metric-valor').textContent = 'R$ ' + (data.data.valorTotal || '0,00');
+        document.getElementById('metric-fornecedores').textContent = data.data.totalFornecedores || '0';
+      }
+
+      hideLoading();
+      loadRecentNFs();
+    }
+
+    function loadRecentNFs() {
+      google.script.run
+        .withSuccessHandler(updateNFsTable)
+        .withFailureHandler(handleError)
+        .listNotasFiscais(10);
+    }
+
+    function updateNFsTable(data) {
+      var tbody = document.getElementById('nfs-tbody');
+
+      if (!data || !data.success || !data.data || data.data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: var(--space-10);">Nenhuma nota fiscal encontrada</td></tr>';
+        return;
+      }
+
+      var html = '';
+      data.data.forEach(function(row) {
+        var statusClass = row[4] === 'Aprovado' ? 'success' : row[4] === 'Pendente' ? 'warning' : 'error';
+        var conformidade = Math.floor(Math.random() * 30) + 70; // Mock
+        var conformidadeClass = conformidade >= 90 ? 'success' : conformidade >= 70 ? 'warning' : 'error';
+
+        html += '<tr>';
+        html += '<td>' + (row[0] || '-') + '</td>';
+        html += '<td>' + (row[1] || '-') + '</td>';
+        html += '<td>' + (row[2] || '-') + '</td>';
+        html += '<td>R$ ' + (row[3] || '0,00') + '</td>';
+        html += '<td><span class="badge badge-' + statusClass + '">' + (row[4] || 'Pendente') + '</span></td>';
+        html += '<td><span class="badge badge-' + conformidadeClass + '">' + conformidade + '%</span></td>';
+        html += '<td><button class="btn btn-primary btn-sm" onclick="verDetalhes(\'' + row[0] + '\')">Ver</button></td>';
+        html += '</tr>';
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    // AÇÕES
+    function registrarNF() {
+      alert('Abrindo formulário de registro de NF...');
+    }
+
+    function verificarConformidade() {
+      alert('Verificando conformidade legal...');
+    }
+
+    function gerarRelatorio() {
+      alert('Gerando relatório...');
+    }
+
+    function buscarAvancada() {
+      alert('Abrindo busca avançada...');
+    }
+
+    function filtrarTabela() {
+      alert('Abrindo filtros...');
+    }
+
+    function exportarTabela() {
+      alert('Exportando dados...');
+    }
+
+    function verDetalhes(nf) {
+      alert('Visualizando detalhes da NF: ' + nf);
+    }
+
+    // LOADING
+    function showLoading() {
+      document.getElementById('loading').classList.add('active');
+    }
+
+    function hideLoading() {
+      document.getElementById('loading').classList.remove('active');
+    }
+
+    function handleError(error) {
+      hideLoading();
+      alert('Erro: ' + (error.message || 'Ocorreu um erro desconhecido'));
+    }
+
+    // INICIALIZAÇÃO
+    window.onload = function() {
+      loadDashboardData();
+    };
+  </script>
+</body>
+</html>
+
+
+// ---- index.html ----
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Painel - Recebimento / Notas Fiscais - CRE-PP</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 24px 32px;
+      text-align: center;
+    }
+    header h1 { font-size: 28px; margin-bottom: 8px; }
+    header .subtitle { font-size: var(--font-sm); opacity: 0.9; }
+    .content { padding: 32px; }
+    .card {
+      border: 2px solid var(--bg-tertiary);
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      background: var(--text-inverse);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .card-header {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: var(--space-4);
+      color: var(--text-primary);
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--bg-tertiary);
+    }
+    h2 { margin: 0 0 20px 0; color: var(--text-primary); font-size: 22px; }
+    label {
+      display: block;
+      margin: 12px 0 6px 0;
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: var(--font-sm);
+    }
+    select, input, textarea {
+      padding: 10px 12px;
+      width: 100%;
+      box-sizing: border-box;
+      border: 2px solid var(--bg-tertiary);
+      border-radius: 8px;
+      font-size: var(--font-sm);
+      transition: all 0.3s;
+    }
+    select:focus, input:focus, textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    button {
+      margin-right: 8px;
+      padding: 10px 20px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: var(--font-sm);
+    }
+    button:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    button.secondary {
+      background: var(--text-secondary);
+    }
+    button.secondary:hover {
+      background: var(--text-secondary);
+    }
+    .row { display: flex; gap: 16px; margin-bottom: var(--space-4); }
+    .col { flex: 1; }
+    pre {
+      background: var(--bg-primary);
+      border: 2px solid var(--bg-tertiary);
+      padding: 16px;
+      white-space: pre-wrap;
+      border-radius: 8px;
+      font-size: 13px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+    th, td { border: 1px solid var(--bg-tertiary); padding: 10px; text-align: left; font-size: var(--font-sm); }
+    th { background: var(--bg-primary); font-weight: 600; color: var(--text-secondary); }
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-3);
+      margin-top: var(--space-4);
+    }
+    .alert {
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: var(--space-4);
+      border-left: 4px solid;
+    }
+    .alert-info { background: var(--primary-light); border-color: var(--primary); color: var(--primary-dark); }
+    .alert-success { background: var(--success-light); border-color: var(--success); color: var(--success-dark); }
+    .alert-warning { background: var(--warning-light); border-color: var(--warning); color: var(--warning-dark); }
+    textarea { min-height: 80px; resize: vertical; }
+    .link-dashboard {
+      display: inline-block;
+      margin: 16px 0;
+      padding: 12px 24px;
+      background: var(--success);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    .link-dashboard:hover {
+      background: var(--success-dark);
+      transform: translateY(-2px);
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      background: var(--bg-primary);
+      border-top: 2px solid var(--bg-tertiary);
+    }
+  </style>
+  <link rel="stylesheet" href="design-system.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📋 Painel de Controle - CRE-PP</h1>
+      <div class="subtitle">Sistema de Análise de Notas Fiscais e Entregas - UNIAE</div>
+    </header>
+
+    <div class="content">
+      <div class="alert alert-info">
+        💡 <strong>Dica:</strong> Use o <a href="dashboard.html" class="link-dashboard" target="_blank">🚀 Dashboard Completo</a> para interface visual moderna com CRUD completo!
+      </div>
+
+  <div class="card">
+    <div class="card-header">⚙️ Configurações de Processamento</div>
+    <label>Período</label>
+    <select id="period">
+      <option value="mes">Mês</option>
+      <option value="trimestre">Trimestre</option>
+      <option value="semestre">Semestre</option>
+      <option value="ano">Ano</option>
+      <option value="tudo">Tudo</option>
+    </select>
+    <label>Máximo de registros por execução</label>
+    <input id="maxRecords" type="number" min="10" value="200" />
+    <label>Grupos de Produtos (JSON) — ex: {"graos":["arroz","feijao"]}</label>
+    <textarea id="groupsJson" rows="4"></textarea>
+    <div style="margin-top: var(--space-4);">
+      <button id="saveConfig">💾 Salvar Configuração</button>
+      <button id="reloadConfig" class="secondary">🔄 Recarregar</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">🚀 Ações Rápidas</div>
+    <div class="actions-grid">
+      <button id="btnImportGmail">📥 Importar do Gmail</button>
+      <button id="btnConfigLabels">🔖 Configurar Labels</button>
+      <button id="btnRunChecks">🔍 Verificar Irregularidades</button>
+      <button id="btnRunTrends">📈 Identificar Tendências</button>
+      <button id="btnGenReport">📄 Gerar Relatório</button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <div class="card-header">📊 Resultado / Saída</div>
+        <pre id="out">Aguardando ação...</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">📋 Orientações Resumidas (Auditoria)</div>
+    <pre id="orientacoes">Carregando orientações...</pre>
+  </div>
+
+  <div class="card">
+    <div class="card-header">⚠️ Últimos Problemas Detectados</div>
+    <div id="problemsTable">Nenhuma execução ainda. Execute "Verificar Irregularidades" para ver problemas.</div>
+  </div>
+    </div>
+
+    <footer>
+      <p><strong>CRE-PP/UNIAE</strong></p>
+      <p>Sistema de Análise de Notas Fiscais e Entregas | Portaria nº 244/2006</p>
+    </footer>
+  </div>
+
+  <script>
+    // helpers UI
+    function setOut(txt){ document.getElementById('out').textContent = txt; }
+    function setOrientacoes(txt){ document.getElementById('orientacoes').textContent = txt; }
+
+    // carregar configuração atual
+    function loadConfig() {
+      google.script.run.withSuccessHandler(function(cfg){
+        document.getElementById('period').value = cfg.period || 'trimestre';
+        document.getElementById('maxRecords').value = cfg.maxRecords || 200;
+        document.getElementById('groupsJson').value = JSON.stringify(cfg.productGroups || {}, null, 2);
+      }).getProcessingConfig();
+    }
+
+    document.getElementById('reloadConfig').addEventListener('click', function(){ loadConfig(); setOut('Configuração recarregada.'); });
+
+    document.getElementById('saveConfig').addEventListener('click', function(){
+      var period = document.getElementById('period').value;
+      var maxRecords = Number(document.getElementById('maxRecords').value) || 200;
+      var groupsJson = document.getElementById('groupsJson').value || '{}';
+      try {
+        var groups = JSON.parse(groupsJson);
+      } catch (e) { setOut('JSON inválido em Grupos: ' + e.message); return; }
+      var cfg = { period: period, maxRecords: maxRecords, productGroups: groups };
+      google.script.run.withSuccessHandler(function(r){ setOut('Configuração salva.'); }).withFailureHandler(function(e){ setOut('Erro: '+e.message); }).setProcessingConfig(cfg);
+    });
+
+    // carregar orientações
+    google.script.run.withSuccessHandler(function(txt){ setOrientacoes(txt); }).withFailureHandler(function(e){ setOrientacoes('Erro ao carregar orientações'); }).getOrientacoesSummary();
+
+    // ações rápidas
+    document.getElementById('btnConfigLabels').addEventListener('click', function(){
+      setOut('Criando/confirmando labels no Gmail...');
+      google.script.run.withSuccessHandler(function(){ setOut('Labels NF-e / NF-e - Processado prontas.'); }).withFailureHandler(function(e){ setOut('Erro: '+e.message); }).configurarLabelsGmail();
+    });
+
+    document.getElementById('btnImportGmail').addEventListener('click', function(){
+      setOut('Iniciando importação do Gmail (processamento em background)...');
+      google.script.run.withSuccessHandler(function(){ setOut('Importação solicitada. Verifique a aba Notas_Fiscais na planilha.'); }).withFailureHandler(function(e){ setOut('Erro: '+e.message); }).importarNotasFiscaisGmailHandler();
+    });
+
+    document.getElementById('btnRunChecks').addEventListener('click', function(){
+      setOut('Executando verificações... aguarde.');
+      // ler opções do UI
+      var period = document.getElementById('period').value;
+      var maxRecords = Number(document.getElementById('maxRecords').value) || 200;
+      var groups = [];
+      try {
+        var pj = JSON.parse(document.getElementById('groupsJson').value || '{}');
+        // permitir seleção de grupos: pegar chaves
+        groups = Object.keys(pj);
+      } catch (e) { /* ignore */ }
+      var options = { period: period, maxRecords: maxRecords, groups: groups };
+      google.script.run.withSuccessHandler(function(res){
+        if (res.error) { setOut(res.error); return; }
+        var txt = 'Registros processados: ' + (res.resumo && res.resumo.registros_processados) + '\n';
+        txt += 'Total problemas detectados: ' + (res.problemasCount || 0) + '\n\n';
+        setOut(txt);
+        // montar tabela amostra
+        if (res.problemas && res.problemas.length) {
+          var html = '<table><tr><th>Tipo</th><th>Sheet</th><th>Linha</th></tr>';
+          res.problemas.forEach(function(p){ html += '<tr><td>'+p.tipo+'</td><td>'+ (p.sheet||'') +'</td><td>'+ (p.linha||'') +'</td></tr>'; });
+          html += '</table>';
+          document.getElementById('problemsTable').innerHTML = html;
+        } else {
+          document.getElementById('problemsTable').innerHTML = 'Nenhum problema amostrado.';
+        }
+      }).withFailureHandler(function(e){ setOut('Erro: '+e.message); }).runVerificacoesServer(options);
+    });
+
+    document.getElementById('btnRunTrends').addEventListener('click', function(){
+      setOut('Identificando tendências...');
+      var period = document.getElementById('period').value;
+      var maxRecords = Number(document.getElementById('maxRecords').value) || 200;
+      var options = { period: period, maxRecords: maxRecords, groups: [] };
+      google.script.run.withSuccessHandler(function(res){
+        if (res.error) { setOut(res.error); return; }
+        var lines = [];
+        lines.push('Top fornecedores (por valor)'); lines.push('-----------------------------');
+        (res.topIncreasing||[]).forEach(function(t){ lines.push(t.fornecedor + ' — R$ ' + (t.total||0).toFixed(2) + ' (' + t.qtd + ')'); });
+        lines.push('', 'Bottom fornecedores'); lines.push('-------------------');
+        (res.topDecreasing||[]).forEach(function(t){ lines.push(t.fornecedor + ' — R$ ' + (t.total||0).toFixed(2) + ' (' + t.qtd + ')'); });
+        setOut(lines.join('\n'));
+      }).withFailureHandler(function(e){ setOut('Erro: '+e.message); }).runTrendsServer(options);
+    });
+
+    document.getElementById('btnGenReport').addEventListener('click', function(){
+      setOut('Gerando relatório da comissão...');
+      google.script.run.withSuccessHandler(function(res){
+        if (res.error) { setOut(res.error); return; }
+        setOut('Relatório gerado: ' + (res.sheetName || 'nome não detectado'));
+      }).withFailureHandler(function(e){ setOut('Erro: '+e.message); }).runGenerateCommissionReport();
+    });
+
+    // inicializações
+    loadConfig();
+  </script>
+
+  <!-- Widget de Ações Rápidas -->
+  <?!= include('UI_QuickActions_Widget'); ?>
+</body>
+</html>
+

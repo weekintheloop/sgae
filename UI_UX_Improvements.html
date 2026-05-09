@@ -1,0 +1,632 @@
+<!--
+  UI_UX_IMPROVEMENTS - Melhorias de UX Consolidadas
+  Inclua este arquivo em qualquer página: <?!= include('UI_UX_Improvements'); ?>
+
+  Baseado na análise automatizada de UX do projeto UNIAE
+  Corrige: acessibilidade, feedback, confirmações, loading states
+-->
+
+<style>
+/* ========================================
+   MELHORIAS DE ACESSIBILIDADE
+   ======================================== */
+
+/* Focus visível para todos os elementos interativos */
+:focus-visible {
+  outline: 3px solid #667eea !important;
+  outline-offset: 2px !important;
+}
+
+/* Skip link para navegação por teclado */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #667eea;
+  color: white;
+  padding: 8px 16px;
+  z-index: 10000;
+  transition: top 0.3s;
+}
+.skip-link:focus {
+  top: 0;
+}
+
+/* Área de toque mínima para mobile (44x44px) */
+button, .btn, a, input[type="checkbox"], input[type="radio"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Contraste melhorado para textos secundários */
+.text-muted, .text-secondary, [style*="opacity: 0."] {
+  color: #4a5568 !important;
+  opacity: 1 !important;
+}
+
+/* Reduzir movimento para usuários sensíveis */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+/* ========================================
+   SISTEMA DE FEEDBACK (TOAST)
+   ======================================== */
+.ux-toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.ux-toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: #1a202c;
+  color: white;
+  border-radius: var(--radius-md, 10px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  animation: ux-toast-in 0.3s ease;
+  pointer-events: auto;
+  max-width: 400px;
+  font-size: 14px;
+}
+
+.ux-toast.success { background: #48bb78; }
+.ux-toast.error { background: #f56565; }
+.ux-toast.warning { background: #ed8936; color: #1a202c; }
+.ux-toast.info { background: #667eea; }
+
+.ux-toast .icon { font-size: 20px; flex-shrink: 0; }
+.ux-toast .message { flex: 1; line-height: 1.4; }
+.ux-toast .close-btn {
+  background: none;
+  border: none;
+  color: inherit;
+  opacity: 0.7;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0;
+}
+.ux-toast .close-btn:hover { opacity: 1; }
+
+@keyframes ux-toast-in {
+  from { opacity: 0; transform: translateX(100%); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes ux-toast-out {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(100%); }
+}
+
+/* ========================================
+   MODAL DE CONFIRMAÇÃO MELHORADO
+   ======================================== */
+.ux-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+  padding: 20px;
+}
+.ux-confirm-overlay.active { opacity: 1; visibility: visible; }
+
+.ux-confirm-modal {
+  background: white;
+  border-radius: var(--radius-lg, 16px);
+  max-width: 400px;
+  width: 100%;
+  padding: 24px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  transform: scale(0.9);
+  transition: transform 0.2s;
+}
+.ux-confirm-overlay.active .ux-confirm-modal { transform: scale(1); }
+
+.ux-confirm-modal .icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full, 9999px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin: 0 auto 16px;
+}
+.ux-confirm-modal .icon.danger { background: #fee2e2; }
+.ux-confirm-modal .icon.warning { background: #fef3c7; }
+.ux-confirm-modal .icon.info { background: #dbeafe; }
+
+.ux-confirm-modal h3 {
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #1a202c;
+}
+.ux-confirm-modal p {
+  text-align: center;
+  font-size: 14px;
+  color: #718096;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.ux-confirm-modal .actions {
+  display: flex;
+  gap: 12px;
+}
+.ux-confirm-modal .btn {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: var(--radius-sm, 8px);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ux-confirm-modal .btn-cancel {
+  background: #edf2f7;
+  color: #4a5568;
+}
+.ux-confirm-modal .btn-cancel:hover { background: #e2e8f0; }
+.ux-confirm-modal .btn-danger {
+  background: #f56565;
+  color: white;
+}
+.ux-confirm-modal .btn-danger:hover { background: #e53e3e; }
+.ux-confirm-modal .btn-primary {
+  background: #667eea;
+  color: white;
+}
+.ux-confirm-modal .btn-primary:hover { background: #5a67d8; }
+
+
+/* ========================================
+   LOADING STATES MELHORADOS
+   ======================================== */
+.ux-loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 99998;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+.ux-loading-overlay.active { opacity: 1; visibility: visible; }
+
+.ux-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #e2e8f0;
+  border-top-color: #667eea;
+  border-radius: var(--radius-full, 9999px);
+  animation: ux-spin 0.8s linear infinite;
+}
+
+.ux-loading-text {
+  margin-top: 16px;
+  font-size: 14px;
+  color: #4a5568;
+}
+
+@keyframes ux-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Skeleton loading */
+.ux-skeleton {
+  background: linear-gradient(90deg, #edf2f7 25%, #f7fafc 50%, #edf2f7 75%);
+  background-size: 200% 100%;
+  animation: ux-skeleton-loading 1.5s infinite;
+  border-radius: var(--radius-xs, 6px);
+}
+@keyframes ux-skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ========================================
+   ESTADOS VAZIOS
+   ======================================== */
+.ux-empty-state {
+  text-align: center;
+  padding: 60px 24px;
+  background: #f7fafc;
+  border-radius: var(--radius-lg, 12px);
+}
+.ux-empty-state .icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+.ux-empty-state h3 {
+  font-size: 18px;
+  color: #1a202c;
+  margin-bottom: 8px;
+}
+.ux-empty-state p {
+  font-size: 14px;
+  color: #718096;
+  margin-bottom: 24px;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.ux-empty-state .action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm, 8px);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ux-empty-state .action:hover {
+  background: #5a67d8;
+  transform: translateY(-2px);
+}
+
+/* ========================================
+   BOTÃO FLUTUANTE DE AÇÕES RÁPIDAS
+   ======================================== */
+.ux-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+}
+.ux-fab-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full, 9999px);
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(102,126,234,0.4);
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ux-fab-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(102,126,234,0.5);
+}
+.ux-fab-btn.active { transform: rotate(45deg); }
+
+.ux-fab-menu {
+  position: absolute;
+  bottom: 70px;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all 0.3s;
+}
+.ux-fab.open .ux-fab-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.ux-fab-action {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  padding: 12px 16px;
+  border-radius: 28px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  border: none;
+  font-size: 14px;
+}
+.ux-fab-action:hover {
+  transform: translateX(-4px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+.ux-fab-action .icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full, 9999px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  background: #edf2f7;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .ux-toast-container { left: 16px; right: 16px; bottom: 16px; }
+  .ux-toast { max-width: none; }
+  .ux-fab { bottom: 16px; right: 16px; }
+  .ux-fab-btn { width: 48px; height: 48px; font-size: 20px; }
+}
+</style>
+
+
+<!-- HTML dos componentes -->
+<div class="ux-toast-container" id="uxToastContainer" role="region" aria-label="Notificações"></div>
+
+<div class="ux-confirm-overlay" id="uxConfirmOverlay" role="dialog" aria-modal="true">
+  <div class="ux-confirm-modal">
+    <div class="icon danger" id="uxConfirmIcon">⚠️</div>
+    <h3 id="uxConfirmTitle">Confirmar ação?</h3>
+    <p id="uxConfirmMessage">Tem certeza que deseja continuar?</p>
+    <div class="actions">
+      <button class="btn btn-cancel" onclick="UX.confirm.close()">Cancelar</button>
+      <button class="btn btn-danger" id="uxConfirmAction" onclick="UX.confirm.execute()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="ux-loading-overlay" id="uxLoadingOverlay" role="status" aria-live="polite">
+  <div class="ux-spinner"></div>
+  <div class="ux-loading-text" id="uxLoadingText">Carregando...</div>
+</div>
+
+<script>
+/**
+ * UX - Sistema unificado de melhorias de UX
+ * Uso:
+ *   UX.toast.success('Salvo com sucesso!');
+ *   UX.toast.error('Erro ao salvar');
+ *   UX.confirm.show({ title: 'Excluir?', onConfirm: () => delete() });
+ *   UX.loading.show('Processando...');
+ *   UX.loading.hide();
+ */
+const UX = {
+  // ========================================
+  // TOAST NOTIFICATIONS
+  // ========================================
+  toast: {
+    container: null,
+
+    init() {
+      this.container = document.getElementById('uxToastContainer');
+      if (!this.container) {
+        this.container = document.createElement('div');
+        this.container.id = 'uxToastContainer';
+        this.container.className = 'ux-toast-container';
+        this.container.setAttribute('role', 'region');
+        this.container.setAttribute('aria-label', 'Notificações');
+        document.body.appendChild(this.container);
+      }
+    },
+
+    show(message, type = 'info', duration = 5000) {
+      this.init();
+
+      const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+
+      const toast = document.createElement('div');
+      toast.className = `ux-toast ${type}`;
+      toast.setAttribute('role', 'alert');
+      toast.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
+
+      toast.innerHTML = `
+        <span class="icon">${icons[type] || icons.info}</span>
+        <span class="message">${message}</span>
+        <button class="close-btn" onclick="this.parentElement.remove()" aria-label="Fechar">×</button>
+      `;
+
+      this.container.appendChild(toast);
+
+      // Anunciar para leitores de tela
+      this.announce(message);
+
+      if (duration > 0) {
+        setTimeout(() => {
+          toast.style.animation = 'ux-toast-out 0.3s ease forwards';
+          setTimeout(() => toast.remove(), 300);
+        }, duration);
+      }
+
+      return toast;
+    },
+
+    success(msg, duration) { return this.show(msg, 'success', duration); },
+    error(msg, duration) { return this.show(msg, 'error', duration || 8000); },
+    warning(msg, duration) { return this.show(msg, 'warning', duration); },
+    info(msg, duration) { return this.show(msg, 'info', duration); },
+
+    announce(message) {
+      const el = document.createElement('div');
+      el.setAttribute('role', 'status');
+      el.setAttribute('aria-live', 'polite');
+      el.style.cssText = 'position:absolute;left:-9999px;';
+      el.textContent = message;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1000);
+    }
+  },
+
+  // ========================================
+  // CONFIRMATION MODAL
+  // ========================================
+  confirm: {
+    callback: null,
+
+    show(options = {}) {
+      const overlay = document.getElementById('uxConfirmOverlay');
+      const icon = document.getElementById('uxConfirmIcon');
+      const title = document.getElementById('uxConfirmTitle');
+      const message = document.getElementById('uxConfirmMessage');
+      const actionBtn = document.getElementById('uxConfirmAction');
+
+      title.textContent = options.title || 'Confirmar ação?';
+      message.textContent = options.message || 'Tem certeza que deseja continuar?';
+      actionBtn.textContent = options.actionText || 'Confirmar';
+
+      const type = options.type || 'danger';
+      icon.className = 'icon ' + type;
+      icon.textContent = type === 'warning' ? '⚠️' : type === 'info' ? 'ℹ️' : '🗑️';
+
+      actionBtn.className = 'btn btn-' + (type === 'info' ? 'primary' : type);
+
+      this.callback = options.onConfirm;
+
+      overlay.classList.add('active');
+      actionBtn.focus();
+
+      // Fechar com ESC
+      const escHandler = (e) => {
+        if (e.key === 'Escape') {
+          this.close();
+          document.removeEventListener('keydown', escHandler);
+        }
+      };
+      document.addEventListener('keydown', escHandler);
+    },
+
+    close() {
+      document.getElementById('uxConfirmOverlay').classList.remove('active');
+      this.callback = null;
+    },
+
+    execute() {
+      if (this.callback) this.callback();
+      this.close();
+    }
+  },
+
+  // ========================================
+  // LOADING OVERLAY
+  // ========================================
+  loading: {
+    show(text = 'Carregando...') {
+      const overlay = document.getElementById('uxLoadingOverlay');
+      const textEl = document.getElementById('uxLoadingText');
+      if (overlay) {
+        textEl.textContent = text;
+        overlay.classList.add('active');
+      }
+    },
+
+    hide() {
+      const overlay = document.getElementById('uxLoadingOverlay');
+      if (overlay) overlay.classList.remove('active');
+    },
+
+    // Wrapper para chamadas assíncronas
+    async wrap(promise, loadingText = 'Processando...') {
+      this.show(loadingText);
+      try {
+        const result = await promise;
+        this.hide();
+        return result;
+      } catch (error) {
+        this.hide();
+        throw error;
+      }
+    }
+  },
+
+  // ========================================
+  // HELPERS
+  // ========================================
+
+  // Debounce para inputs
+  debounce(func, wait = 300) {
+    let timeout;
+    return function(...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+  },
+
+  // Confirmar antes de ação destrutiva
+  confirmDelete(itemName, onConfirm) {
+    this.confirm.show({
+      title: `Excluir ${itemName}?`,
+      message: 'Esta ação não pode ser desfeita.',
+      type: 'danger',
+      actionText: 'Sim, excluir',
+      onConfirm
+    });
+  },
+
+  // Wrapper para google.script.run com loading e feedback
+  run(functionName, params, options = {}) {
+    return new Promise((resolve, reject) => {
+      if (options.loading !== false) {
+        this.loading.show(options.loadingText || 'Processando...');
+      }
+
+      google.script.run
+        .withSuccessHandler((result) => {
+          this.loading.hide();
+          if (result && result.success === false) {
+            if (options.showError !== false) {
+              this.toast.error(result.message || 'Erro ao processar');
+            }
+            reject(result);
+          } else {
+            if (options.successMessage) {
+              this.toast.success(options.successMessage);
+            }
+            resolve(result);
+          }
+        })
+        .withFailureHandler((error) => {
+          this.loading.hide();
+          if (options.showError !== false) {
+            this.toast.error(error.message || 'Erro inesperado');
+          }
+          reject(error);
+        })
+        [functionName](params);
+    });
+  }
+};
+
+// Inicializar ao carregar
+document.addEventListener('DOMContentLoaded', () => {
+  UX.toast.init();
+});
+
+// Atalhos de teclado globais
+document.addEventListener('keydown', (e) => {
+  // Ctrl+S para salvar (prevenir comportamento padrão)
+  if (e.ctrlKey && e.key === 's') {
+    e.preventDefault();
+    const saveBtn = document.querySelector('[data-action="save"], .btn-submit, button[type="submit"]');
+    if (saveBtn) saveBtn.click();
+  }
+});
+</script>

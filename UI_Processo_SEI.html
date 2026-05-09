@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Processo SEI - UNIAE CRE</title>
+  <?!= include('DesignSystem'); ?>
+  <style>
+    /* Handled by DesignSystem */
+
+
+    body {
+      font-family: var(--font-family-base, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+      background: var(--bg-primary);
+      min-height: 100vh;
+    }
+
+    .header {
+      background: var(--gradient-primary);
+      color: var(--text-inverse);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+
+    .header p {
+      opacity: 0.9;
+      font-size: 14px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+
+    /* Card handled by DesignSystem */
+
+    .card-title {
+      font-size: 18px;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--primary);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .form-group label .required {
+      color: #d93025;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(28, 69, 135, 0.1);
+    }
+
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .form-group .hint {
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
+    }
+
+    .form-group .error {
+      color: #d93025;
+      font-size: 12px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .form-group.has-error input {
+      border-color: #d93025;
+    }
+
+    .form-group.has-error .error {
+      display: block;
+    }
+
+    /* Using DS styles but ensuring local mappings if needed, or rely on DS .btn classes in HTML */
+    .btn {
+      cursor: pointer;
+    }
+
+    /* .btn defined in DS */
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-primary:disabled {
+      background: var(--text-disabled);
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    /* Alerts handled by DesignSystem */
+
+    .nf-list {
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    .nf-item {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .nf-item:last-child {
+      border-bottom: none;
+    }
+
+    .nf-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-right: 12px;
+    }
+
+    .nf-item-info {
+      flex: 1;
+    }
+
+    .nf-item-numero {
+      font-weight: 500;
+      color: #333;
+    }
+
+    .nf-item-fornecedor {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .nf-item-valor {
+      font-weight: 500;
+      color: #1e8e3e;
+    }
+
+    .processo-info {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+
+    .processo-info-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .processo-info-item:last-child {
+      border-bottom: none;
+    }
+
+    .processo-info-label {
+      color: #666;
+    }
+
+    .processo-info-value {
+      font-weight: 500;
+      color: #333;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .loading.active {
+      display: block;
+    }
+
+    /* Spinner handled by DesignSystem */
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid var(--bg-tertiary);
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      padding: 12px 24px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      color: var(--text-secondary);
+      transition: var(--transition-base);
+    }
+
+    .tab:hover {
+      color: var(--primary);
+    }
+
+    .tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      font-weight: 500;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 0 10px;
+      }
+
+      .card {
+        padding: 16px;
+      }
+
+      .btn-group {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <h1>📋 Processo SEI</h1>
+    <p>Gerenciamento de Processos de Atesto</p>
+  </div>
+
+  <div class="container">
+    <!-- Alertas -->
+    <div id="alertSuccess" class="alert alert-success"></div>
+    <div id="alertError" class="alert alert-error"></div>
+    <div id="alertInfo" class="alert alert-info"></div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" data-tab="novo">Novo Processo</div>
+      <div class="tab" data-tab="consultar">Consultar</div>
+      <div class="tab" data-tab="listar">Listar Todos</div>
+    </div>
+
+    <!-- Tab: Novo Processo -->
+    <div id="tab-novo" class="tab-content active">
+      <div class="card">
+        <h2 class="card-title">Cadastrar Novo Processo SEI</h2>
+
+        <div class="alert alert-info" style="display: block;">
+          <strong>ℹ️ Importante:</strong> O número do processo SEI deve ser criado no próprio sistema SEI.
+          Aqui você apenas vincula o processo já existente às notas fiscais do sistema.
+        </div>
+
+        <form id="formNovoProcesso">
+          <div class="form-group">
+            <label>Número do Processo SEI <span class="required">*</span></label>
+            <input type="text" id="numeroProcessoSEI" placeholder="00000-00000000/2025-00" required>
+            <div class="hint">Formato: 00000-00000000/AAAA-00 (conforme SEI-GDF)</div>
+            <div class="error" id="erroNumero"></div>
+          </div>
+
+          <div class="form-group">
+            <label>Notas Fiscais a Vincular</label>
+            <div id="loadingNFs" class="loading">
+              <div class="spinner"></div>
+              <p>Carregando notas fiscais...</p>
+            </div>
+            <div id="listaNFs" class="nf-list" style="display: none;"></div>
+            <div class="hint">Selecione as notas fiscais que serão vinculadas a este processo</div>
+          </div>
+
+          <div class="form-group">
+            <label>Observações</label>
+            <textarea id="observacoes" placeholder="Observações adicionais sobre o processo..."></textarea>
+          </div>
+
+          <div class="btn-group">
+            <button type="submit" class="btn btn-primary" id="btnCriar">
+              Criar Processo
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="limparFormulario()">
+              Limpar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Tab: Consultar -->
+    <div id="tab-consultar" class="tab-content">
+      <div class="card">
+        <h2 class="card-title">Consultar Processo</h2>
+
+        <div class="form-group">
+          <label>Número do Processo SEI</label>
+          <input type="text" id="consultaNumero" placeholder="Digite o número do processo">
+        </div>
+
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary" onclick="consultarProcesso()">
+            Consultar
+          </button>
+        </div>
+
+        <div id="resultadoConsulta" style="display: none; margin-top: 20px;">
+          <div class="processo-info" id="infoProcesso"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Listar -->
+    <div id="tab-listar" class="tab-content">
+      <div class="card">
+        <h2 class="card-title">Processos Cadastrados</h2>
+
+        <div class="form-group">
+          <label>Filtrar por Status</label>
+          <select id="filtroStatus" onchange="carregarProcessos()">
+            <option value="">Todos</option>
+            <option value="ABERTO">Aberto</option>
+            <option value="EM_ANALISE">Em Análise</option>
+            <option value="ATESTADO">Atestado</option>
+            <option value="LIQUIDADO">Liquidado</option>
+            <option value="PAGO">Pago</option>
+          </select>
+        </div>
+
+        <div id="loadingProcessos" class="loading">
+          <div class="spinner"></div>
+          <p>Carregando processos...</p>
+        </div>
+
+        <div id="listaProcessos"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Estado da aplicação
+    var notasFiscaisDisponiveis = [];
+    var processosCadastrados = [];
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', function () {
+      initTabs();
+      carregarNFsDisponiveis();
+
+      // Form submit
+      document.getElementById('formNovoProcesso').addEventListener('submit', function (e) {
+        e.preventDefault();
+        criarProcesso();
+      });
+
+      // Validação em tempo real
+      document.getElementById('numeroProcessoSEI').addEventListener('blur', validarNumeroInput);
+    });
+
+    // Tabs
+    function initTabs() {
+      document.querySelectorAll('.tab').forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          var tabId = this.getAttribute('data-tab');
+
+          // Remove active de todas as tabs
+          document.querySelectorAll('.tab').forEach(function (t) {
+            t.classList.remove('active');
+          });
+          document.querySelectorAll('.tab-content').forEach(function (c) {
+            c.classList.remove('active');
+          });
+
+          // Ativa a tab clicada
+          this.classList.add('active');
+          document.getElementById('tab-' + tabId).classList.add('active');
+
+          // Carrega dados se necessário
+          if (tabId === 'listar') {
+            carregarProcessos();
+          }
+        });
+      });
+    }
+
+    // Carregar NFs disponíveis
+    function carregarNFsDisponiveis() {
+      document.getElementById('loadingNFs').classList.add('active');
+
+      google.script.run
+        .withSuccessHandler(function (result) {
+          document.getElementById('loadingNFs').classList.remove('active');
+
+          if (result.success) {
+            notasFiscaisDisponiveis = result.data.filter(function (nf) {
+              return !nf.Processo_Atesto_ID; // Apenas NFs não vinculadas
+            });
+            renderizarListaNFs();
+          }
+        })
+        .withFailureHandler(function (error) {
+          document.getElementById('loadingNFs').classList.remove('active');
+          mostrarErro('Erro ao carregar notas fiscais: ' + error.message);
+        })
+        .api_listarNotasFiscais({});
+    }
+
+    // Renderizar lista de NFs
+    function renderizarListaNFs() {
+      var container = document.getElementById('listaNFs');
+
+      if (notasFiscaisDisponiveis.length === 0) {
+        container.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">Nenhuma nota fiscal disponível para vincular</div>';
+      } else {
+        var html = '';
+        notasFiscaisDisponiveis.forEach(function (nf) {
+          html += '<div class="nf-item">' +
+            '<input type="checkbox" name="nfSelecionada" value="' + nf.ID + '">' +
+            '<div class="nf-item-info">' +
+            '<div class="nf-item-numero">NF ' + (nf.Numero_NF || '-') + '</div>' +
+            '<div class="nf-item-fornecedor">' + (nf.Fornecedor || '-') + '</div>' +
+            '</div>' +
+            '<div class="nf-item-valor">' + formatarMoeda(nf.Valor_Total) + '</div>' +
+            '</div>';
+        });
+        container.innerHTML = html;
+      }
+
+      container.style.display = 'block';
+    }
+
+    // Validar número do processo
+    function validarNumeroInput() {
+      var input = document.getElementById('numeroProcessoSEI');
+      var grupo = input.parentElement;
+      var erro = document.getElementById('erroNumero');
+
+      if (!input.value) {
+        grupo.classList.remove('has-error');
+        return true;
+      }
+
+      google.script.run
+        .withSuccessHandler(function (result) {
+          if (result.valido) {
+            grupo.classList.remove('has-error');
+            if (result.aviso) {
+              erro.textContent = result.aviso;
+              erro.style.color = '#ff9800';
+              erro.style.display = 'block';
+            }
+          } else {
+            grupo.classList.add('has-error');
+            erro.textContent = result.erro;
+            erro.style.color = '#d93025';
+          }
+        })
+        .api_validarNumeroSEI(input.value);
+    }
+
+    // Criar processo
+    function criarProcesso() {
+      var numero = document.getElementById('numeroProcessoSEI').value.trim();
+      var observacoes = document.getElementById('observacoes').value.trim();
+
+      if (!numero) {
+        mostrarErro('Número do processo SEI é obrigatório');
+        return;
+      }
+
+      // Coletar NFs selecionadas
+      var nfsSelecionadas = [];
+      document.querySelectorAll('input[name="nfSelecionada"]:checked').forEach(function (cb) {
+        nfsSelecionadas.push(cb.value);
+      });
+
+      var dados = {
+        numeroProcessoSEI: numero,
+        notasFiscaisIds: nfsSelecionadas,
+        observacoes: observacoes
+      };
+
+      // Desabilita botão
+      var btn = document.getElementById('btnCriar');
+      btn.disabled = true;
+      btn.textContent = 'Criando...';
+
+      google.script.run
+        .withSuccessHandler(function (result) {
+          btn.disabled = false;
+          btn.textContent = 'Criar Processo';
+
+          if (result.success) {
+            mostrarSucesso('Processo criado com sucesso! ID: ' + result.processo.ID);
+            limparFormulario();
+            carregarNFsDisponiveis();
+          } else {
+            mostrarErro(result.error);
+          }
+        })
+        .withFailureHandler(function (error) {
+          btn.disabled = false;
+          btn.textContent = 'Criar Processo';
+          mostrarErro('Erro ao criar processo: ' + error.message);
+        })
+        .api_criarProcessoSEI(dados);
+    }
+
+    // Consultar processo
+    function consultarProcesso() {
+      var numero = document.getElementById('consultaNumero').value.trim();
+
+      if (!numero) {
+        mostrarErro('Digite o número do processo');
+        return;
+      }
+
+      google.script.run
+        .withSuccessHandler(function (result) {
+          var container = document.getElementById('resultadoConsulta');
+          var info = document.getElementById('infoProcesso');
+
+          if (result.success && result.processo) {
+            var p = result.processo;
+            info.innerHTML =
+              '<div class="processo-info-item"><span class="processo-info-label">Número SEI:</span><span class="processo-info-value">' + p.Numero_Processo_SEI + '</span></div>' +
+              '<div class="processo-info-item"><span class="processo-info-label">Status:</span><span class="processo-info-value">' + p.Status + '</span></div>' +
+              '<div class="processo-info-item"><span class="processo-info-label">Data Abertura:</span><span class="processo-info-value">' + formatarData(p.Data_Abertura) + '</span></div>' +
+              '<div class="processo-info-item"><span class="processo-info-label">Valor Total:</span><span class="processo-info-value">' + formatarMoeda(p.Valor_Total) + '</span></div>' +
+              '<div class="processo-info-item"><span class="processo-info-label">Responsável:</span><span class="processo-info-value">' + (p.Responsavel_UNIAE || '-') + '</span></div>' +
+              '<div class="processo-info-item"><span class="processo-info-label">Observações:</span><span class="processo-info-value">' + (p.Observacoes || '-') + '</span></div>';
+            container.style.display = 'block';
+          } else {
+            info.innerHTML = '<p style="color: #666; text-align: center;">Processo não encontrado</p>';
+            container.style.display = 'block';
+          }
+        })
+        .withFailureHandler(function (error) {
+          mostrarErro('Erro ao consultar: ' + error.message);
+        })
+        .api_buscarProcessoSEI(numero);
+    }
+
+    // Carregar lista de processos
+    function carregarProcessos() {
+      var status = document.getElementById('filtroStatus').value;
+      var loading = document.getElementById('loadingProcessos');
+      var container = document.getElementById('listaProcessos');
+
+      loading.classList.add('active');
+      container.innerHTML = '';
+
+      google.script.run
+        .withSuccessHandler(function (result) {
+          loading.classList.remove('active');
+
+          if (result.success && result.data.length > 0) {
+            var html = '<table style="width: 100%; border-collapse: collapse;">' +
+              '<tr style="background: #f5f5f5;"><th style="padding: 10px; text-align: left;">Processo</th>' +
+              '<th style="padding: 10px; text-align: left;">Status</th>' +
+              '<th style="padding: 10px; text-align: right;">Valor</th></tr>';
+
+            result.data.forEach(function (p) {
+              html += '<tr style="border-bottom: 1px solid #eee;">' +
+                '<td style="padding: 10px;">' + p.Numero_Processo_SEI + '</td>' +
+                '<td style="padding: 10px;">' + p.Status + '</td>' +
+                '<td style="padding: 10px; text-align: right;">' + formatarMoeda(p.Valor_Total) + '</td>' +
+                '</tr>';
+            });
+
+            html += '</table>';
+            container.innerHTML = html;
+          } else {
+            container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Nenhum processo encontrado</p>';
+          }
+        })
+        .withFailureHandler(function (error) {
+          loading.classList.remove('active');
+          container.innerHTML = '<p style="color: #d93025;">Erro ao carregar processos</p>';
+        })
+        .api_listarProcessos({ status: status });
+    }
+
+    // Limpar formulário
+    function limparFormulario() {
+      document.getElementById('formNovoProcesso').reset();
+      document.querySelectorAll('input[name="nfSelecionada"]').forEach(function (cb) {
+        cb.checked = false;
+      });
+      document.getElementById('erroNumero').style.display = 'none';
+      document.getElementById('numeroProcessoSEI').parentElement.classList.remove('has-error');
+    }
+
+    // Utilitários
+    function mostrarSucesso(msg) {
+      var alert = document.getElementById('alertSuccess');
+      alert.textContent = msg;
+      alert.style.display = 'block';
+      setTimeout(function () { alert.style.display = 'none'; }, 5000);
+    }
+
+    function mostrarErro(msg) {
+      var alert = document.getElementById('alertError');
+      alert.textContent = msg;
+      alert.style.display = 'block';
+      setTimeout(function () { alert.style.display = 'none'; }, 5000);
+    }
+
+    function formatarMoeda(valor) {
+      if (!valor) return 'R$ 0,00';
+      return 'R$ ' + parseFloat(valor).toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    function formatarData(data) {
+      if (!data) return '-';
+      var d = new Date(data);
+      if (isNaN(d.getTime())) return '-';
+      return d.toLocaleDateString('pt-BR');
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,1306 @@
+/**
+* UI_HTML_FORMS
+* Consolidado de: conferencia.html, login.html
+* @version 2.0.0
+* @created 2025-11-04
+*/
+
+
+// ---- conferencia.html ----
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle de Conferência - UNIAE CRE PP/Cruzeiro</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 24px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    header .subtitle {
+      font-size: var(--font-sm);
+      opacity: 0.9;
+      margin-top: var(--space-1);
+    }
+
+    .tabs {
+      background: #f9fafb;
+      border-bottom: 2px solid #e5e7eb;
+      display: flex;
+      padding: 0 32px;
+      overflow-x: auto;
+    }
+
+    .tabs button {
+      padding: 16px 24px;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      font-size: var(--font-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+
+    .tabs button:hover {
+      color: #667eea;
+      background: rgba(102, 126, 234, 0.05);
+    }
+
+    .tabs button.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+
+    .content {
+      padding: 32px;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .card {
+      background: white;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: var(--space-6);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1f2937;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-weight: 600;
+      color: #374151;
+      font-size: var(--font-sm);
+      margin-bottom: 6px;
+    }
+
+    input,
+    select,
+    textarea {
+      padding: 10px 12px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: var(--font-sm);
+      transition: all 0.3s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: var(--font-sm);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-right: 8px;
+    }
+
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+    }
+
+    .btn-success {
+      background: #10b981;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #059669;
+    }
+
+    .btn-warning {
+      background: #f59e0b;
+      color: white;
+    }
+
+    .btn-warning:hover {
+      background: #d97706;
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .btn-secondary {
+      background: #6b7280;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #4b5563;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e5e7eb;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #10b981, #059669);
+      transition: width 0.3s;
+    }
+
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .status-concluido {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-pendente {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-problema {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .status-em-conferencia {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .etapas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .etapa-card {
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .etapa-card.concluida {
+      border-color: #10b981;
+      background: #f0fdf4;
+    }
+
+    .etapa-card.pendente {
+      border-color: #f59e0b;
+      background: #fffbeb;
+    }
+
+    .etapa-card.problema {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: #f9fafb;
+    }
+
+    th {
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #374151;
+      font-size: 13px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: var(--font-sm);
+    }
+
+    tbody tr:hover {
+      background: #f9fafb;
+    }
+
+    .alert {
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .alert.show {
+      display: block;
+    }
+
+    .alert-success {
+      background: #d1fae5;
+      color: #065f46;
+      border-left: 4px solid #10b981;
+    }
+
+    .alert-error {
+      background: #fee2e2;
+      color: #991b1b;
+      border-left: 4px solid #ef4444;
+    }
+
+    .alert-info {
+      background: #dbeafe;
+      color: #1e40af;
+      border-left: 4px solid #3b82f6;
+    }
+
+    .loading {
+      text-align: center;
+      padding: var(--space-10);
+    }
+
+    .spinner {
+      border: 4px solid #f3f4f6;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      margin-bottom: var(--space-6);
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: var(--font-sm);
+      opacity: 0.9;
+    }
+
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .etapas-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="design-system.css">
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>📋 Controle de Conferência</h1>
+        <div class="subtitle">Sistema UNIAE CRE PP/Cruzeiro - Portaria 244/2006</div>
+      </div>
+      <div>
+        <button class="btn btn-secondary" onclick="location.reload()">🔄 Atualizar</button>
+      </div>
+    </header>
+
+    <nav class="tabs">
+      <button class="active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+      <button onclick="switchTab('registrar')">➕ Registrar NF</button>
+      <button onclick="switchTab('conferir')">✅ Conferir Etapas</button>
+      <button onclick="switchTab('ocorrencias')">⚠️ Ocorrências</button>
+      <button onclick="switchTab('relatorio')">📈 Relatório</button>
+    </nav>
+
+    <div class="content">
+      <div id="alertContainer"></div>
+
+      <!-- Dashboard -->
+      <div id="tab-dashboard" class="tab-content active">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="totalControles">-</div>
+            <div class="stat-label">Total de Controles</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="concluidos">-</div>
+            <div class="stat-label">Concluídos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="emConferencia">-</div>
+            <div class="stat-label">Em Conferência</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="atrasados">-</div>
+            <div class="stat-label">Atrasados</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Controles Recentes</h2>
+            <button class="btn btn-primary" onclick="carregarDashboard()">🔄 Atualizar</button>
+          </div>
+          <div class="table-container">
+            <table id="tabelaControles">
+              <thead>
+                <tr>
+                  <th>ID Controle</th>
+                  <th>Fornecedor</th>
+                  <th>NF</th>
+                  <th>Valor</th>
+                  <th>Status</th>
+                  <th>Progresso</th>
+                  <th>Dias</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="8" class="loading">Carregando dados...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Registrar NF -->
+      <div id="tab-registrar" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Registrar Nota Fiscal para Conferência</h2>
+          </div>
+
+          <form id="formRegistrar">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="numeroNF">Número da Nota Fiscal *</label>
+                <input type="text" id="numeroNF" required placeholder="Ex: 12345">
+              </div>
+              <div class="form-group">
+                <label for="fornecedor">Fornecedor *</label>
+                <input type="text" id="fornecedor" required placeholder="Nome do fornecedor">
+              </div>
+              <div class="form-group">
+                <label for="valorTotal">Valor Total *</label>
+                <input type="number" id="valorTotal" step="0.01" required placeholder="0.00">
+              </div>
+              <div class="form-group">
+                <label for="chaveAcesso">Chave de Acesso NF-e</label>
+                <input type="text" id="chaveAcesso" placeholder="44 dígitos">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="observacoes">Observações Iniciais</label>
+              <textarea id="observacoes" rows="3" placeholder="Observações sobre a nota fiscal..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">📝 Registrar para Conferência</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Conferir Etapas -->
+      <div id="tab-conferir" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Atualizar Etapas de Conferência</h2>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="idControle">ID do Controle</label>
+              <input type="text" id="idControle" placeholder="Ex: CONF_1234567890">
+            </div>
+            <div class="form-group">
+              <button class="btn btn-secondary" onclick="buscarControle()">🔍 Buscar</button>
+            </div>
+          </div>
+
+          <div id="controleDetalhes" style="display: none;">
+            <h3>Detalhes do Controle</h3>
+            <div id="infoControle"></div>
+
+            <div class="etapas-grid">
+              <div class="etapa-card" id="etapaSoma">
+                <h4>1. Soma/Verificação</h4>
+                <div class="status-badge" id="statusSoma">Pendente</div>
+                <button class="btn btn-success" onclick="atualizarEtapa('Soma')">✅ Concluir</button>
+              </div>
+
+              <div class="etapa-card" id="etapaPDGP">
+                <h4>2. Verificação PDGP</h4>
+                <div class="status-badge" id="statusPDGP">Pendente</div>
+                <button class="btn btn-success" onclick="atualizarEtapa('PDGP')">✅ Concluir</button>
+              </div>
+
+              <div class="etapa-card" id="etapaConsulta">
+                <h4>3. Consulta NF-e</h4>
+                <div class="status-badge" id="statusConsulta">Pendente</div>
+                <button class="btn btn-success" onclick="atualizarEtapa('Consulta_NF')">✅ Concluir</button>
+              </div>
+
+              <div class="etapa-card" id="etapaAtesto">
+                <h4>4. Atesto/Despacho</h4>
+                <div class="status-badge" id="statusAtesto">Pendente</div>
+                <button class="btn btn-success" onclick="atualizarEtapa('Atesto')">✅ Concluir</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ocorrências -->
+      <div id="tab-ocorrencias" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Registrar Ocorrências</h2>
+          </div>
+
+          <form id="formOcorrencia">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="idControleOcorrencia">ID do Controle</label>
+                <input type="text" id="idControleOcorrencia" required>
+              </div>
+              <div class="form-group">
+                <label for="tipoOcorrencia">Tipo de Ocorrência</label>
+                <select id="tipoOcorrencia" required>
+                  <option value="">Selecione...</option>
+                  <option value="CANCELAMENTO">Cancelamento</option>
+                  <option value="DEVOLUCAO">Devolução</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="unidadeEC">Unidade Escolar</label>
+                <input type="text" id="unidadeEC" required>
+              </div>
+              <div class="form-group">
+                <label for="itemOcorrencia">Item/Produto</label>
+                <input type="text" id="itemOcorrencia" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="motivoOcorrencia">Motivo da Ocorrência</label>
+              <textarea id="motivoOcorrencia" rows="3" required placeholder="Descreva o motivo..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-warning">⚠️ Registrar Ocorrência</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Relatório -->
+      <div id="tab-relatorio" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Relatório de Conferência</h2>
+            <button class="btn btn-primary" onclick="gerarRelatorio()">📊 Gerar Relatório</button>
+          </div>
+
+          <div id="relatorioContent">
+            <p>Clique em "Gerar Relatório" para visualizar os dados.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Variáveis globais
+    let controleAtual = null;
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', function () {
+      carregarDashboard();
+
+      // Event listeners para formulários
+      document.getElementById('formRegistrar').addEventListener('submit', registrarNF);
+      document.getElementById('formOcorrencia').addEventListener('submit', registrarOcorrencia);
+    });
+
+    // Navegação entre abas
+    function switchTab(tabName) {
+      // Remover classe active de todas as abas
+      document.querySelectorAll('.tabs button').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+      // Ativar aba selecionada
+      event.target.classList.add('active');
+      document.getElementById('tab-' + tabName).classList.add('active');
+    }
+
+    // Mostrar alertas
+    function showAlert(message, type = 'info') {
+      const alertContainer = document.getElementById('alertContainer');
+      const alert = document.createElement('div');
+      alert.className = `alert alert-${type} show`;
+      alert.textContent = message;
+
+      alertContainer.innerHTML = '';
+      alertContainer.appendChild(alert);
+
+      setTimeout(() => {
+        alert.classList.remove('show');
+        setTimeout(() => alert.remove(), 300);
+      }, 5000);
+    }
+
+    // Carregar dashboard
+    function carregarDashboard() {
+      showLoading('Carregando dados do dashboard...');
+
+      google.script.run
+        .withSuccessHandler(function (relatorio) {
+          document.getElementById('totalControles').textContent = relatorio.total_controles || 0;
+          document.getElementById('concluidos').textContent = relatorio.concluidos || 0;
+          document.getElementById('emConferencia').textContent = relatorio.em_conferencia || 0;
+          document.getElementById('atrasados').textContent = relatorio.atrasados || 0;
+
+          carregarTabelaControles();
+        })
+        .withFailureHandler(function (error) {
+          showAlert('Erro ao carregar dashboard: ' + error.message, 'error');
+        })
+        .gerarRelatorioConferencia();
+    }
+
+    // Carregar tabela de controles
+    function carregarTabelaControles() {
+      google.script.run
+        .withSuccessHandler(function (data) {
+          const tbody = document.querySelector('#tabelaControles tbody');
+          tbody.innerHTML = '';
+
+          if (!data.data || data.data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8">Nenhum controle encontrado</td></tr>';
+            return;
+          }
+
+          const headers = data.headers;
+
+          data.data.forEach(function (linha) {
+            const tr = document.createElement('tr');
+
+            const idControle = linha[headers.indexOf('ID_Controle')] || '';
+            const fornecedor = linha[headers.indexOf('Empresa_Fornecedor')] || '';
+            const numeroNF = linha[headers.indexOf('Numero_NF')] || '';
+            const valor = parseFloat(linha[headers.indexOf('Valor_Total')] || 0);
+            const statusGeral = linha[headers.indexOf('Status_Geral')] || '';
+            const percentual = parseFloat(linha[headers.indexOf('Percentual_Conclusao')] || 0);
+            const diasPendente = parseInt(linha[headers.indexOf('Dias_Pendente')] || 0);
+
+            tr.innerHTML = `
+              <td>${idControle}</td>
+              <td>${fornecedor}</td>
+              <td>${numeroNF}</td>
+              <td>R$ ${valor.toFixed(2)}</td>
+              <td><span class="status-badge status-${statusGeral.toLowerCase().replace('_', '-')}">${statusGeral}</span></td>
+              <td>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: ${percentual}%"></div>
+                </div>
+                ${percentual.toFixed(0)}%
+              </td>
+              <td>${diasPendente}</td>
+              <td>
+                <button class="btn btn-secondary" onclick="editarControle('${idControle}')">✏️</button>
+              </td>
+            `;
+
+            tbody.appendChild(tr);
+          });
+        })
+        .withFailureHandler(function (error) {
+          showAlert('Erro ao carregar controles: ' + error.message, 'error');
+        })
+        .getSheetData('Controle_Conferencia');
+    }
+
+    // Registrar nova NF
+    function registrarNF(event) {
+      event.preventDefault();
+
+      const dadosNF = {
+        numero_nf: document.getElementById('numeroNF').value,
+        fornecedor: document.getElementById('fornecedor').value,
+        valor_total: parseFloat(document.getElementById('valorTotal').value),
+        chave_acesso: document.getElementById('chaveAcesso').value,
+        observacoes: document.getElementById('observacoes').value
+      };
+
+      showLoading('Registrando nota fiscal...');
+
+      google.script.run
+        .withSuccessHandler(function (idControle) {
+          showAlert('Nota fiscal registrada com sucesso! ID: ' + idControle, 'success');
+          document.getElementById('formRegistrar').reset();
+          carregarDashboard();
+        })
+        .withFailureHandler(function (error) {
+          showAlert('Erro ao registrar nota fiscal: ' + error.message, 'error');
+        })
+        .registrarNotaParaConferencia(dadosNF);
+    }
+
+    // Buscar controle
+    function buscarControle() {
+      const idControle = document.getElementById('idControle').value;
+
+      if (!idControle) {
+        showAlert('Digite o ID do controle', 'error');
+        return;
+      }
+
+      showLoading('Buscando controle...');
+
+      google.script.run
+        .withSuccessHandler(function (data) {
+          if (!data.data || data.data.length === 0) {
+            showAlert('Controle não encontrado', 'error');
+            return;
+          }
+
+          const headers = data.headers;
+          const linha = data.data.find(row => row[headers.indexOf('ID_Controle')] === idControle);
+
+          if (!linha) {
+            showAlert('Controle não encontrado', 'error');
+            return;
+          }
+
+          controleAtual = linha;
+          mostrarDetalhesControle(linha, headers);
+        })
+        .withFailureHandler(function (error) {
+          showAlert('Erro ao buscar controle: ' + error.message, 'error');
+        })
+        .getSheetData('Controle_Conferencia');
+    }
+
+    // Mostrar detalhes do controle
+    function mostrarDetalhesControle(linha, headers) {
+      const infoControle = document.getElementById('infoControle');
+      const fornecedor = linha[headers.indexOf('Empresa_Fornecedor')] || '';
+      const numeroNF = linha[headers.indexOf('Numero_NF')] || '';
+      const valor = parseFloat(linha[headers.indexOf('Valor_Total')] || 0);
+
+      infoControle.innerHTML = `
+        <p><strong>Fornecedor:</strong> ${fornecedor}</p>
+        <p><strong>Nota Fiscal:</strong> ${numeroNF}</p>
+        <p><strong>Valor:</strong> R$ ${valor.toFixed(2)}</p>
+      `;
+
+      // Atualizar status das etapas
+      atualizarStatusEtapas(linha, headers);
+
+      document.getElementById('controleDetalhes').style.display = 'block';
+    }
+
+    // Atualizar status das etapas
+    function atualizarStatusEtapas(linha, headers) {
+      const etapas = ['Soma', 'PDGP', 'Consulta_NF', 'Atesto'];
+
+      etapas.forEach(function (etapa) {
+        const status = linha[headers.indexOf('Status_' + etapa)] || 'PENDENTE';
+        const etapaCard = document.getElementById('etapa' + etapa.replace('_', ''));
+        const statusBadge = document.getElementById('status' + etapa.replace('_', ''));
+
+        // Remover classes anteriores
+        etapaCard.className = 'etapa-card';
+        statusBadge.className = 'status-badge';
+
+        // Adicionar classe baseada no status
+        if (status === 'CONCLUIDO') {
+          etapaCard.classList.add('concluida');
+          statusBadge.classList.add('status-concluido');
+          statusBadge.textContent = 'Concluído';
+        } else if (status === 'COM_PROBLEMA') {
+          etapaCard.classList.add('problema');
+          statusBadge.classList.add('status-problema');
+          statusBadge.textContent = 'Com Problema';
+        } else {
+          etapaCard.classList.add('pendente');
+          statusBadge.classList.add('status-pendente');
+          statusBadge.textContent = 'Pendente';
+        }
+      });
+    }
+
+    // Atualizar etapa
+    function atualizarEtapa(etapa) {
+      const idControle = document.getElementById('idControle').value;
+
+      if (!idControle) {
+        showAlert('ID do controle não encontrado', 'error');
+        return;
+      }
+
+      const observacoes = prompt('Observações (opcional):') || '';
+      const responsavel = 'Usuario'; // Será preenchido pelo backend
+
+      showLoading('Atualizando etapa...');
+
+      google.script.run
+        .withSuccessHandler(function (success) {
+          if (success) {
+            showAlert('Etapa atualizada com sucesso!', 'success');
+            buscarControle(); // Recarregar dados
+          } else {
+            showAlert('Erro ao atualizar etapa', 'error');
+          }
+        })
+        .withFailureHandler(function (error) {
+          showAlert('Erro ao atualizar etapa: ' + error.message, 'error');
+        })
+        .atualizarEtapaConferencia(idControle, etapa, 'CONCLUIDO', responsavel, observacoes);
+    }
+
+    // Registrar ocorrência
+    function registrarOcorrencia(event) {
+      event.preventDefault();
+
+      const idControle = document.getElementById('idControleOcorrencia').value;
+      const tipoOcorrencia = document.getElementById('tipoOcorrencia').value;
+      const unidadeEC = document.getElementById('unidadeEC').value;
+      const item = document.getElementById('itemOcorrencia').value;
+      const motivo = document.getElementById('motivoOcorrencia').value;
+
+      showLoading('Registrando ocorrência...');
+
+      google.script.run
+        .withSuccessHandler(function (success) {
+          if (success) {
+            showAlert('Ocorrência registrada com sucesso!', 'success');
+            document.getElementById('formOcorrencia').reset();
+          } else {
+            showAlert('Erro ao registrar ocorrência', 'error');
+          }
+        })
+        .withFailureHandler(function (error) {
+          showAlert('Erro ao registrar ocorrência: ' + error.message, 'error');
+        })
+        .registrarOcorrencia(idControle, tipoOcorrencia, unidadeEC, item, motivo);
+    }
+
+    // Gerar relatório
+    function gerarRelatorio() {
+      showLoading('Gerando relatório...');
+
+      google.script.run
+        .withSuccessHandler(function (relatorio) {
+          const content = document.getElementById('relatorioContent');
+
+          content.innerHTML = `
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-value">${relatorio.total_controles}</div>
+                <div class="stat-label">Total de Controles</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">${relatorio.concluidos}</div>
+                <div class="stat-label">Concluídos</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">${relatorio.em_conferencia}</div>
+                <div class="stat-label">Em Conferência</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">${relatorio.atrasados}</div>
+                <div class="stat-label">Atrasados</div>
+              </div>
+            </div>
+
+            <h3>Detalhes por Etapa</h3>
+            <div class="etapas-grid">
+              <div class="etapa-card">
+                <h4>Soma</h4>
+                <p>Concluídos: ${relatorio.detalhes_por_etapa.soma.concluidos}</p>
+                <p>Pendentes: ${relatorio.detalhes_por_etapa.soma.pendentes}</p>
+              </div>
+              <div class="etapa-card">
+                <h4>PDGP</h4>
+                <p>Concluídos: ${relatorio.detalhes_por_etapa.pdgp.concluidos}</p>
+                <p>Pendentes: ${relatorio.detalhes_por_etapa.pdgp.pendentes}</p>
+              </div>
+              <div class="etapa-card">
+                <h4>Consulta NF</h4>
+                <p>Concluídos: ${relatorio.detalhes_por_etapa.consulta_nf.concluidos}</p>
+                <p>Pendentes: ${relatorio.detalhes_por_etapa.consulta_nf.pendentes}</p>
+              </div>
+              <div class="etapa-card">
+                <h4>Atesto</h4>
+                <p>Concluídos: ${relatorio.detalhes_por_etapa.atesto.concluidos}</p>
+                <p>Pendentes: ${relatorio.detalhes_por_etapa.atesto.pendentes}</p>
+              </div>
+            </div>
+          `;
+        })
+        .withFailureHandler(function (error) {
+          showAlert('Erro ao gerar relatório: ' + error.message, 'error');
+        })
+        .gerarRelatorioConferencia();
+    }
+
+    // Editar controle
+    function editarControle(idControle) {
+      document.getElementById('idControle').value = idControle;
+      switchTab('conferir');
+      buscarControle();
+    }
+
+    // Mostrar loading
+    function showLoading(message) {
+      // Implementar loading se necessário
+      console.log('Loading: ' + message);
+    }
+  </script>
+</body>
+
+</html>
+
+// ---- login.html ----
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Sistema UNIAE CRE PP</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .login-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .login-header h1 {
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+
+    .login-header p {
+      font-size: var(--font-sm);
+      opacity: 0.9;
+    }
+
+    .login-body {
+      padding: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 500;
+      font-size: var(--font-sm);
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: var(--font-sm);
+      transition: all 0.3s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: var(--font-base);
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-login:active {
+      transform: translateY(0);
+    }
+
+    .btn-login:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .alert {
+      padding: 12px 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: var(--font-sm);
+      display: none;
+    }
+
+    .alert-error {
+      background: #fee;
+      color: #c33;
+      border: 1px solid #fcc;
+    }
+
+    .alert-success {
+      background: #efe;
+      color: #3c3;
+      border: 1px solid #cfc;
+    }
+
+    .alert.show {
+      display: block;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .loading.show {
+      display: block;
+    }
+
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .user-types {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .user-types h3 {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+    }
+
+    .user-type-badge {
+      display: inline-block;
+      padding: 5px 10px;
+      margin: 5px;
+      background: #f0f0f0;
+      border-radius: 15px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+  </style>
+  <link rel="stylesheet" href="design-system.css">
+</head>
+
+<body>
+  <div class="login-container">
+    <div class="login-header">
+      <h1>🏫 Sistema UNIAE</h1>
+      <p>CRE PP/Cruzeiro - Portaria 244/2006</p>
+    </div>
+
+    <div class="login-body">
+      <div id="alert" class="alert"></div>
+
+      <div id="loginForm">
+        <form onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label for="email">📧 Email</label>
+            <input type="email" id="email" name="email" placeholder="seu.email@educacao.df.gov.br" required
+              autocomplete="email">
+          </div>
+
+          <div class="form-group">
+            <label for="senha">🔒 Senha</label>
+            <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required
+              autocomplete="current-password">
+          </div>
+
+          <button type="submit" class="btn-login" id="btnLogin">
+            Entrar
+          </button>
+        </form>
+
+        <div class="user-types">
+          <h3>Tipos de Usuário:</h3>
+          <span class="user-type-badge">👨‍💼 Administrador</span>
+          <span class="user-type-badge">👨‍🏫 Analista Educacional</span>
+          <span class="user-type-badge">🏫 Diretor de Unidade</span>
+        </div>
+      </div>
+
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p style="margin-top: 10px; color: var(--text-secondary);">Autenticando...</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function handleLogin(event) {
+      event.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const senha = document.getElementById('senha').value;
+
+      // Mostrar loading
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('loading').classList.add('show');
+
+      // Chamar API de login
+      google.script.run
+        .withSuccessHandler(onLoginSuccess)
+        .withFailureHandler(onLoginError)
+        .api_auth_login(email, senha);
+    }
+
+    function onLoginSuccess(response) {
+      document.getElementById('loading').classList.remove('show');
+      document.getElementById('loginForm').style.display = 'block';
+
+      if (response.success) {
+        showAlert('✅ ' + response.message, 'success');
+
+        // Salvar sessão
+        sessionStorage.setItem('sessionToken', response.session);
+        sessionStorage.setItem('user', JSON.stringify(response.user));
+
+        // Verificar se requer troca de senha
+        if (response.user.requerTrocaSenha) {
+          setTimeout(() => {
+            window.location.href = 'change-password.html';
+          }, 1000);
+        } else {
+          // Redirecionar para dashboard
+          setTimeout(() => {
+            google.script.host.close();
+            // Ou abrir dashboard
+            window.location.href = 'dashboard.html';
+          }, 1000);
+        }
+      } else {
+        showAlert('❌ ' + response.message, 'error');
+      }
+    }
+
+    function onLoginError(error) {
+      document.getElementById('loading').classList.remove('show');
+      document.getElementById('loginForm').style.display = 'block';
+      showAlert('❌ Erro ao processar login: ' + error.message, 'error');
+    }
+
+    function showAlert(message, type) {
+      const alert = document.getElementById('alert');
+      alert.textContent = message;
+      alert.className = 'alert alert-' + type + ' show';
+
+      setTimeout(() => {
+        alert.classList.remove('show');
+      }, 5000);
+    }
+  </script>
+</body>
+
+</html>

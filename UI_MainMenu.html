@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Menu Principal - Alimentação Escolar CRE-PP</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <style>
+    /* ========================================
+       DESIGN SYSTEM - ALIMENTAÇÃO ESCOLAR
+       ======================================== */
+    :root {
+      /* Cores Principais */
+      --ae-primary: #2E7D32;
+      --ae-primary-light: #4CAF50;
+      --ae-primary-dark: #1B5E20;
+      --ae-secondary: #EF6C00;
+      --ae-secondary-light: #FF9800;
+      --ae-accent: #C62828;
+      
+      /* Fundos */
+      --ae-bg-main: #F1F8E9;
+      --ae-bg-card: #FFFFFF;
+      --ae-bg-overlay: rgba(0, 0, 0, 0.5);
+      
+      /* Texto */
+      --ae-text-primary: #263238;
+      --ae-text-secondary: #546E7A;
+      --ae-text-light: #FFFFFF;
+      
+      /* Categorias */
+      --cat-planejamento: #2E7D32;
+      --cat-operacional: #1565C0;
+      --cat-financeiro: #EF6C00;
+      --cat-gestao: #7B1FA2;
+      
+      /* Sombras */
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.15);
+      
+      /* Espaçamentos */
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      
+      /* Bordas */
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --touch-min: 44px;
+      --transition-ui: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    }
+
+    /* Reset e Base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--ae-bg-main);
+      color: var(--ae-text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    /* Padrão de fundo sutil com alimentos */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='%232E7D32' fill-opacity='0.03'%3E%3Cpath d='M30 5c-2 0-4 2-4 5s2 5 4 5 4-2 4-5-2-5-4-5zm0 15c-5 0-9 4-9 9s4 9 9 9 9-4 9-9-4-9-9-9z'/%3E%3Ccircle cx='10' cy='50' r='4'/%3E%3Ccircle cx='50' cy='50' r='3'/%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    /* ========================================
+       HEADER
+       ======================================== */
+    .ae-header {
+      background: linear-gradient(135deg, var(--ae-primary) 0%, var(--ae-primary-dark) 100%);
+      color: var(--ae-text-light);
+      padding: var(--spacing-md);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-md);
+    }
+    
+    .ae-header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .ae-header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+    
+    .ae-menu-btn {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: white;
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    
+    .ae-menu-btn:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    
+    .ae-logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    
+    .ae-logo-sub {
+      font-size: 0.7rem;
+      opacity: 0.9;
+      font-weight: 400;
+    }
+
+    .ae-header-actions {
+      display: flex;
+      gap: var(--spacing-xs);
+    }
+    
+    .ae-header-btn {
+      background: transparent;
+      border: none;
+      color: white;
+      width: var(--touch-min);
+      height: var(--touch-min);
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      position: relative;
+    }
+    
+    .ae-header-btn:hover {
+      background: rgba(255,255,255,0.15);
+    }
+    
+    .ae-badge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: var(--ae-accent);
+      color: white;
+      font-size: 10px;
+      font-weight: 600;
+      min-width: 20px;
+      height: 20px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+    }
+    
+    /* Status de conexão */
+    .ae-connection-status {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.1);
+    }
+    
+    .ae-connection-status.online {
+      color: #A5D6A7;
+    }
+    
+    .ae-connection-status.offline {
+      color: #FFCC80;
+    }
+    
+    .ae-status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    
+    /* ========================================
+       MAIN CONTENT
+       ======================================== */
+    .ae-main {
+      padding: var(--spacing-md);
+      max-width: 1400px;
+      margin: 0 auto;
+      padding-bottom: 100px;
+    }
+    
+    /* Saudação */
+    .ae-greeting {
+      margin-bottom: var(--spacing-lg);
+      padding: var(--spacing-md);
+      background: var(--ae-bg-card);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .ae-greeting h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--ae-text-primary);
+    }
+    
+    .ae-greeting p {
+      font-size: 0.875rem;
+      color: var(--ae-text-secondary);
+      margin-top: 4px;
+    }
+
+    /* ========================================
+       CATEGORIAS E GRID DE BOTÕES
+       ======================================== */
+    .ae-category {
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .ae-category-header {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+      padding-left: var(--spacing-xs);
+    }
+    
+    .ae-category-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+    
+    .ae-category-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--ae-text-secondary);
+    }
+    
+    /* Grid responsivo: 2 cols mobile, 4 tablet, 6 desktop */
+    .ae-menu-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-md);
+    }
+    
+    @media (min-width: 600px) {
+      .ae-menu-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .ae-menu-grid {
+        grid-template-columns: repeat(6, 1fr);
+      }
+    }
+    
+    /* Botão do Menu */
+    .ae-menu-btn-card {
+      background: var(--ae-bg-card);
+      border: none;
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+      min-height: 100px;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition-ui);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .ae-menu-btn-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--btn-color, var(--ae-primary));
+      transform: scaleX(0);
+      transition: transform 0.2s ease;
+    }
+    
+    .ae-menu-btn-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .ae-menu-btn-card:hover::before {
+      transform: scaleX(1);
+    }
+    
+    .ae-menu-btn-card:active {
+      transform: translateY(0);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .ae-menu-btn-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--btn-color, var(--ae-primary));
+      color: white;
+      transition: transform 0.2s;
+    }
+    
+    .ae-menu-btn-card:hover .ae-menu-btn-icon {
+      transform: scale(1.05);
+    }
+    
+    .ae-menu-btn-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--ae-text-primary);
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    /* ========================================
+       FOOTER FIXO
+       ======================================== */
+    .ae-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--ae-bg-card);
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+      padding: var(--spacing-sm) var(--spacing-md);
+      z-index: 100;
+    }
+    
+    .ae-footer-content {
+      display: flex;
+      justify-content: space-around;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    
+    .ae-footer-btn {
+      background: transparent;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: var(--spacing-sm);
+      cursor: pointer;
+      color: var(--ae-text-secondary);
+      transition: color 0.2s;
+      min-width: 70px;
+    }
+    
+    .ae-footer-btn:hover,
+    .ae-footer-btn.active {
+      color: var(--ae-primary);
+    }
+    
+    .ae-footer-btn .material-symbols-outlined {
+      font-size: 24px;
+    }
+    
+    .ae-footer-btn span:last-child {
+      font-size: 0.65rem;
+      font-weight: 500;
+    }
+    
+    /* ========================================
+       DRAWER LATERAL
+       ======================================== */
+    .ae-drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--ae-bg-overlay);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      z-index: 200;
+    }
+    
+    .ae-drawer-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .ae-drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 85%;
+      max-width: 320px;
+      height: 100%;
+      background: var(--ae-bg-card);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: 201;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .ae-drawer.active {
+      transform: translateX(0);
+    }
+    
+    .ae-drawer-header {
+      background: linear-gradient(135deg, var(--ae-primary) 0%, var(--ae-primary-dark) 100%);
+      color: white;
+      padding: var(--spacing-lg);
+    }
+    
+    .ae-drawer-user {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+    
+    .ae-drawer-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .ae-drawer-user-info h3 {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    
+    .ae-drawer-user-info p {
+      font-size: 0.75rem;
+      opacity: 0.9;
+    }
+    
+    .ae-drawer-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--spacing-md) 0;
+    }
+    
+    .ae-drawer-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md) var(--spacing-lg);
+      color: var(--ae-text-primary);
+      text-decoration: none;
+      transition: background 0.2s;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    
+    .ae-drawer-item:hover {
+      background: var(--ae-bg-main);
+    }
+    
+    .ae-drawer-item .material-symbols-outlined {
+      color: var(--ae-text-secondary);
+    }
+    
+    .ae-drawer-divider {
+      height: 1px;
+      background: #E0E0E0;
+      margin: var(--spacing-sm) var(--spacing-lg);
+    }
+
+    /* ========================================
+       ANIMAÇÕES
+       ======================================== */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .ae-menu-btn-card {
+      animation: fadeInUp 0.4s ease forwards;
+      opacity: 0;
+    }
+    
+    .ae-menu-btn-card:nth-child(1) { animation-delay: 0.05s; }
+    .ae-menu-btn-card:nth-child(2) { animation-delay: 0.1s; }
+    .ae-menu-btn-card:nth-child(3) { animation-delay: 0.15s; }
+    .ae-menu-btn-card:nth-child(4) { animation-delay: 0.2s; }
+    .ae-menu-btn-card:nth-child(5) { animation-delay: 0.25s; }
+    .ae-menu-btn-card:nth-child(6) { animation-delay: 0.3s; }
+    
+    /* Ripple effect */
+    .ae-ripple {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .ae-ripple::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      background-image: radial-gradient(circle, rgba(0,0,0,0.1) 10%, transparent 10.01%);
+      background-repeat: no-repeat;
+      background-position: 50%;
+      transform: scale(10, 10);
+      opacity: 0;
+      transition: transform 0.4s, opacity 0.8s;
+    }
+    
+    .ae-ripple:active::after {
+      transform: scale(0, 0);
+      opacity: 0.3;
+      transition: 0s;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="ae-header">
+    <div class="ae-header-content">
+      <div class="ae-header-left">
+        <button class="ae-menu-btn" onclick="toggleDrawer()" aria-label="Menu">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <div>
+          <div class="ae-logo">AE</div>
+          <div class="ae-logo-sub">Alimentação Escolar</div>
+        </div>
+      </div>
+      
+      <div class="ae-connection-status online" id="connectionStatus">
+        <span class="ae-status-dot"></span>
+        <span>Online</span>
+      </div>
+      
+      <div class="ae-header-actions">
+        <button class="ae-header-btn" onclick="openDrawer('notifications')" aria-label="Notificações">
+          <span class="material-symbols-outlined">notifications</span>
+          <span class="ae-badge" id="notifBadge">3</span>
+        </button>
+        <button class="ae-header-btn" onclick="openDrawer('search')" aria-label="Buscar">
+          <span class="material-symbols-outlined">search</span>
+        </button>
+        <button class="ae-header-btn" onclick="openDrawer('calendar')" aria-label="Calendário">
+          <span class="material-symbols-outlined">calendar_month</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="ae-main">
+    <!-- Saudação -->
+    <div class="ae-greeting">
+      <h1 id="greetingText">Bom dia, Nutricionista!</h1>
+      <p>CRE Plano Piloto • <span id="currentDate"></span></p>
+    </div>
+    
+    <!-- Categoria: Planejamento -->
+    <section class="ae-category">
+      <div class="ae-category-header">
+        <div class="ae-category-icon" style="background: var(--cat-planejamento);">
+          <span class="material-symbols-outlined">edit_calendar</span>
+        </div>
+        <h2 class="ae-category-title">Planejamento</h2>
+      </div>
+      <div class="ae-menu-grid">
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-planejamento);" onclick="navigate('cardapio-base')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">restaurant_menu</span></div>
+          <span class="ae-menu-btn-label">Cardápio Base</span>
+        </button>
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-planejamento);" onclick="navigate('calendario-semanal')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">date_range</span></div>
+          <span class="ae-menu-btn-label">Calendário Semanal</span>
+        </button>
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-planejamento);" onclick="navigate('itens-alimentares')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">grocery</span></div>
+          <span class="ae-menu-btn-label">Itens Alimentares</span>
+        </button>
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-planejamento);" onclick="navigate('grupos-nutricionais')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">nutrition</span></div>
+          <span class="ae-menu-btn-label">Grupos Nutricionais</span>
+        </button>
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-planejamento);" onclick="navigate('fichas-tecnicas')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">description</span></div>
+          <span class="ae-menu-btn-label">Fichas Técnicas</span>
+        </button>
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-planejamento);" onclick="navigate('metas-nutricionais')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">target</span></div>
+          <span class="ae-menu-btn-label">Metas Nutricionais</span>
+        </button>
+      </div>
+    </section>
+    
+    <!-- Categoria: Operacional -->
+    <section class="ae-category">
+      <div class="ae-category-header">
+        <div class="ae-category-icon" style="background: var(--cat-operacional);">
+          <span class="material-symbols-outlined">local_shipping</span>
+        </div>
+        <h2 class="ae-category-title">Operacional</h2>
+      </div>
+      <div class="ae-menu-grid">
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-operacional);" onclick="navigate('recebimento-ue')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">inventory</span></div>
+          <span class="ae-menu-btn-label">Recebimento UE</span>
+        </button>
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-operacional);" onclick="navigate('estoque-escolar')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">warehouse</span></div>
+          <span class="ae-menu-btn-label">Estoque Escolar</span>
+        </button>
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-operacional);" onclick="navigate('registro-sobras')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">delete_sweep</span></div>
+          <span class="ae-menu-btn-label">Registro de Sobras</span>
+        </button>
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-operacional);" onclick="navigate('cardapios-especiais')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">medical_services</span></div>
+          <span class="ae-menu-btn-label">Cardápios Especiais</span>
+        </button>
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-operacional);" onclick="navigate('ocorrencias')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">report_problem</span></div>
+          <span class="ae-menu-btn-label">Ocorrências</span>
+        </button>
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-operacional);" onclick="navigate('pedidos-reposicao')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">add_shopping_cart</span></div>
+          <span class="ae-menu-btn-label">Pedidos Reposição</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Categoria: Financeiro & Fornecedores -->
+    <section class="ae-category">
+      <div class="ae-category-header">
+        <div class="ae-category-icon" style="background: var(--cat-financeiro);">
+          <span class="material-symbols-outlined">payments</span>
+        </div>
+        <h2 class="ae-category-title">Financeiro & Fornecedores</h2>
+      </div>
+      <div class="ae-menu-grid">
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-financeiro);" onclick="navigate('gestao-fornecedores')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">storefront</span></div>
+          <span class="ae-menu-btn-label">Gestão Fornecedores</span>
+        </button>
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-financeiro);" onclick="navigate('contratos-empenhos')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">handshake</span></div>
+          <span class="ae-menu-btn-label">Contratos & Empenhos</span>
+        </button>
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-financeiro);" onclick="navigate('notas-fiscais')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">receipt_long</span></div>
+          <span class="ae-menu-btn-label">Notas Fiscais</span>
+        </button>
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-financeiro);" onclick="navigate('atesto-digital')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">verified</span></div>
+          <span class="ae-menu-btn-label">Atesto Digital</span>
+        </button>
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-financeiro);" onclick="navigate('pagamentos')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">account_balance</span></div>
+          <span class="ae-menu-btn-label">Pagamentos</span>
+        </button>
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-financeiro);" onclick="navigate('glosas-multas')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">money_off</span></div>
+          <span class="ae-menu-btn-label">Glosas & Multas</span>
+        </button>
+      </div>
+    </section>
+    
+    <!-- Categoria: Gestão & Relatórios -->
+    <section class="ae-category">
+      <div class="ae-category-header">
+        <div class="ae-category-icon" style="background: var(--cat-gestao);">
+          <span class="material-symbols-outlined">analytics</span>
+        </div>
+        <h2 class="ae-category-title">Gestão & Relatórios</h2>
+      </div>
+      <div class="ae-menu-grid">
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-gestao);" onclick="navigate('dashboard-cre')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">dashboard</span></div>
+          <span class="ae-menu-btn-label">Dashboard CRE</span>
+        </button>
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-gestao);" onclick="navigate('relatorio-consumo')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">bar_chart</span></div>
+          <span class="ae-menu-btn-label">Relatório Consumo</span>
+        </button>
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-gestao);" onclick="navigate('score-fornecedores')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">stars</span></div>
+          <span class="ae-menu-btn-label">Score Fornecedores</span>
+        </button>
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-gestao);" onclick="navigate('auditoria-precos')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">price_check</span></div>
+          <span class="ae-menu-btn-label">Auditoria Preços</span>
+        </button>
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-gestao);" onclick="navigate('exportar-dados')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">download</span></div>
+          <span class="ae-menu-btn-label">Exportar Dados</span>
+        </button>
+        <button class="ae-menu-btn-card ae-ripple" style="--btn-color: var(--cat-gestao);" onclick="navigate('configuracoes')">
+          <div class="ae-menu-btn-icon"><span class="material-symbols-outlined">settings</span></div>
+          <span class="ae-menu-btn-label">Configurações</span>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer Fixo -->
+  <footer class="ae-footer">
+    <div class="ae-footer-content">
+      <button class="ae-footer-btn active" onclick="openDrawer('resumo')">
+        <span class="material-symbols-outlined">monitoring</span>
+        <span>Resumo</span>
+      </button>
+      <button class="ae-footer-btn" onclick="openDrawer('scanner')">
+        <span class="material-symbols-outlined">qr_code_scanner</span>
+        <span>Scanner</span>
+      </button>
+      <button class="ae-footer-btn" onclick="openDrawer('suporte')">
+        <span class="material-symbols-outlined">support_agent</span>
+        <span>Suporte</span>
+      </button>
+    </div>
+  </footer>
+  
+  <!-- Drawer Overlay -->
+  <div class="ae-drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+  
+  <!-- Drawer Lateral -->
+  <nav class="ae-drawer" id="mainDrawer">
+    <div class="ae-drawer-header">
+      <div class="ae-drawer-user">
+        <div class="ae-drawer-avatar">
+          <span class="material-symbols-outlined" style="font-size: 32px;">person</span>
+        </div>
+        <div class="ae-drawer-user-info">
+          <h3 id="userName">Maria Silva</h3>
+          <p id="userRole">Nutricionista</p>
+        </div>
+      </div>
+    </div>
+    <div class="ae-drawer-nav">
+      <button class="ae-drawer-item" onclick="navigate('perfil')">
+        <span class="material-symbols-outlined">account_circle</span>
+        <span>Meu Perfil</span>
+      </button>
+      <button class="ae-drawer-item" onclick="navigate('trocar-senha')">
+        <span class="material-symbols-outlined">lock</span>
+        <span>Trocar Senha</span>
+      </button>
+      <button class="ae-drawer-item" onclick="navigate('preferencias')">
+        <span class="material-symbols-outlined">tune</span>
+        <span>Preferências</span>
+      </button>
+      <div class="ae-drawer-divider"></div>
+      <button class="ae-drawer-item" onclick="navigate('historico')">
+        <span class="material-symbols-outlined">history</span>
+        <span>Histórico de Ações</span>
+      </button>
+      <button class="ae-drawer-item" onclick="navigate('sincronizacao')">
+        <span class="material-symbols-outlined">sync</span>
+        <span>Sincronização</span>
+      </button>
+      <div class="ae-drawer-divider"></div>
+      <button class="ae-drawer-item" onclick="navigate('ajuda')">
+        <span class="material-symbols-outlined">help</span>
+        <span>Ajuda</span>
+      </button>
+      <button class="ae-drawer-item" onclick="navigate('sobre')">
+        <span class="material-symbols-outlined">info</span>
+        <span>Sobre o Sistema</span>
+      </button>
+      <div class="ae-drawer-divider"></div>
+      <button class="ae-drawer-item" onclick="logout()" style="color: var(--ae-accent);">
+        <span class="material-symbols-outlined" style="color: var(--ae-accent);">logout</span>
+        <span>Sair</span>
+      </button>
+    </div>
+  </nav>
+
+  <script>
+    // ========================================
+    // MENU PRINCIPAL - ALIMENTAÇÃO ESCOLAR
+    // ========================================
+    
+    const MenuPrincipal = {
+      // Estado
+      state: {
+        drawerOpen: false,
+        currentUser: null,
+        isOnline: navigator.onLine
+      },
+      
+      // Inicialização
+      init() {
+        this.setupGreeting();
+        this.setupDate();
+        this.setupConnectionMonitor();
+        this.loadUserData();
+        this.setupKeyboardNav();
+      },
+      
+      // Saudação baseada na hora
+      setupGreeting() {
+        const hour = new Date().getHours();
+        let greeting = 'Bom dia';
+        if (hour >= 12 && hour < 18) greeting = 'Boa tarde';
+        else if (hour >= 18) greeting = 'Boa noite';
+        
+        const userName = this.state.currentUser?.nome || 'Usuário';
+        document.getElementById('greetingText').textContent = `${greeting}, ${userName}!`;
+      },
+      
+      // Data atual formatada
+      setupDate() {
+        const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+        const date = new Date().toLocaleDateString('pt-BR', options);
+        document.getElementById('currentDate').textContent = date.charAt(0).toUpperCase() + date.slice(1);
+      },
+      
+      // Monitor de conexão
+      setupConnectionMonitor() {
+        const updateStatus = () => {
+          const status = document.getElementById('connectionStatus');
+          if (navigator.onLine) {
+            status.className = 'ae-connection-status online';
+            status.innerHTML = '<span class="ae-status-dot"></span><span>Online</span>';
+            this.state.isOnline = true;
+          } else {
+            status.className = 'ae-connection-status offline';
+            status.innerHTML = '<span class="ae-status-dot"></span><span>Offline</span>';
+            this.state.isOnline = false;
+          }
+        };
+        
+        window.addEventListener('online', updateStatus);
+        window.addEventListener('offline', updateStatus);
+        updateStatus();
+      },
+      
+      // Carregar dados do usuário
+      loadUserData() {
+        // Tenta carregar do localStorage ou do servidor
+        const cached = localStorage.getItem('ae_user_data');
+        if (cached) {
+          try {
+            this.state.currentUser = JSON.parse(cached);
+            this.updateUserUI();
+          } catch (e) {
+            console.warn('Erro ao carregar dados do usuário:', e);
+          }
+        }
+        
+        // Busca dados atualizados do servidor
+        if (typeof google !== 'undefined' && google.script) {
+          google.script.run
+            .withSuccessHandler((data) => {
+              if (data && data.success) {
+                this.state.currentUser = data.usuario;
+                localStorage.setItem('ae_user_data', JSON.stringify(data.usuario));
+                this.updateUserUI();
+              }
+            })
+            .withFailureHandler((err) => console.warn('Erro ao buscar usuário:', err))
+            .api_getUsuarioLogado();
+        }
+      },
+      
+      // Atualizar UI com dados do usuário
+      updateUserUI() {
+        const user = this.state.currentUser;
+        if (!user) return;
+        
+        document.getElementById('userName').textContent = user.nome || 'Usuário';
+        document.getElementById('userRole').textContent = user.perfil || 'Perfil';
+        this.setupGreeting();
+      },
+      
+      // Navegação por teclado
+      setupKeyboardNav() {
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && this.state.drawerOpen) {
+            closeDrawer();
+          }
+        });
+      }
+    };
+
+    // ========================================
+    // FUNÇÕES GLOBAIS
+    // ========================================
+    
+    // Toggle do drawer principal
+    function toggleDrawer() {
+      const drawer = document.getElementById('mainDrawer');
+      const overlay = document.getElementById('drawerOverlay');
+      
+      MenuPrincipal.state.drawerOpen = !MenuPrincipal.state.drawerOpen;
+      
+      if (MenuPrincipal.state.drawerOpen) {
+        drawer.classList.add('active');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      } else {
+        drawer.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    }
+    
+    // Fechar drawer
+    function closeDrawer() {
+      const drawer = document.getElementById('mainDrawer');
+      const overlay = document.getElementById('drawerOverlay');
+      
+      drawer.classList.remove('active');
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+      MenuPrincipal.state.drawerOpen = false;
+    }
+    
+    // Abrir drawer específico (notificações, busca, etc.)
+    function openDrawer(type) {
+      console.log('Abrindo drawer:', type);
+      
+      // Aqui seria implementada a lógica para cada tipo de drawer
+      switch (type) {
+        case 'notifications':
+          showToast('Notificações em desenvolvimento', 'info');
+          break;
+        case 'search':
+          showToast('Busca global em desenvolvimento', 'info');
+          break;
+        case 'calendar':
+          showToast('Calendário em desenvolvimento', 'info');
+          break;
+        case 'resumo':
+          showToast('Resumo financeiro em desenvolvimento', 'info');
+          break;
+        case 'scanner':
+          showToast('Scanner QR em desenvolvimento', 'info');
+          break;
+        case 'suporte':
+          showToast('Suporte técnico em desenvolvimento', 'info');
+          break;
+        default:
+          console.log('Drawer não reconhecido:', type);
+      }
+    }
+    
+    // Navegação para páginas
+    function navigate(page) {
+      console.log('Navegando para:', page);
+      closeDrawer();
+      
+      // Mapeia páginas para funções do backend
+      const pageMap = {
+        'cardapio-base': 'abrirCardapioBase',
+        'calendario-semanal': 'abrirCalendarioSemanal',
+        'itens-alimentares': 'abrirItensAlimentares',
+        'grupos-nutricionais': 'abrirGruposNutricionais',
+        'fichas-tecnicas': 'abrirFichasTecnicas',
+        'metas-nutricionais': 'abrirMetasNutricionais',
+        'recebimento-ue': 'abrirRecebimentoUE',
+        'estoque-escolar': 'abrirEstoqueEscolar',
+        'registro-sobras': 'abrirRegistroSobras',
+        'cardapios-especiais': 'abrirCardapiosEspeciais',
+        'ocorrencias': 'abrirOcorrencias',
+        'pedidos-reposicao': 'abrirPedidosReposicao',
+        'gestao-fornecedores': 'abrirGestaoFornecedores',
+        'contratos-empenhos': 'abrirContratosEmpenhos',
+        'notas-fiscais': 'abrirNotasFiscais',
+        'atesto-digital': 'abrirAtestoDigital',
+        'pagamentos': 'abrirPagamentos',
+        'glosas-multas': 'abrirGlosasMultas',
+        'dashboard-cre': 'abrirDashboardCRE',
+        'relatorio-consumo': 'abrirRelatorioConsumo',
+        'score-fornecedores': 'abrirScoreFornecedores',
+        'auditoria-precos': 'abrirAuditoriaPrecos',
+        'exportar-dados': 'abrirExportarDados',
+        'configuracoes': 'abrirConfiguracoes',
+        'perfil': 'abrirPerfil',
+        'trocar-senha': 'abrirTrocarSenha',
+        'preferencias': 'abrirPreferencias',
+        'historico': 'abrirHistorico',
+        'sincronizacao': 'abrirSincronizacao',
+        'ajuda': 'abrirAjuda',
+        'sobre': 'abrirSobre'
+      };
+      
+      const funcName = pageMap[page];
+      if (funcName && typeof google !== 'undefined' && google.script) {
+        google.script.run
+          .withSuccessHandler(() => console.log('Navegação OK'))
+          .withFailureHandler((err) => {
+            console.error('Erro na navegação:', err);
+            showToast('Erro ao abrir página', 'error');
+          })
+          [funcName]();
+      } else {
+        showToast(`Página "${page}" em desenvolvimento`, 'info');
+      }
+    }
+    
+    // Logout
+    function logout() {
+      if (confirm('Deseja realmente sair do sistema?')) {
+        localStorage.removeItem('ae_user_data');
+        localStorage.removeItem('ae_session');
+        
+        if (typeof google !== 'undefined' && google.script) {
+          google.script.run
+            .withSuccessHandler(() => {
+              google.script.host.close();
+            })
+            .api_logout();
+        }
+      }
+    }
+    
+    // Toast simples
+    function showToast(message, type = 'info') {
+      // Remove toast existente
+      const existing = document.querySelector('.ae-toast');
+      if (existing) existing.remove();
+      
+      const toast = document.createElement('div');
+      toast.className = `ae-toast ae-toast-${type}`;
+      toast.style.cssText = `
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: ${type === 'error' ? '#C62828' : type === 'success' ? '#2E7D32' : '#37474F'};
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 14px;
+        z-index: 1000;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        animation: toastIn 0.3s ease;
+      `;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.animation = 'toastOut 0.3s ease forwards';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+    
+    // Adiciona animações de toast
+    const toastStyles = document.createElement('style');
+    toastStyles.textContent = `
+      @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+      @keyframes toastOut { from { opacity: 1; transform: translateX(-50%) translateY(0); } to { opacity: 0; transform: translateX(-50%) translateY(20px); } }
+    `;
+    document.head.appendChild(toastStyles);
+    
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', () => {
+      MenuPrincipal.init();
+    });
+  </script>
+</body>
+</html>

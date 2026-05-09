@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Dashboard Workflows - UNIAE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --primary-dark: #1557b0;
+      --success: #34a853;
+      --warning: #fbbc04;
+      --error: #ea4335;
+      --info: #4285f4;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1f2937;
+      --text-secondary: #6b7280;
+      --border: #e5e7eb;
+      --shadow: 0 1px 3px rgba(0,0,0,0.1);
+      --shadow-lg: 0 4px 12px rgba(0,0,0,0.15);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+    
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 20px;
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    
+    .header p {
+      opacity: 0.9;
+      font-size: 0.875rem;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-white {
+      background: white;
+      color: var(--primary);
+    }
+    
+    .btn-white:hover {
+      background: #f0f0f0;
+    }
+    
+    .btn-outline {
+      background: transparent;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+    
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    
+    /* KPI Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .kpi-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      border-left: 4px solid var(--primary);
+    }
+    
+    .kpi-card.success { border-left-color: var(--success); }
+    .kpi-card.warning { border-left-color: var(--warning); }
+    .kpi-card.error { border-left-color: var(--error); }
+    
+    .kpi-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    
+    .kpi-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    
+    .kpi-change {
+      font-size: 0.75rem;
+      margin-top: 4px;
+    }
+    
+    .kpi-change.positive { color: var(--success); }
+    .kpi-change.negative { color: var(--error); }
+    
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    
+    .card-header {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .card-body {
+      padding: 16px;
+    }
+    
+    /* Status Distribution */
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+    }
+    
+    .status-item {
+      text-align: center;
+      padding: 12px;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+    }
+    
+    .status-count {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    
+    .status-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+    
+    .status-enviada { color: var(--info); }
+    .status-recebimento { color: var(--warning); }
+    .status-aprovado { color: var(--success); }
+    .status-glosado { color: #f97316; }
+    .status-rejeitado { color: var(--error); }
+    
+    /* Activity Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 24px;
+    }
+    
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--border);
+    }
+    
+    .timeline-item {
+      position: relative;
+      padding-bottom: 16px;
+    }
+    
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -20px;
+      top: 4px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 2px solid white;
+      box-shadow: var(--shadow);
+    }
+    
+    .timeline-item.nf::before { background: var(--info); }
+    .timeline-item.recebimento::before { background: var(--warning); }
+    .timeline-item.analise::before { background: var(--success); }
+    
+    .timeline-content {
+      background: var(--bg);
+      padding: 12px;
+      border-radius: var(--radius-sm);
+    }
+    
+    .timeline-title {
+      font-weight: 500;
+      font-size: 0.875rem;
+      margin-bottom: 4px;
+    }
+    
+    .timeline-meta {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+    
+    /* Progress Bar */
+    .progress-container {
+      margin-bottom: 16px;
+    }
+    
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.875rem;
+      margin-bottom: 6px;
+    }
+    
+    .progress-bar {
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+    
+    .progress-fill.success { background: var(--success); }
+    .progress-fill.warning { background: var(--warning); }
+    .progress-fill.error { background: var(--error); }
+    
+    /* Alerts */
+    .alert {
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .alert-warning {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    
+    .alert-info {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+    
+    /* Loading */
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Responsive */
+    @media (max-width: 640px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .header-actions {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>📊 Dashboard Workflows</h1>
+      <p>Sistema de Gestão de Gêneros Alimentícios - UNIAE</p>
+      <div class="header-actions">
+        <button class="btn btn-white" onclick="atualizarDados()">
+          <span class="material-symbols-outlined">refresh</span>
+          Atualizar
+        </button>
+        <button class="btn btn-outline" onclick="gerarRelatorio()">
+          <span class="material-symbols-outlined">description</span>
+          Relatório
+        </button>
+      </div>
+    </div>
+    
+    <!-- KPIs -->
+    <div class="kpi-grid" id="kpiGrid">
+      <div class="loading"><div class="spinner"></div></div>
+    </div>
+    
+    <!-- Alertas -->
+    <div id="alertas"></div>
+    
+    <!-- Status e Atividades -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <!-- Status por Workflow -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">
+            <span class="material-symbols-outlined">pie_chart</span>
+            Status das NFs
+          </span>
+        </div>
+        <div class="card-body">
+          <div class="status-grid" id="statusGrid">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Indicadores -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">
+            <span class="material-symbols-outlined">trending_up</span>
+            Indicadores
+          </span>
+        </div>
+        <div class="card-body" id="indicadores">
+          <div class="loading"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Atividades Recentes -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">
+          <span class="material-symbols-outlined">history</span>
+          Atividades Recentes
+        </span>
+      </div>
+      <div class="card-body">
+        <div class="timeline" id="timeline">
+          <div class="loading"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Estado
+    let metricas = null;
+    let atividades = [];
+    
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', function() {
+      carregarDados();
+    });
+    
+    function carregarDados() {
+      // Carregar métricas
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result && result.success) {
+            metricas = result.metricas;
+            renderizarKPIs();
+            renderizarStatus();
+            renderizarIndicadores();
+            renderizarAlertas();
+          } else {
+            mostrarErro('Erro ao carregar métricas');
+          }
+        })
+        .withFailureHandler(function(e) {
+          mostrarErro('Erro: ' + e.message);
+        })
+        .obterMetricasWorkflows();
+      
+      // Carregar atividades
+      google.script.run
+        .withSuccessHandler(function(result) {
+          atividades = result || [];
+          renderizarTimeline();
+        })
+        .withFailureHandler(function(e) {
+          console.error('Erro ao carregar atividades:', e);
+        })
+        .obterAtividadesRecentes(10);
+    }
+    
+    function renderizarKPIs() {
+      if (!metricas) return;
+      
+      const m = metricas;
+      const html = `
+        <div class="kpi-card">
+          <div class="kpi-label">NFs Lançadas</div>
+          <div class="kpi-value">${m.nfs.total}</div>
+          <div class="kpi-change positive">Total no sistema</div>
+        </div>
+        <div class="kpi-card success">
+          <div class="kpi-label">Recebimentos</div>
+          <div class="kpi-value">${m.recebimentos.total}</div>
+          <div class="kpi-change">Registros de escolas</div>
+        </div>
+        <div class="kpi-card warning">
+          <div class="kpi-label">Análises</div>
+          <div class="kpi-value">${m.analises.total}</div>
+          <div class="kpi-change">Concluídas</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Valor Total NFs</div>
+          <div class="kpi-value">${formatarMoeda(m.nfs.valorTotal)}</div>
+        </div>
+        <div class="kpi-card success">
+          <div class="kpi-label">Valor Aprovado</div>
+          <div class="kpi-value">${formatarMoeda(m.analises.valorAprovado)}</div>
+        </div>
+        <div class="kpi-card error">
+          <div class="kpi-label">Valor Glosado</div>
+          <div class="kpi-value">${formatarMoeda(m.analises.valorGlosa)}</div>
+        </div>
+      `;
+      
+      document.getElementById('kpiGrid').innerHTML = html;
+    }
+    
+    function renderizarStatus() {
+      if (!metricas) return;
+      
+      const status = metricas.nfs.porStatus;
+      const items = [
+        { key: 'ENVIADA', label: 'Enviadas', class: 'status-enviada' },
+        { key: 'EM_RECEBIMENTO', label: 'Em Recebimento', class: 'status-recebimento' },
+        { key: 'APROVADO', label: 'Aprovadas', class: 'status-aprovado' },
+        { key: 'APROVADO_PARCIAL', label: 'Parcial', class: 'status-glosado' },
+        { key: 'GLOSADO', label: 'Glosadas', class: 'status-glosado' },
+        { key: 'REJEITADO', label: 'Rejeitadas', class: 'status-rejeitado' }
+      ];
+      
+      const html = items.map(item => `
+        <div class="status-item">
+          <div class="status-count ${item.class}">${status[item.key] || 0}</div>
+          <div class="status-label">${item.label}</div>
+        </div>
+      `).join('');
+      
+      document.getElementById('statusGrid').innerHTML = html;
+    }
+    
+    function renderizarIndicadores() {
+      if (!metricas) return;
+      
+      const ind = metricas.indicadores;
+      const html = `
+        <div class="progress-container">
+          <div class="progress-label">
+            <span>Taxa de Aprovação</span>
+            <span>${ind.taxaAprovacao}%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill success" style="width: ${ind.taxaAprovacao}%"></div>
+          </div>
+        </div>
+        <div class="progress-container">
+          <div class="progress-label">
+            <span>Taxa de Glosa</span>
+            <span>${ind.taxaGlosa}%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill ${ind.taxaGlosa > 20 ? 'error' : 'warning'}" style="width: ${Math.min(ind.taxaGlosa, 100)}%"></div>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 16px;">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary);">NFs Pendentes</div>
+            <div style="font-size: 1.25rem; font-weight: 600;">${ind.nfsPendentes}</div>
+          </div>
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary);">Média Rec./NF</div>
+            <div style="font-size: 1.25rem; font-weight: 600;">${ind.mediaRecebimentosPorNF}</div>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('indicadores').innerHTML = html;
+    }
+    
+    function renderizarAlertas() {
+      if (!metricas) return;
+      
+      const alertas = [];
+      const ind = metricas.indicadores;
+      
+      if (ind.nfsPendentes > 10) {
+        alertas.push({
+          tipo: 'warning',
+          icone: 'warning',
+          texto: `${ind.nfsPendentes} NFs aguardando análise`
+        });
+      }
+      
+      if (ind.taxaGlosa > 20) {
+        alertas.push({
+          tipo: 'warning',
+          icone: 'trending_down',
+          texto: 'Taxa de glosa acima de 20% - verificar fornecedores'
+        });
+      }
+      
+      if (alertas.length === 0) {
+        alertas.push({
+          tipo: 'info',
+          icone: 'check_circle',
+          texto: 'Sistema operando normalmente'
+        });
+      }
+      
+      const html = alertas.map(a => `
+        <div class="alert alert-${a.tipo}">
+          <span class="material-symbols-outlined">${a.icone}</span>
+          <span>${a.texto}</span>
+        </div>
+      `).join('');
+      
+      document.getElementById('alertas').innerHTML = html;
+    }
+    
+    function renderizarTimeline() {
+      if (atividades.length === 0) {
+        document.getElementById('timeline').innerHTML = '<p style="text-align:center;color:var(--text-secondary);">Nenhuma atividade recente</p>';
+        return;
+      }
+      
+      const html = atividades.slice(0, 8).map(a => {
+        const tipoClass = a.tipo === 'NF' ? 'nf' : a.tipo === 'RECEBIMENTO' ? 'recebimento' : 'analise';
+        return `
+          <div class="timeline-item ${tipoClass}">
+            <div class="timeline-content">
+              <div class="timeline-title">${a.icone} ${a.descricao}</div>
+              <div class="timeline-meta">
+                ${a.valor ? formatarMoeda(a.valor) + ' • ' : ''}
+                ${a.status || ''} • 
+                ${formatarData(a.data)}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      document.getElementById('timeline').innerHTML = html;
+    }
+    
+    function atualizarDados() {
+      document.getElementById('kpiGrid').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+      carregarDados();
+    }
+    
+    function gerarRelatorio() {
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result && result.success) {
+            alert('Relatório gerado com sucesso!\n\n' + 
+                  'Total NFs: R$ ' + result.relatorio.valorTotalNFs.toFixed(2) + '\n' +
+                  'Total Glosas: R$ ' + result.relatorio.valorTotalGlosas.toFixed(2) + '\n' +
+                  'Total Aprovado: R$ ' + result.relatorio.valorTotalAprovado.toFixed(2));
+          } else {
+            alert('Erro ao gerar relatório: ' + (result.error || 'Erro desconhecido'));
+          }
+        })
+        .withFailureHandler(function(e) {
+          alert('Erro: ' + e.message);
+        })
+        .gerarRelatorioContabil();
+    }
+    
+    function mostrarErro(msg) {
+      document.getElementById('kpiGrid').innerHTML = `<div style="grid-column: 1/-1; text-align:center; color:var(--error);">${msg}</div>`;
+    }
+    
+    function formatarMoeda(valor) {
+      if (!valor) return 'R$ 0,00';
+      return 'R$ ' + parseFloat(valor).toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+    
+    function formatarData(data) {
+      if (!data) return '';
+      const d = new Date(data);
+      if (isNaN(d.getTime())) return '';
+      return d.toLocaleDateString('pt-BR');
+    }
+  </script>
+</body>
+</html>

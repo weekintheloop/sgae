@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Atesto - UNIAE/CRE-PP</title>
+  <base target="_top">
+  <?!= include('DesignSystem'); ?>
+  <style>
+    /* Handled by DesignSystem */
+    /* :root values are now in DesignSystem */
+
+
+    body {
+      font-family: var(--font-family-base);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+
+    .header {
+      background: var(--gradient-primary);
+      color: var(--text-inverse);
+      padding: 16px 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header h1 {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .header p {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-top: 4px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--bg-surface);
+      border-radius: var(--border-radius-xl);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border: 1px solid var(--bg-tertiary);
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--border-radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .stat-icon.blue {
+      background: var(--info-light);
+      color: var(--primary);
+    }
+
+    .stat-icon.green {
+      background: var(--success-light);
+      color: var(--success);
+    }
+
+    .stat-icon.yellow {
+      background: var(--warning-light);
+      color: var(--warning);
+    }
+
+    .stat-icon.red {
+      background: var(--error-light);
+      color: var(--error);
+    }
+
+    .stat-info h3 {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .stat-info p {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .workflow-section {
+      background: var(--bg-surface);
+      border-radius: var(--border-radius-xl);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 24px;
+      border: 1px solid var(--bg-tertiary);
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .workflow-steps {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      margin: 32px 0;
+    }
+
+    .workflow-steps::before {
+      content: '';
+      position: absolute;
+      top: 24px;
+      left: 60px;
+      right: 60px;
+      height: 4px;
+      background: var(--bg-tertiary);
+      z-index: 0;
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      max-width: 180px;
+    }
+
+    .step-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--bg-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      margin-bottom: 8px;
+      transition: all 0.3s;
+    }
+
+    .step.completed .step-circle {
+      background: var(--success);
+      color: white;
+    }
+
+    .step.active .step-circle {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.2);
+    }
+
+    .step.pending .step-circle {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+    }
+
+    .step-label {
+      font-size: 12px;
+      text-align: center;
+      color: var(--text-secondary);
+    }
+
+    .step.active .step-label {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    /* Buttons handled by DesignSystem but mapping local classes */
+    .btn {
+      cursor: pointer;
+    }
+
+    /* .btn defined in DS */
+    .btn-outline {
+      background: white;
+      border: 1px solid var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .btn-outline:hover {
+      background: var(--bg-secondary);
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--bg-tertiary);
+    }
+
+    th {
+      background: var(--bg-secondary);
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    td {
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+
+    /* Badges handled by DesignSystem */
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--bg-surface);
+      border-radius: var(--border-radius-xl);
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-xl);
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--bg-tertiary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h2 {
+      font-size: 18px;
+      color: var(--text-primary);
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--bg-tertiary);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: var(--text-secondary);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--bg-tertiary);
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+    }
+
+    select.form-control {
+      cursor: pointer;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-secondary);
+    }
+
+    /* Alerts handled by DS primarily, mapping local classes */
+    .alert-info {
+      background: var(--info-light);
+      color: #1967d2;
+      border: 1px solid var(--info-light);
+    }
+
+    .alert-success {
+      background: var(--success-light);
+      color: var(--success-dark);
+      border: 1px solid var(--success-light);
+    }
+
+    .alert-warning {
+      background: var(--warning-light);
+      color: var(--warning-dark);
+      border: 1px solid var(--warning-light);
+    }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    /* Spinner handled by DesignSystem */
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <h1>📋 Sistema de Atesto de Gêneros Alimentícios</h1>
+    <p>UNIAE/CRE-PP - Conferência e Atesto de Notas Fiscais</p>
+  </div>
+
+  <div class="container">
+    <!-- Estatísticas -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon blue"><span class="material-icons">receipt_long</span></div>
+        <div class="stat-info">
+          <h3 id="stat-processos">0</h3>
+          <p>Processos em Andamento</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green"><span class="material-icons">check_circle</span></div>
+        <div class="stat-info">
+          <h3 id="stat-atestados">0</h3>
+          <p>Atestados este Mês</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon yellow"><span class="material-icons">pending</span></div>
+        <div class="stat-info">
+          <h3 id="stat-pendentes">0</h3>
+          <p>Pendentes de Análise</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon red"><span class="material-icons">warning</span></div>
+        <div class="stat-info">
+          <h3 id="stat-recusas">0</h3>
+          <p>Recusas Registradas</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fluxo de Trabalho -->
+    <div class="workflow-section">
+      <div class="section-title">
+        <span class="material-icons">timeline</span>
+        Fluxo Processual do Atesto
+      </div>
+      <div class="workflow-steps">
+        <div class="step completed" id="step-1">
+          <div class="step-circle">1</div>
+          <div class="step-label">Recebimento<br>na UE</div>
+        </div>
+        <div class="step active" id="step-2">
+          <div class="step-circle">2</div>
+          <div class="step-label">Consolidação<br>Documental</div>
+        </div>
+        <div class="step pending" id="step-3">
+          <div class="step-circle">3</div>
+          <div class="step-label">Análise<br>Comissão</div>
+        </div>
+        <div class="step pending" id="step-4">
+          <div class="step-circle">4</div>
+          <div class="step-label">Atesto<br>Executor</div>
+        </div>
+      </div>
+      <div class="alert alert-info">
+        <span class="material-icons">info</span>
+        <span>Base Legal: Lei 4.320/64 (Arts. 62-63), Lei 11.947/2009, Resolução FNDE 06/2020</span>
+      </div>
+    </div>
+
+    <!-- Ações Rápidas -->
+    <div class="workflow-section">
+      <div class="section-title">
+        <span class="material-icons">flash_on</span>
+        Ações Rápidas
+      </div>
+      <div class="actions">
+        <button class="btn btn-primary" onclick="abrirModalNovoProcesso()">
+          <span class="material-icons">add</span> Novo Processo
+        </button>
+        <button class="btn btn-success" onclick="abrirModalRecebimento()">
+          <span class="material-icons">local_shipping</span> Registrar Recebimento
+        </button>
+        <button class="btn btn-outline" onclick="abrirModalAnalise()">
+          <span class="material-icons">fact_check</span> Análise da Comissão
+        </button>
+        <button class="btn btn-outline" onclick="verificarConformidade()">
+          <span class="material-icons">verified</span> Verificar Conformidade
+        </button>
+        <button class="btn btn-outline" onclick="gerarRelatorio()">
+          <span class="material-icons">description</span> Gerar Relatório SEI
+        </button>
+      </div>
+    </div>
+
+    <!-- Lista de Processos -->
+    <div class="workflow-section">
+      <div class="section-title">
+        <span class="material-icons">list_alt</span>
+        Processos Recentes
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nota Fiscal</th>
+              <th>Fornecedor</th>
+              <th>Valor</th>
+              <th>Status</th>
+              <th>Etapa</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-processos">
+            <tr>
+              <td colspan="7" class="loading">
+                <div class="spinner"></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Novo Processo -->
+  <div class="modal-overlay" id="modal-novo-processo">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Novo Processo de Atesto</h2>
+        <button class="close-btn" onclick="fecharModal('modal-novo-processo')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-novo-processo">
+          <div class="form-group">
+            <label>Número da Nota Fiscal *</label>
+            <input type="text" class="form-control" name="notaFiscal" required placeholder="Ex: 123456">
+          </div>
+          <div class="form-group">
+            <label>Chave de Acesso NF-e (44 dígitos)</label>
+            <input type="text" class="form-control" name="chaveAcessoNFe" maxlength="44" placeholder="Opcional">
+          </div>
+          <div class="form-group">
+            <label>Data de Emissão *</label>
+            <input type="date" class="form-control" name="dataEmissaoNF" required>
+          </div>
+          <div class="form-group">
+            <label>Fornecedor *</label>
+            <input type="text" class="form-control" name="fornecedor" required placeholder="Razão Social">
+          </div>
+          <div class="form-group">
+            <label>CNPJ do Fornecedor</label>
+            <input type="text" class="form-control" name="cnpjFornecedor" placeholder="00.000.000/0000-00">
+          </div>
+          <div class="form-group">
+            <label>Valor Total (R$) *</label>
+            <input type="number" class="form-control" name="valorTotal" step="0.01" required placeholder="0,00">
+          </div>
+          <div class="form-group">
+            <label>Nota de Empenho</label>
+            <input type="text" class="form-control" name="notaEmpenho" placeholder="Ex: 2024NE00123">
+          </div>
+          <div class="form-group">
+            <label>Contrato</label>
+            <input type="text" class="form-control" name="contrato" placeholder="Número do contrato">
+          </div>
+          <div class="form-group">
+            <label>PDGP/Distribuição</label>
+            <input type="text" class="form-control" name="pdgp" placeholder="Referência PDGP">
+          </div>
+          <div class="form-group">
+            <label>Tipo de Gênero *</label>
+            <select class="form-control" name="tipoGenero" required>
+              <option value="PERECIVEL">Perecível</option>
+              <option value="NAO_PERECIVEL">Não Perecível</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Observações</label>
+            <textarea class="form-control" name="observacoes" rows="3" placeholder="Observações adicionais"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="fecharModal('modal-novo-processo')">Cancelar</button>
+        <button class="btn btn-primary" onclick="salvarNovoProcesso()">
+          <span class="material-icons">save</span> Salvar Processo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Recebimento -->
+  <div class="modal-overlay" id="modal-recebimento">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Registrar Recebimento na UE</h2>
+        <button class="close-btn" onclick="fecharModal('modal-recebimento')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-recebimento">
+          <div class="form-group">
+            <label>ID do Processo *</label>
+            <select class="form-control" name="idProcesso" required id="select-processo-recebimento">
+              <option value="">Selecione o processo...</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Unidade Escolar *</label>
+            <input type="text" class="form-control" name="unidadeEscolar" required placeholder="Nome da escola">
+          </div>
+          <div class="form-group">
+            <label>Data da Entrega *</label>
+            <input type="date" class="form-control" name="dataEntrega" required>
+          </div>
+          <div class="form-group">
+            <label>Hora da Entrega</label>
+            <input type="time" class="form-control" name="horaEntrega">
+          </div>
+          <div class="form-group">
+            <label>Responsável pelo Recebimento *</label>
+            <input type="text" class="form-control" name="responsavel" required placeholder="Nome completo">
+          </div>
+          <div class="form-group">
+            <label>Matrícula do Responsável *</label>
+            <input type="text" class="form-control" name="matriculaResponsavel" required
+              placeholder="Matrícula funcional">
+          </div>
+          <div class="form-group">
+            <label>Conferência Quantitativa OK?</label>
+            <select class="form-control" name="quantitativaOk">
+              <option value="true">Sim - Conforme</option>
+              <option value="false">Não - Divergente</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Conferência Qualitativa OK?</label>
+            <select class="form-control" name="qualitativaOk">
+              <option value="true">Sim - Conforme</option>
+              <option value="false">Não - Problemas identificados</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Temperatura Aferida (°C)</label>
+            <input type="number" class="form-control" name="temperaturaAferida" step="0.1"
+              placeholder="Para produtos refrigerados/congelados">
+          </div>
+          <div class="form-group">
+            <label>Termo Assinado?</label>
+            <select class="form-control" name="assinatura">
+              <option value="true">Sim</option>
+              <option value="false">Não</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Identificação Digital da UE?</label>
+            <select class="form-control" name="carimboUE">
+              <option value="true">Sim</option>
+              <option value="false">Não</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Observações</label>
+            <textarea class="form-control" name="observacoes" rows="3"
+              placeholder="Registrar recusas ou observações"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="fecharModal('modal-recebimento')">Cancelar</button>
+        <button class="btn btn-success" onclick="salvarRecebimento()">
+          <span class="material-icons">check</span> Registrar Recebimento
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Análise Comissão -->
+  <div class="modal-overlay" id="modal-analise">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Análise da Comissão de Recebimento</h2>
+        <button class="close-btn" onclick="fecharModal('modal-analise')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-info">
+          <span class="material-icons">gavel</span>
+          <span>Base Legal: Resolução CD/FNDE nº 06/2020 - Mínimo 3 membros</span>
+        </div>
+        <form id="form-analise">
+          <div class="form-group">
+            <label>ID do Processo *</label>
+            <select class="form-control" name="idProcesso" required id="select-processo-analise">
+              <option value="">Selecione o processo...</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Membros Presentes (mínimo 3) *</label>
+            <textarea class="form-control" name="membrosPresentes" rows="3" required
+              placeholder="Nome - Matrícula (um por linha)"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Soma dos Quantitativos Verificada?</label>
+            <select class="form-control" name="somaVerificada">
+              <option value="true">Sim - Conforme NF</option>
+              <option value="false">Não - Divergente</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Atesto Escolar Verificado?</label>
+            <select class="form-control" name="atestoVerificado">
+              <option value="true">Sim - Completo</option>
+              <option value="false">Não - Incompleto</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>NF-e Consultada na SEFAZ?</label>
+            <select class="form-control" name="sefazConsultada">
+              <option value="true">Sim - Autorizada</option>
+              <option value="false">Não consultada</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Resultado da Análise *</label>
+            <select class="form-control" name="resultado" required>
+              <option value="APROVADO">Aprovado - Apto para Atesto</option>
+              <option value="PENDENTE">Pendente - Aguardando Correções</option>
+              <option value="REJEITADO">Rejeitado - Não Conforme</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Número do Despacho SEI</label>
+            <input type="text" class="form-control" name="numeroDespacho" placeholder="Ex: 12345678">
+          </div>
+          <div class="form-group">
+            <label>Processo SEI</label>
+            <input type="text" class="form-control" name="processoSEI" placeholder="Ex: 00080-00012345/2024-00">
+          </div>
+          <div class="form-group">
+            <label>Observações</label>
+            <textarea class="form-control" name="observacoes" rows="3" placeholder="Observações da análise"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="fecharModal('modal-analise')">Cancelar</button>
+        <button class="btn btn-primary" onclick="salvarAnalise()">
+          <span class="material-icons">gavel</span> Registrar Análise
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Estado da aplicação
+    let processos = [];
+    let processoSelecionado = null;
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', function () {
+      carregarDados();
+    });
+
+    // Carregar dados do servidor
+    function carregarDados() {
+      google.script.run
+        .withSuccessHandler(function (result) {
+          if (result && result.success) {
+            processos = result.data || [];
+            atualizarEstatisticas();
+            atualizarTabela();
+            atualizarSelectsProcessos();
+          }
+        })
+        .withFailureHandler(function (error) {
+          console.error('Erro ao carregar dados:', error);
+          document.getElementById('tabela-processos').innerHTML =
+            '<tr><td colspan="7" style="text-align:center;color:#ea4335;">Erro ao carregar dados</td></tr>';
+        })
+        .listarProcessosAtesto({});
+    }
+
+    // Atualizar estatísticas
+    function atualizarEstatisticas() {
+      const emAndamento = processos.filter(p => !['LIQUIDADO', 'PAGO'].includes(p.status)).length;
+      const atestados = processos.filter(p => ['ATESTO_COMISSAO', 'ATESTADO_EXECUTOR', 'LIQUIDADO', 'PAGO'].includes(p.status)).length;
+      const pendentes = processos.filter(p => ['EM_ANALISE', 'AGUARDANDO_DOCS', 'PENDENCIA_DOCUMENTAL'].includes(p.status)).length;
+      const recusas = processos.reduce((acc, p) => acc + (p.recusas ? p.recusas.length : 0), 0);
+
+      document.getElementById('stat-processos').textContent = emAndamento;
+      document.getElementById('stat-atestados').textContent = atestados;
+      document.getElementById('stat-pendentes').textContent = pendentes;
+      document.getElementById('stat-recusas').textContent = recusas;
+    }
+
+    // Atualizar tabela de processos
+    function atualizarTabela() {
+      const tbody = document.getElementById('tabela-processos');
+
+      if (processos.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#5f6368;">Nenhum processo encontrado</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = processos.slice(0, 20).map(p => `
+        <tr>
+          <td><strong>${p.id ? p.id.substring(0, 12) + '...' : '-'}</strong></td>
+          <td>${p.notaFiscal || '-'}</td>
+          <td>${p.fornecedor || '-'}</td>
+          <td>R$ ${Number(p.valorTotal || 0).toFixed(2)}</td>
+          <td><span class="badge ${getBadgeClass(p.status)}">${p.status || '-'}</span></td>
+          <td>${p.etapaAtual ? p.etapaAtual.replace('ETAPA_', '').replace('_', ' ') : '-'}</td>
+          <td>
+            <button class="btn btn-outline" style="padding:6px 12px;font-size:12px;" onclick="verDetalhes('${p.id}')">
+              <span class="material-icons" style="font-size:16px;">visibility</span>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Classe do badge baseado no status
+    function getBadgeClass(status) {
+      if (['RECEBIDO_CONFORME', 'ATESTO_COMISSAO', 'ATESTADO_EXECUTOR', 'LIQUIDADO', 'PAGO'].includes(status)) return 'badge-success';
+      if (['AGUARDANDO_ENTREGA', 'AGUARDANDO_DOCS', 'EM_ANALISE', 'AGUARDANDO_EXECUTOR'].includes(status)) return 'badge-info';
+      if (['PENDENCIA_DOCUMENTAL', 'RECEBIDO_PARCIAL'].includes(status)) return 'badge-warning';
+      if (['RECUSADO_TOTAL'].includes(status)) return 'badge-danger';
+      return 'badge-info';
+    }
+
+    // Atualizar selects de processos nos modais
+    function atualizarSelectsProcessos() {
+      const options = processos.map(p =>
+        `<option value="${p.id}">${p.notaFiscal} - ${p.fornecedor}</option>`
+      ).join('');
+
+      const selectRecebimento = document.getElementById('select-processo-recebimento');
+      const selectAnalise = document.getElementById('select-processo-analise');
+
+      if (selectRecebimento) selectRecebimento.innerHTML = '<option value="">Selecione...</option>' + options;
+      if (selectAnalise) selectAnalise.innerHTML = '<option value="">Selecione...</option>' + options;
+    }
+
+    // Funções de modal
+    function abrirModalNovoProcesso() {
+      document.getElementById('modal-novo-processo').classList.add('active');
+    }
+
+    function abrirModalRecebimento() {
+      document.getElementById('modal-recebimento').classList.add('active');
+    }
+
+    function abrirModalAnalise() {
+      document.getElementById('modal-analise').classList.add('active');
+    }
+
+    function fecharModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    // Salvar novo processo
+    function salvarNovoProcesso() {
+      const form = document.getElementById('form-novo-processo');
+      const formData = new FormData(form);
+      const dados = Object.fromEntries(formData.entries());
+
+      if (!dados.notaFiscal || !dados.fornecedor || !dados.valorTotal) {
+        alert('Preencha os campos obrigatórios!');
+        return;
+      }
+
+      google.script.run
+        .withSuccessHandler(function (result) {
+          if (result && result.success) {
+            alert('Processo criado com sucesso!');
+            fecharModal('modal-novo-processo');
+            form.reset();
+            carregarDados();
+          } else {
+            alert('Erro: ' + (result ? result.error : 'Erro desconhecido'));
+          }
+        })
+        .withFailureHandler(function (error) {
+          alert('Erro ao salvar: ' + error);
+        })
+        .iniciarProcessoAtesto(dados);
+    }
+
+    // Salvar recebimento
+    function salvarRecebimento() {
+      const form = document.getElementById('form-recebimento');
+      const formData = new FormData(form);
+      const dados = Object.fromEntries(formData.entries());
+      const idProcesso = dados.idProcesso;
+      delete dados.idProcesso;
+
+      if (!idProcesso || !dados.unidadeEscolar || !dados.responsavel) {
+        alert('Preencha os campos obrigatórios!');
+        return;
+      }
+
+      // Converter strings para boolean
+      dados.quantitativaOk = dados.quantitativaOk === 'true';
+      dados.qualitativaOk = dados.qualitativaOk === 'true';
+      dados.assinatura = dados.assinatura === 'true';
+      dados.carimboUE = dados.carimboUE === 'true';
+
+      google.script.run
+        .withSuccessHandler(function (result) {
+          if (result && result.success) {
+            alert('Recebimento registrado com sucesso!');
+            fecharModal('modal-recebimento');
+            form.reset();
+            carregarDados();
+          } else {
+            alert('Erro: ' + (result ? result.error : 'Erro desconhecido'));
+          }
+        })
+        .withFailureHandler(function (error) {
+          alert('Erro ao salvar: ' + error);
+        })
+        .registrarRecebimentoUE(idProcesso, dados);
+    }
+
+    // Salvar análise da comissão
+    function salvarAnalise() {
+      const form = document.getElementById('form-analise');
+      const formData = new FormData(form);
+      const dados = Object.fromEntries(formData.entries());
+      const idProcesso = dados.idProcesso;
+      delete dados.idProcesso;
+
+      if (!idProcesso || !dados.membrosPresentes || !dados.resultado) {
+        alert('Preencha os campos obrigatórios!');
+        return;
+      }
+
+      // Converter membros para array
+      dados.membrosPresentes = dados.membrosPresentes.split('\n').filter(m => m.trim());
+
+      if (dados.membrosPresentes.length < 3) {
+        alert('É necessário no mínimo 3 membros da Comissão!');
+        return;
+      }
+
+      // Converter strings para boolean
+      dados.somaVerificada = dados.somaVerificada === 'true';
+      dados.somaConforme = dados.somaVerificada;
+      dados.atestoVerificado = dados.atestoVerificado === 'true';
+      dados.atestoConforme = dados.atestoVerificado;
+      dados.sefazConsultada = dados.sefazConsultada === 'true';
+
+      google.script.run
+        .withSuccessHandler(function (result) {
+          if (result && result.success) {
+            alert('Análise registrada com sucesso!');
+            fecharModal('modal-analise');
+            form.reset();
+            carregarDados();
+          } else {
+            alert('Erro: ' + (result ? result.error : 'Erro desconhecido'));
+          }
+        })
+        .withFailureHandler(function (error) {
+          alert('Erro ao salvar: ' + error);
+        })
+        .registrarAnaliseComissaoUNIAE(idProcesso, dados);
+    }
+
+    // Verificar conformidade
+    function verificarConformidade() {
+      const id = prompt('Digite o ID do processo para verificar conformidade:');
+      if (!id) return;
+
+      google.script.run
+        .withSuccessHandler(function (result) {
+          if (result && result.success) {
+            const data = result.data;
+            let msg = `VERIFICAÇÃO DE CONFORMIDADE\n\n`;
+            msg += `Score: ${data.score}%\n`;
+            msg += `Status: ${data.conforme ? 'CONFORME' : 'NÃO CONFORME'}\n`;
+            msg += `Pendências: ${data.totalPendencias}\n\n`;
+
+            if (data.pendencias && data.pendencias.length > 0) {
+              msg += 'PENDÊNCIAS:\n';
+              data.pendencias.forEach((p, i) => {
+                msg += `${i + 1}. [${p.criticidade}] ${p.descricao}\n`;
+              });
+            }
+            alert(msg);
+          } else {
+            alert('Erro: ' + (result ? result.error : 'Processo não encontrado'));
+          }
+        })
+        .withFailureHandler(function (error) {
+          alert('Erro: ' + error);
+        })
+        .verificarConformidadeProcesso(id);
+    }
+
+    // Gerar relatório SEI
+    function gerarRelatorio() {
+      const id = prompt('Digite o ID do processo para gerar relatório:');
+      if (!id) return;
+
+      google.script.run
+        .withSuccessHandler(function (result) {
+          if (result && result.success) {
+            // Criar janela com o relatório
+            const win = window.open('', '_blank');
+            win.document.write('<pre style="font-family:monospace;white-space:pre-wrap;">' + result.data.texto + '</pre>');
+            win.document.title = 'Relatório SEI - ' + id;
+          } else {
+            alert('Erro: ' + (result ? result.error : 'Processo não encontrado'));
+          }
+        })
+        .withFailureHandler(function (error) {
+          alert('Erro: ' + error);
+        })
+        .gerarRelatorioProcessoSEI(id);
+    }
+
+    // Ver detalhes do processo
+    function verDetalhes(id) {
+      const processo = processos.find(p => p.id === id);
+      if (!processo) {
+        alert('Processo não encontrado');
+        return;
+      }
+
+      let msg = `DETALHES DO PROCESSO\n\n`;
+      msg += `ID: ${processo.id}\n`;
+      msg += `NF: ${processo.notaFiscal}\n`;
+      msg += `Fornecedor: ${processo.fornecedor}\n`;
+      msg += `Valor: R$ ${Number(processo.valorTotal).toFixed(2)}\n`;
+      msg += `Status: ${processo.status}\n`;
+      msg += `Etapa: ${processo.etapaAtual}\n`;
+      msg += `Entregas: ${processo.entregas ? processo.entregas.length : 0}\n`;
+      msg += `Recusas: ${processo.recusas ? processo.recusas.length : 0}\n`;
+      msg += `Glosas: ${processo.glosas ? processo.glosas.length : 0}\n`;
+
+      alert(msg);
+    }
+  </script>
+</body>
+
+</html>

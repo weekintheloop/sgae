@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Dashboard Financeiro - AE CRE-PP</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  
+  <style>
+    :root {
+      --primary: #2E7D32;
+      --primary-light: #4CAF50;
+      --secondary: #EF6C00;
+      --success: #2E7D32;
+      --warning: #F57C00;
+      --error: #D32F2F;
+      --info: #1976D2;
+      
+      --bg-primary: #F5F5F5;
+      --bg-card: #FFFFFF;
+      --text-primary: #212121;
+      --text-secondary: #757575;
+      --text-hint: #9E9E9E;
+      --border: #E0E0E0;
+      
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+    
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+      padding: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .header-title h1 {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    
+    .header-filters {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    
+    .filter-select {
+      padding: 8px 12px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: rgba(255,255,255,0.2);
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    
+    .filter-select option {
+      color: var(--text-primary);
+    }
+    
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    /* KPI Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .kpi-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+    }
+    
+    .kpi-card.green::before { background: var(--success); }
+    .kpi-card.orange::before { background: var(--secondary); }
+    .kpi-card.blue::before { background: var(--info); }
+    .kpi-card.red::before { background: var(--error); }
+    
+    .kpi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    
+    .kpi-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    
+    .kpi-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    
+    .kpi-card.green .kpi-icon { background: #E8F5E9; color: var(--success); }
+    .kpi-card.orange .kpi-icon { background: #FFF3E0; color: var(--secondary); }
+    .kpi-card.blue .kpi-icon { background: #E3F2FD; color: var(--info); }
+    .kpi-card.red .kpi-icon { background: #FFEBEE; color: var(--error); }
+    
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    
+    .kpi-subtitle {
+      font-size: 12px;
+      color: var(--text-hint);
+    }
+    
+    .kpi-trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-top: 8px;
+      padding: 4px 8px;
+      border-radius: 12px;
+    }
+    
+    .kpi-trend.up { background: #E8F5E9; color: var(--success); }
+    .kpi-trend.down { background: #FFEBEE; color: var(--error); }
+
+    /* Charts Section */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    
+    .chart-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+    
+    .chart-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .chart-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+    
+    .chart-body {
+      padding: 20px;
+      height: 300px;
+      position: relative;
+    }
+    
+    /* Progress Bars */
+    .progress-section {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    
+    .progress-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    
+    .progress-item {
+      margin-bottom: 16px;
+    }
+    
+    .progress-item:last-child {
+      margin-bottom: 0;
+    }
+    
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    
+    .progress-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    
+    .progress-value {
+      font-size: 13px;
+      font-weight: 600;
+    }
+    
+    .progress-bar {
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+    
+    .progress-fill.green { background: var(--success); }
+    .progress-fill.orange { background: var(--secondary); }
+    .progress-fill.blue { background: var(--info); }
+    .progress-fill.red { background: var(--error); }
+    
+    /* Table */
+    .table-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+    
+    .table-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .table-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+    
+    .table-wrapper {
+      overflow-x: auto;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    th {
+      background: var(--bg-primary);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+    
+    td {
+      font-size: 14px;
+    }
+    
+    tr:hover {
+      background: var(--bg-primary);
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    
+    .badge.success { background: #E8F5E9; color: var(--success); }
+    .badge.warning { background: #FFF3E0; color: var(--warning); }
+    .badge.error { background: #FFEBEE; color: var(--error); }
+    .badge.info { background: #E3F2FD; color: var(--info); }
+    
+    /* Loading */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 200px;
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .kpi-value {
+        font-size: 22px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="header-title">
+        <span class="material-icons-round" style="font-size: 28px;">analytics</span>
+        <div>
+          <h1>Dashboard Financeiro</h1>
+          <span style="font-size: 12px; opacity: 0.9;">Alimentação Escolar CRE-PP</span>
+        </div>
+      </div>
+      <div class="header-filters">
+        <select class="filter-select" id="filterAno">
+          <option value="2025">2025</option>
+          <option value="2024">2024</option>
+        </select>
+        <select class="filter-select" id="filterMes">
+          <option value="">Todos os meses</option>
+          <option value="1">Janeiro</option>
+          <option value="2">Fevereiro</option>
+          <option value="3">Março</option>
+          <option value="4">Abril</option>
+          <option value="5">Maio</option>
+          <option value="6">Junho</option>
+          <option value="7">Julho</option>
+          <option value="8">Agosto</option>
+          <option value="9">Setembro</option>
+          <option value="10">Outubro</option>
+          <option value="11">Novembro</option>
+          <option value="12">Dezembro</option>
+        </select>
+      </div>
+    </div>
+  </header>
+  
+  <main class="container">
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card green">
+        <div class="kpi-header">
+          <span class="kpi-label">Total Contratado</span>
+          <div class="kpi-icon">
+            <span class="material-icons-round">account_balance</span>
+          </div>
+        </div>
+        <div class="kpi-value" id="kpiContratado">R$ 0,00</div>
+        <div class="kpi-subtitle" id="kpiContratosQtd">0 contratos ativos</div>
+      </div>
+      
+      <div class="kpi-card orange">
+        <div class="kpi-header">
+          <span class="kpi-label">Total Empenhado</span>
+          <div class="kpi-icon">
+            <span class="material-icons-round">receipt_long</span>
+          </div>
+        </div>
+        <div class="kpi-value" id="kpiEmpenhado">R$ 0,00</div>
+        <div class="kpi-subtitle" id="kpiEmpenhoPercent">0% do contratado</div>
+      </div>
+      
+      <div class="kpi-card blue">
+        <div class="kpi-header">
+          <span class="kpi-label">Total Liquidado</span>
+          <div class="kpi-icon">
+            <span class="material-icons-round">fact_check</span>
+          </div>
+        </div>
+        <div class="kpi-value" id="kpiLiquidado">R$ 0,00</div>
+        <div class="kpi-subtitle" id="kpiLiquidadoPercent">0% do empenhado</div>
+      </div>
+      
+      <div class="kpi-card green">
+        <div class="kpi-header">
+          <span class="kpi-label">Total Pago</span>
+          <div class="kpi-icon">
+            <span class="material-icons-round">payments</span>
+          </div>
+        </div>
+        <div class="kpi-value" id="kpiPago">R$ 0,00</div>
+        <div class="kpi-subtitle" id="kpiPagoPercent">0% do liquidado</div>
+      </div>
+    </div>
+    
+    <!-- Progress Section -->
+    <div class="progress-section">
+      <div class="progress-title">Execução Orçamentária</div>
+      
+      <div class="progress-item">
+        <div class="progress-header">
+          <span class="progress-label">Empenhado / Contratado</span>
+          <span class="progress-value" id="progEmpenhado">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill orange" id="progEmpenhadoBar" style="width: 0%"></div>
+        </div>
+      </div>
+      
+      <div class="progress-item">
+        <div class="progress-header">
+          <span class="progress-label">Liquidado / Empenhado</span>
+          <span class="progress-value" id="progLiquidado">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill blue" id="progLiquidadoBar" style="width: 0%"></div>
+        </div>
+      </div>
+      
+      <div class="progress-item">
+        <div class="progress-header">
+          <span class="progress-label">Pago / Liquidado</span>
+          <span class="progress-value" id="progPago">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill green" id="progPagoBar" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-header">
+          <span class="chart-title">Execução por Grupo de Alimentos</span>
+        </div>
+        <div class="chart-body">
+          <canvas id="chartGrupos"></canvas>
+        </div>
+      </div>
+      
+      <div class="chart-card">
+        <div class="chart-header">
+          <span class="chart-title">Distribuição por Fornecedor</span>
+        </div>
+        <div class="chart-body">
+          <canvas id="chartFornecedores"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-header">
+          <span class="chart-title">Evolução Mensal</span>
+        </div>
+        <div class="chart-body">
+          <canvas id="chartMensal"></canvas>
+        </div>
+      </div>
+      
+      <div class="chart-card">
+        <div class="chart-header">
+          <span class="chart-title">Status das Notas Fiscais</span>
+        </div>
+        <div class="chart-body">
+          <canvas id="chartNFs"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Top Fornecedores Table -->
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-title">Top 10 Fornecedores por Valor Pago</span>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Fornecedor</th>
+              <th>CNPJ</th>
+              <th>Empenhado</th>
+              <th>Pago</th>
+              <th>% Execução</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaFornecedores">
+            <tr>
+              <td colspan="6" class="loading">
+                <div class="spinner"></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+  
+  <script>
+    (function() {
+      'use strict';
+      
+      // Estado
+      var state = {
+        ano: new Date().getFullYear(),
+        mes: null,
+        dados: null
+      };
+      
+      // Charts
+      var charts = {};
+      
+      // Cores
+      var cores = {
+        primary: '#2E7D32',
+        secondary: '#EF6C00',
+        success: '#4CAF50',
+        warning: '#FF9800',
+        info: '#2196F3',
+        error: '#F44336',
+        
+        grupos: ['#2E7D32', '#4CAF50', '#8BC34A', '#CDDC39', '#FFC107', '#FF9800', '#FF5722'],
+        fornecedores: ['#1976D2', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFC107', '#FF9800']
+      };
+      
+      // Inicialização
+      function init() {
+        bindEvents();
+        carregarDados();
+      }
+      
+      function bindEvents() {
+        document.getElementById('filterAno').addEventListener('change', function() {
+          state.ano = parseInt(this.value);
+          carregarDados();
+        });
+        
+        document.getElementById('filterMes').addEventListener('change', function() {
+          state.mes = this.value ? parseInt(this.value) : null;
+          carregarDados();
+        });
+      }
+      
+      function carregarDados() {
+        if (typeof google !== 'undefined' && google.script) {
+          google.script.run
+            .withSuccessHandler(onDadosCarregados)
+            .withFailureHandler(onErro)
+            .api_dashboard_financeiro({ ano: state.ano, mes: state.mes });
+        } else {
+          // Dados de demonstração
+          setTimeout(function() {
+            onDadosCarregados(getDadosDemo());
+          }, 500);
+        }
+      }
+      
+      function getDadosDemo() {
+        return {
+          success: true,
+          data: {
+            resumo: {
+              totalContratado: 2500000,
+              totalEmpenhado: 1875000,
+              totalLiquidado: 1250000,
+              totalPago: 1000000,
+              contratosAtivos: 12
+            },
+            grupos: [
+              { nome: 'Hortifruti', empenhado: 450000, pago: 320000 },
+              { nome: 'Carnes', empenhado: 380000, pago: 280000 },
+              { nome: 'Laticínios', empenhado: 320000, pago: 200000 },
+              { nome: 'Grãos e Cereais', empenhado: 280000, pago: 150000 },
+              { nome: 'Panificação', empenhado: 220000, pago: 50000 },
+              { nome: 'Outros', empenhado: 225000, pago: 0 }
+            ],
+            fornecedores: [
+              { nome: 'Distribuidora ABC', cnpj: '12.345.678/0001-90', empenhado: 450000, pago: 380000 },
+              { nome: 'Hortifruti Central', cnpj: '23.456.789/0001-01', empenhado: 320000, pago: 250000 },
+              { nome: 'Laticínios Sul', cnpj: '34.567.890/0001-12', empenhado: 280000, pago: 180000 },
+              { nome: 'Carnes Premium', cnpj: '45.678.901/0001-23', empenhado: 250000, pago: 120000 },
+              { nome: 'Grãos Brasil', cnpj: '56.789.012/0001-34', empenhado: 200000, pago: 70000 }
+            ],
+            mensal: [
+              { mes: 'Jan', empenhado: 150000, liquidado: 120000, pago: 100000 },
+              { mes: 'Fev', empenhado: 180000, liquidado: 150000, pago: 120000 },
+              { mes: 'Mar', empenhado: 200000, liquidado: 170000, pago: 140000 },
+              { mes: 'Abr', empenhado: 220000, liquidado: 180000, pago: 150000 },
+              { mes: 'Mai', empenhado: 250000, liquidado: 200000, pago: 160000 },
+              { mes: 'Jun', empenhado: 280000, liquidado: 220000, pago: 180000 },
+              { mes: 'Jul', empenhado: 300000, liquidado: 210000, pago: 150000 }
+            ],
+            statusNFs: {
+              lancadas: 15,
+              conferencia: 8,
+              atestadas: 12,
+              pagas: 45,
+              recusadas: 3
+            }
+          }
+        };
+      }
+      
+      function onDadosCarregados(result) {
+        if (!result.success) {
+          console.error('Erro:', result.error);
+          return;
+        }
+        
+        state.dados = result.data;
+        atualizarKPIs();
+        atualizarProgressos();
+        renderCharts();
+        renderTabelaFornecedores();
+      }
+      
+      function onErro(error) {
+        console.error('Erro ao carregar dados:', error);
+      }
+      
+      function formatarMoeda(valor) {
+        return 'R$ ' + Number(valor || 0).toLocaleString('pt-BR', {
+          minimumFractionDigits: 2, maximumFractionDigits: 2
+        });
+      }
+      
+      function calcularPercentual(parte, total) {
+        if (!total || total === 0) return 0;
+        return Math.round((parte / total) * 100);
+      }
+      
+      function atualizarKPIs() {
+        var r = state.dados.resumo;
+        
+        document.getElementById('kpiContratado').textContent = formatarMoeda(r.totalContratado);
+        document.getElementById('kpiContratosQtd').textContent = r.contratosAtivos + ' contratos ativos';
+        
+        document.getElementById('kpiEmpenhado').textContent = formatarMoeda(r.totalEmpenhado);
+        document.getElementById('kpiEmpenhoPercent').textContent = calcularPercentual(r.totalEmpenhado, r.totalContratado) + '% do contratado';
+        
+        document.getElementById('kpiLiquidado').textContent = formatarMoeda(r.totalLiquidado);
+        document.getElementById('kpiLiquidadoPercent').textContent = calcularPercentual(r.totalLiquidado, r.totalEmpenhado) + '% do empenhado';
+        
+        document.getElementById('kpiPago').textContent = formatarMoeda(r.totalPago);
+        document.getElementById('kpiPagoPercent').textContent = calcularPercentual(r.totalPago, r.totalLiquidado) + '% do liquidado';
+      }
+      
+      function atualizarProgressos() {
+        var r = state.dados.resumo;
+        
+        var pEmpenhado = calcularPercentual(r.totalEmpenhado, r.totalContratado);
+        var pLiquidado = calcularPercentual(r.totalLiquidado, r.totalEmpenhado);
+        var pPago = calcularPercentual(r.totalPago, r.totalLiquidado);
+        
+        document.getElementById('progEmpenhado').textContent = pEmpenhado + '%';
+        document.getElementById('progEmpenhadoBar').style.width = pEmpenhado + '%';
+        
+        document.getElementById('progLiquidado').textContent = pLiquidado + '%';
+        document.getElementById('progLiquidadoBar').style.width = pLiquidado + '%';
+        
+        document.getElementById('progPago').textContent = pPago + '%';
+        document.getElementById('progPagoBar').style.width = pPago + '%';
+      }
+
+      function renderCharts() {
+        renderChartGrupos();
+        renderChartFornecedores();
+        renderChartMensal();
+        renderChartNFs();
+      }
+      
+      function renderChartGrupos() {
+        var ctx = document.getElementById('chartGrupos').getContext('2d');
+        
+        if (charts.grupos) charts.grupos.destroy();
+        
+        var grupos = state.dados.grupos;
+        
+        charts.grupos = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: grupos.map(function(g) { return g.nome; }),
+            datasets: [
+              {
+                label: 'Empenhado',
+                data: grupos.map(function(g) { return g.empenhado; }),
+                backgroundColor: cores.secondary,
+                borderRadius: 4
+              },
+              {
+                label: 'Pago',
+                data: grupos.map(function(g) { return g.pago; }),
+                backgroundColor: cores.primary,
+                borderRadius: 4
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'bottom' }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  callback: function(value) {
+                    return 'R$ ' + (value / 1000) + 'k';
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+      
+      function renderChartFornecedores() {
+        var ctx = document.getElementById('chartFornecedores').getContext('2d');
+        
+        if (charts.fornecedores) charts.fornecedores.destroy();
+        
+        var fornecedores = state.dados.fornecedores.slice(0, 5);
+        
+        charts.fornecedores = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: fornecedores.map(function(f) { return f.nome; }),
+            datasets: [{
+              data: fornecedores.map(function(f) { return f.pago; }),
+              backgroundColor: cores.fornecedores.slice(0, fornecedores.length),
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'right' }
+            },
+            cutout: '60%'
+          }
+        });
+      }
+      
+      function renderChartMensal() {
+        var ctx = document.getElementById('chartMensal').getContext('2d');
+        
+        if (charts.mensal) charts.mensal.destroy();
+        
+        var mensal = state.dados.mensal;
+        
+        charts.mensal = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: mensal.map(function(m) { return m.mes; }),
+            datasets: [
+              {
+                label: 'Empenhado',
+                data: mensal.map(function(m) { return m.empenhado; }),
+                borderColor: cores.secondary,
+                backgroundColor: 'transparent',
+                tension: 0.3
+              },
+              {
+                label: 'Liquidado',
+                data: mensal.map(function(m) { return m.liquidado; }),
+                borderColor: cores.info,
+                backgroundColor: 'transparent',
+                tension: 0.3
+              },
+              {
+                label: 'Pago',
+                data: mensal.map(function(m) { return m.pago; }),
+                borderColor: cores.primary,
+                backgroundColor: 'transparent',
+                tension: 0.3
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'bottom' }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  callback: function(value) {
+                    return 'R$ ' + (value / 1000) + 'k';
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+      
+      function renderChartNFs() {
+        var ctx = document.getElementById('chartNFs').getContext('2d');
+        
+        if (charts.nfs) charts.nfs.destroy();
+        
+        var nfs = state.dados.statusNFs;
+        
+        charts.nfs = new Chart(ctx, {
+          type: 'pie',
+          data: {
+            labels: ['Lançadas', 'Em Conferência', 'Atestadas', 'Pagas', 'Recusadas'],
+            datasets: [{
+              data: [nfs.lancadas, nfs.conferencia, nfs.atestadas, nfs.pagas, nfs.recusadas],
+              backgroundColor: ['#9E9E9E', '#FF9800', '#2196F3', '#4CAF50', '#F44336'],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'right' }
+            }
+          }
+        });
+      }
+      
+      function renderTabelaFornecedores() {
+        var fornecedores = state.dados.fornecedores;
+        var tbody = document.getElementById('tabelaFornecedores');
+        
+        var html = '';
+        
+        fornecedores.forEach(function(f) {
+          var percentual = calcularPercentual(f.pago, f.empenhado);
+          var statusClass = percentual >= 80 ? 'success' : percentual >= 50 ? 'warning' : 'info';
+          var statusText = percentual >= 80 ? 'Em dia' : percentual >= 50 ? 'Regular' : 'Pendente';
+          
+          html += '<tr>' +
+            '<td><strong>' + f.nome + '</strong></td>' +
+            '<td>' + f.cnpj + '</td>' +
+            '<td>' + formatarMoeda(f.empenhado) + '</td>' +
+            '<td>' + formatarMoeda(f.pago) + '</td>' +
+            '<td>' + percentual + '%</td>' +
+            '<td><span class="badge ' + statusClass + '">' + statusText + '</span></td>' +
+          '</tr>';
+        });
+        
+        tbody.innerHTML = html;
+      }
+      
+      // Init
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>

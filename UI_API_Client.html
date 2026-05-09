@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+</head>
+<body>
+  <script>
+    /**
+     * Cliente API para Frontend
+     * Wrapper para google.script.run com Promises e tratamento de erro
+     * @namespace APIClient
+     */
+    var APIClient = (function() {
+      
+      /**
+       * Executa uma função do backend com Promise
+       * @param {string} functionName - Nome da função
+       * @param {...*} args - Argumentos
+       * @returns {Promise}
+       */
+      function call(functionName) {
+        var args = Array.prototype.slice.call(arguments, 1);
+        
+        return new Promise(function(resolve, reject) {
+          var runner = google.script.run
+            .withSuccessHandler(function(result) {
+              if (result && result.success === false) {
+                reject(result.error || { message: 'Operação falhou' });
+              } else {
+                resolve(result);
+              }
+            })
+            .withFailureHandler(function(error) {
+              reject({ message: error.message || 'Erro de comunicação com o servidor' });
+            });
+          
+          // Aplica argumentos
+          runner[functionName].apply(runner, args);
+        });
+      }
+      
+      /**
+       * Executa com loading automático
+       * @param {string} functionName
+       * @param {...*} args
+       * @returns {Promise}
+       */
+      function callWithLoading(functionName) {
+        var args = Array.prototype.slice.call(arguments);
+        
+        if (typeof UIComponents !== 'undefined') {
+          UIComponents.showLoading();
+        }
+        
+        return call.apply(null, args)
+          .finally(function() {
+            if (typeof UIComponents !== 'undefined') {
+              UIComponents.hideLoading();
+            }
+          });
+      }
+      
+      // ============================================
+      // AUTH
+      // ============================================
+      
+      var Auth = {
+        login: function(email, senha) {
+          return callWithLoading('api_login', email, senha);
+        },
+        
+        logout: function() {
+          return call('api_logout');
+        },
+        
+        getSession: function() {
+          return call('api_getSession');
+        },
+        
+        register: function(userData) {
+          return callWithLoading('api_register', userData);
+        },
+        
+        changePassword: function(senhaAtual, senhaNova) {
+          return callWithLoading('api_changePassword', senhaAtual, senhaNova);
+        },
+        
+        isAuthenticated: function() {
+          return this.getSession()
+            .then(function(result) {
+              return result && result.success;
+            })
+            .catch(function() {
+              return false;
+            });
+        }
+      };
+      
+      // ============================================
+      // NOTAS FISCAIS
+      // ============================================
+      
+      var NotasFiscais = {
+        listar: function(options) {
+          return callWithLoading('api_listarNotasFiscais', options || {});
+        },
+        
+        buscar: function(id) {
+          return callWithLoading('api_buscarNotaFiscal', id);
+        },
+        
+        criar: function(data) {
+          return callWithLoading('api_criarNotaFiscal', data);
+        },
+        
+        atualizar: function(rowIndex, data) {
+          return callWithLoading('api_atualizarNotaFiscal', rowIndex, data);
+        }
+      };
+      
+      // ============================================
+      // ENTREGAS
+      // ============================================
+      
+      var Entregas = {
+        listar: function(options) {
+          return callWithLoading('api_listarEntregas', options || {});
+        },
+        
+        registrar: function(data) {
+          return callWithLoading('api_registrarEntrega', data);
+        }
+      };
+      
+      // ============================================
+      // RECUSAS
+      // ============================================
+      
+      var Recusas = {
+        listar: function(options) {
+          return callWithLoading('api_listarRecusas', options || {});
+        },
+        
+        registrar: function(data) {
+          return callWithLoading('api_registrarRecusa', data);
+        }
+      };
+      
+      // ============================================
+      // DASHBOARD
+      // ============================================
+      
+      var Dashboard = {
+        getData: function() {
+          return callWithLoading('api_getDashboardData');
+        }
+      };
+      
+      // ============================================
+      // RELATÓRIOS
+      // ============================================
+      
+      var Relatorios = {
+        notasFiscais: function(filtros) {
+          return callWithLoading('api_gerarRelatorioNF', filtros || {});
+        },
+        
+        recusas: function(filtros) {
+          return callWithLoading('api_gerarRelatorioRecusas', filtros || {});
+        }
+      };
+      
+      // ============================================
+      // HELPERS
+      // ============================================
+      
+      /**
+       * Handler padrão para erros de API
+       */
+      function handleError(error) {
+        var message = error.message || 'Erro desconhecido';
+        
+        if (typeof UIComponents !== 'undefined') {
+          UIComponents.toastError(message);
+        } else {
+          console.error('API Error:', message);
+          alert('Erro: ' + message);
+        }
+        
+        return Promise.reject(error);
+      }
+      
+      /**
+       * Handler padrão para sucesso
+       */
+      function handleSuccess(result, successMessage) {
+        if (successMessage && typeof UIComponents !== 'undefined') {
+          UIComponents.toastSuccess(successMessage);
+        }
+        return result;
+      }
+      
+      // ============================================
+      // EXPORTAÇÃO
+      // ============================================
+      
+      return {
+        call: call,
+        callWithLoading: callWithLoading,
+        handleError: handleError,
+        handleSuccess: handleSuccess,
+        
+        Auth: Auth,
+        NotasFiscais: NotasFiscais,
+        Entregas: Entregas,
+        Recusas: Recusas,
+        Dashboard: Dashboard,
+        Relatorios: Relatorios
+      };
+      
+    })();
+    
+    // Alias global
+    var API = APIClient;
+  </script>
+  
+  <!-- Exemplo de uso -->
+  <script>
+    /**
+     * Exemplos de uso do APIClient
+     */
+    
+    // Login
+    // API.Auth.login('user@example.com', 'senha123')
+    //   .then(function(result) {
+    //     console.log('Login bem sucedido:', result);
+    //     // Redirecionar para dashboard
+    //   })
+    //   .catch(API.handleError);
+    
+    // Listar notas fiscais com paginação
+    // API.NotasFiscais.listar({ page: 1, pageSize: 20 })
+    //   .then(function(result) {
+    //     console.log('Notas:', result.data);
+    //     console.log('Total:', result.meta.pagination.total);
+    //   })
+    //   .catch(API.handleError);
+    
+    // Criar nota fiscal
+    // API.NotasFiscais.criar({
+    //   numeroNF: '12345',
+    //   fornecedorCNPJ: '11.222.333/0001-81',
+    //   valorTotal: 1500.00,
+    //   dataEmissao: '2024-01-15'
+    // })
+    //   .then(function(result) {
+    //     return API.handleSuccess(result, 'Nota fiscal criada!');
+    //   })
+    //   .catch(API.handleError);
+    
+    // Dashboard
+    // API.Dashboard.getData()
+    //   .then(function(result) {
+    //     console.log('Métricas:', result.data);
+    //   })
+    //   .catch(API.handleError);
+  </script>
+</body>
+</html>

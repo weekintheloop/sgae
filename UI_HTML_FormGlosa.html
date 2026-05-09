@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrar Glosa</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .form-container {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #d32f2f;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: var(--space-4);
+    }
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: var(--font-sm);
+    }
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: var(--font-sm);
+      font-weight: 500;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    .btn-primary {
+      background: #d32f2f;
+      color: white;
+    }
+    .btn-secondary {
+      background: #757575;
+      color: white;
+    }
+    .btn:hover {
+      opacity: 0.9;
+    }
+    .required {
+      color: red;
+    }
+  </style>
+  <link rel="stylesheet" href="design-system.css">
+</head>
+<body>
+  <div class="form-container">
+    <h2>💰 Registrar Glosa</h2>
+
+    <form id="glosaForm">
+      <div class="form-group">
+        <label>Nota Fiscal <span class="required">*</span></label>
+        <input type="text" id="notaFiscal" required placeholder="Número da NF">
+      </div>
+
+      <div class="form-group">
+        <label>Fornecedor <span class="required">*</span></label>
+        <input type="text" id="fornecedor" required placeholder="Nome do fornecedor">
+      </div>
+
+      <div class="form-group">
+        <label>Valor da Glosa (R$) <span class="required">*</span></label>
+        <input type="number" id="valorGlosa" required step="0.01" min="0" placeholder="0.00">
+      </div>
+
+      <div class="form-group">
+        <label>Tipo de Glosa <span class="required">*</span></label>
+        <select id="tipoGlosa" required>
+          <option value="">Selecione...</option>
+          <option value="Quantidade">Quantidade Divergente</option>
+          <option value="Qualidade">Qualidade Inadequada</option>
+          <option value="Prazo">Prazo de Entrega</option>
+          <option value="Documentacao">Documentação Irregular</option>
+          <option value="Preco">Preço Divergente</option>
+          <option value="Outro">Outro</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Motivo Detalhado <span class="required">*</span></label>
+        <textarea id="motivo" required placeholder="Descreva o motivo da glosa..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Produto/Item</label>
+        <input type="text" id="produto" placeholder="Produto afetado">
+      </div>
+
+      <div class="form-group">
+        <label>Responsável <span class="required">*</span></label>
+        <input type="text" id="responsavel" required placeholder="Nome do responsável">
+      </div>
+
+      <div class="form-group">
+        <label>Observações</label>
+        <textarea id="observacoes" placeholder="Observações adicionais..."></textarea>
+      </div>
+
+      <div style="margin-top: var(--space-6);">
+        <button type="submit" class="btn btn-primary">💾 Registrar Glosa</button>
+        <button type="button" class="btn btn-secondary" onclick="google.script.host.close()">❌ Cancelar</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('glosaForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const dados = {
+        notaFiscal: document.getElementById('notaFiscal').value,
+        fornecedor: document.getElementById('fornecedor').value,
+        valorGlosa: parseFloat(document.getElementById('valorGlosa').value),
+        tipoGlosa: document.getElementById('tipoGlosa').value,
+        motivo: document.getElementById('motivo').value,
+        produto: document.getElementById('produto').value,
+        responsavel: document.getElementById('responsavel').value,
+        observacoes: document.getElementById('observacoes').value,
+        dataGlosa: new Date().toISOString()
+      };
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.sucesso) {
+            alert('✅ Glosa registrada com sucesso!\n\nID: ' + result.id);
+            google.script.host.close();
+          } else {
+            alert('❌ Erro: ' + result.erro);
+          }
+        })
+        .withFailureHandler(function(error) {
+          alert('❌ Erro ao registrar glosa: ' + error.message);
+        })
+        .processarFormularioGlosa(dados);
+    });
+  </script>
+</body>
+</html>

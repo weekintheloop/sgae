@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cardápio do Dia - Alimentação Escolar</title>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  
+  <style>
+    /* ================================================================
+       INTERVENÇÃO 17/38: UI_Cardapio.html
+       Interface responsiva mobile-first para visualização de cardápio
+       ================================================================ */
+    
+    :root {
+      --primary: #2E7D32;
+      --primary-light: #4CAF50;
+      --primary-dark: #1B5E20;
+      --secondary: #EF6C00;
+      --secondary-light: #FF9800;
+      --background: #F5F5F5;
+      --surface: #FFFFFF;
+      --text-primary: #212121;
+      --text-secondary: #757575;
+      --divider: #E0E0E0;
+      --success: #4CAF50;
+      --warning: #FFC107;
+      --error: #F44336;
+      
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 20px rgba(0,0,0,0.15);
+      
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--background);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+    
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 16px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-md);
+    }
+    
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .header-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .header-date {
+      font-size: 0.875rem;
+      opacity: 0.9;
+    }
+    
+    .escola-badge {
+      background: rgba(255,255,255,0.2);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      text-align: center;
+    }
+
+    /* Navegação de dias */
+    .day-nav {
+      display: flex;
+      gap: 8px;
+      padding: 12px 16px;
+      background: var(--surface);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    
+    .day-nav::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .day-btn {
+      flex: 0 0 auto;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 20px;
+      background: var(--background);
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 70px;
+    }
+    
+    .day-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .day-btn:hover:not(.active) {
+      background: var(--divider);
+    }
+    
+    .day-btn .day-name {
+      font-weight: 600;
+    }
+    
+    .day-btn .day-date {
+      font-size: 0.75rem;
+      opacity: 0.8;
+    }
+    
+    /* Container principal */
+    .container {
+      padding: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    /* Card de refeição */
+    .meal-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    
+    .meal-header {
+      background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
+      color: white;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .meal-type {
+      font-size: 1.125rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .meal-time {
+      font-size: 0.875rem;
+      opacity: 0.9;
+    }
+    
+    .meal-content {
+      padding: 16px;
+    }
+    
+    /* Item do cardápio */
+    .menu-item {
+      display: flex;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--divider);
+    }
+    
+    .menu-item:last-child {
+      border-bottom: none;
+    }
+    
+    .item-image {
+      width: 60px;
+      height: 60px;
+      border-radius: var(--radius-sm);
+      background: var(--background);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    
+    .item-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .item-image .material-icons-round {
+      font-size: 28px;
+      color: var(--text-secondary);
+    }
+    
+    .item-info {
+      flex: 1;
+    }
+    
+    .item-name {
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--text-primary);
+    }
+    
+    .item-description {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+    
+    .item-badges {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .badge {
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+    
+    .badge-calories {
+      background: #E8F5E9;
+      color: var(--primary-dark);
+    }
+    
+    .badge-protein {
+      background: #FFF3E0;
+      color: #E65100;
+    }
+    
+    .badge-warning {
+      background: #FFF8E1;
+      color: #F57F17;
+    }
+    
+    .badge-allergen {
+      background: #FFEBEE;
+      color: #C62828;
+    }
+
+    /* Seção de orientações */
+    .orientacoes-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    
+    .orientacoes-header {
+      background: var(--primary-light);
+      color: white;
+      padding: 12px 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    
+    .orientacoes-content {
+      padding: 16px;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+    
+    .orientacoes-content ul {
+      margin-left: 20px;
+      margin-top: 8px;
+    }
+    
+    .orientacoes-content li {
+      margin-bottom: 6px;
+    }
+    
+    /* Info nutricional resumida */
+    .nutri-summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      padding: 16px;
+      background: #FAFAFA;
+      border-top: 1px solid var(--divider);
+    }
+    
+    .nutri-item {
+      text-align: center;
+    }
+    
+    .nutri-value {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .nutri-label {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+    
+    /* Alertas especiais */
+    .alert-card {
+      background: #FFF8E1;
+      border-left: 4px solid var(--warning);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    
+    .alert-card.alert-danger {
+      background: #FFEBEE;
+      border-left-color: var(--error);
+    }
+    
+    .alert-card .material-icons-round {
+      color: var(--warning);
+      flex-shrink: 0;
+    }
+    
+    .alert-card.alert-danger .material-icons-round {
+      color: var(--error);
+    }
+    
+    .alert-content {
+      flex: 1;
+    }
+    
+    .alert-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .alert-text {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+    
+    /* Footer fixo */
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      padding: 12px 16px;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-around;
+      z-index: 100;
+    }
+    
+    .footer-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s;
+    }
+    
+    .footer-btn:hover, .footer-btn.active {
+      color: var(--primary);
+      background: #E8F5E9;
+    }
+    
+    .footer-btn .material-icons-round {
+      font-size: 24px;
+    }
+    
+    /* Loading */
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--divider);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 16px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+    }
+    
+    .empty-state .material-icons-round {
+      font-size: 64px;
+      opacity: 0.5;
+      margin-bottom: 16px;
+    }
+    
+    /* Responsivo */
+    @media (min-width: 768px) {
+      .container {
+        padding: 24px;
+      }
+      
+      .day-nav {
+        justify-content: center;
+      }
+      
+      .nutri-summary {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-top">
+      <div class="header-title">
+        <span class="material-icons-round">restaurant_menu</span>
+        Cardápio do Dia
+      </div>
+      <div class="header-date" id="headerDate">--</div>
+    </div>
+    <div class="escola-badge" id="escolaNome">Carregando...</div>
+  </header>
+  
+  <!-- Navegação de dias -->
+  <nav class="day-nav" id="dayNav">
+    <!-- Preenchido via JS -->
+  </nav>
+  
+  <!-- Container principal -->
+  <main class="container" id="mainContent">
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <span>Carregando cardápio...</span>
+    </div>
+  </main>
+  
+  <!-- Footer -->
+  <footer class="footer">
+    <button class="footer-btn active" onclick="showTab('cardapio')">
+      <span class="material-icons-round">restaurant</span>
+      Cardápio
+    </button>
+    <button class="footer-btn" onclick="showTab('nutricional')">
+      <span class="material-icons-round">monitoring</span>
+      Nutricional
+    </button>
+    <button class="footer-btn" onclick="showTab('orientacoes')">
+      <span class="material-icons-round">menu_book</span>
+      Preparo
+    </button>
+  </footer>
+
+  <script>
+    // ================================================================
+    // DADOS E ESTADO
+    // ================================================================
+    
+    var state = {
+      escola: null,
+      cardapioSemana: null,
+      diaSelecionado: null,
+      tabAtiva: 'cardapio'
+    };
+    
+    var DIAS_SEMANA = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+    var DIAS_ABREV = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    
+    var ICONES_GRUPO = {
+      'FRUTAS': 'nutrition',
+      'HORTALICAS': 'eco',
+      'CEREAIS': 'grain',
+      'PROTEINAS': 'egg_alt',
+      'CARNES': 'kebab_dining',
+      'LATICINIOS': 'water_drop',
+      'LEGUMINOSAS': 'spa',
+      'default': 'restaurant'
+    };
+    
+    var REFEICOES = {
+      DESJEJUM: { nome: 'Desjejum', icone: 'free_breakfast', horario: '07:30' },
+      ALMOCO: { nome: 'Almoço', icone: 'lunch_dining', horario: '11:30' },
+      LANCHE: { nome: 'Lanche', icone: 'bakery_dining', horario: '15:00' },
+      JANTAR: { nome: 'Jantar', icone: 'dinner_dining', horario: '18:00' }
+    };
+    
+    // ================================================================
+    // INICIALIZAÇÃO
+    // ================================================================
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      initDayNav();
+      carregarDados();
+    });
+    
+    function initDayNav() {
+      var nav = document.getElementById('dayNav');
+      var hoje = new Date();
+      var inicioSemana = new Date(hoje);
+      inicioSemana.setDate(hoje.getDate() - hoje.getDay() + 1); // Segunda
+      
+      var html = '';
+      for (var i = 0; i < 5; i++) { // Seg a Sex
+        var dia = new Date(inicioSemana);
+        dia.setDate(inicioSemana.getDate() + i);
+        
+        var isHoje = dia.toDateString() === hoje.toDateString();
+        var activeClass = isHoje ? 'active' : '';
+        
+        html += '<button class="day-btn ' + activeClass + '" onclick="selecionarDia(' + i + ')" data-dia="' + i + '">' +
+                  '<span class="day-name">' + DIAS_ABREV[dia.getDay()] + '</span>' +
+                  '<span class="day-date">' + dia.getDate() + '</span>' +
+                '</button>';
+        
+        if (isHoje) {
+          state.diaSelecionado = i;
+        }
+      }
+      
+      nav.innerHTML = html;
+      
+      // Se hoje não é dia útil, seleciona segunda
+      if (state.diaSelecionado === null) {
+        state.diaSelecionado = 0;
+        nav.querySelector('[data-dia="0"]').classList.add('active');
+      }
+    }
+    
+    function selecionarDia(dia) {
+      state.diaSelecionado = dia;
+      
+      // Atualiza botões
+      document.querySelectorAll('.day-btn').forEach(function(btn, idx) {
+        btn.classList.toggle('active', idx === dia);
+      });
+      
+      renderCardapio();
+    }
+
+    // ================================================================
+    // CARREGAMENTO DE DADOS
+    // ================================================================
+    
+    function carregarDados() {
+      showLoading(true);
+      
+      // Simula dados para demonstração (em produção, usar google.script.run)
+      setTimeout(function() {
+        // Dados de exemplo
+        state.escola = {
+          nome: 'EC 01 do Plano Piloto',
+          alunos: 450
+        };
+        
+        state.cardapioSemana = {
+          semana: getSemanaAtual(),
+          ano: new Date().getFullYear(),
+          dias: [
+            // Segunda
+            {
+              refeicoes: [
+                {
+                  tipo: 'ALMOCO',
+                  itens: [
+                    { nome: 'Arroz branco', grupo: 'CEREAIS', quantidade: 100, calorias: 130, proteinas: 2.7 },
+                    { nome: 'Feijão carioca', grupo: 'LEGUMINOSAS', quantidade: 80, calorias: 61, proteinas: 3.8 },
+                    { nome: 'Frango grelhado', grupo: 'CARNES', quantidade: 80, calorias: 127, proteinas: 25.6, preparo: 'Temperar com alho, sal e limão. Grelhar até dourar.' },
+                    { nome: 'Salada de alface e tomate', grupo: 'HORTALICAS', quantidade: 50, calorias: 8, proteinas: 0.5 },
+                    { nome: 'Banana prata', grupo: 'FRUTAS', quantidade: 80, calorias: 78, proteinas: 1 }
+                  ],
+                  orientacoes: 'Servir o arroz e feijão juntos. O frango deve estar bem cozido. Oferecer a fruta como sobremesa.'
+                }
+              ]
+            },
+            // Terça
+            {
+              refeicoes: [
+                {
+                  tipo: 'ALMOCO',
+                  itens: [
+                    { nome: 'Macarrão ao sugo', grupo: 'CEREAIS', quantidade: 120, calorias: 180, proteinas: 5, contemGluten: true },
+                    { nome: 'Carne moída refogada', grupo: 'CARNES', quantidade: 80, calorias: 150, proteinas: 20 },
+                    { nome: 'Salada de beterraba', grupo: 'HORTALICAS', quantidade: 50, calorias: 22, proteinas: 0.8 },
+                    { nome: 'Laranja', grupo: 'FRUTAS', quantidade: 100, calorias: 37, proteinas: 1 }
+                  ]
+                }
+              ]
+            },
+            // Quarta
+            {
+              refeicoes: [
+                {
+                  tipo: 'ALMOCO',
+                  itens: [
+                    { nome: 'Arroz integral', grupo: 'CEREAIS', quantidade: 100, calorias: 124, proteinas: 2.6 },
+                    { nome: 'Lentilha', grupo: 'LEGUMINOSAS', quantidade: 80, calorias: 93, proteinas: 7.2 },
+                    { nome: 'Ovo cozido', grupo: 'CARNES', quantidade: 50, calorias: 72, proteinas: 6.5 },
+                    { nome: 'Cenoura cozida', grupo: 'HORTALICAS', quantidade: 50, calorias: 17, proteinas: 0.6 },
+                    { nome: 'Maçã', grupo: 'FRUTAS', quantidade: 80, calorias: 45, proteinas: 0.2 }
+                  ]
+                }
+              ]
+            },
+            // Quinta
+            {
+              refeicoes: [
+                {
+                  tipo: 'ALMOCO',
+                  itens: [
+                    { nome: 'Arroz branco', grupo: 'CEREAIS', quantidade: 100, calorias: 130, proteinas: 2.7 },
+                    { nome: 'Feijão preto', grupo: 'LEGUMINOSAS', quantidade: 80, calorias: 77, proteinas: 4.5 },
+                    { nome: 'Peixe assado', grupo: 'CARNES', quantidade: 80, calorias: 100, proteinas: 22 },
+                    { nome: 'Couve refogada', grupo: 'HORTALICAS', quantidade: 40, calorias: 15, proteinas: 1.2 },
+                    { nome: 'Mamão', grupo: 'FRUTAS', quantidade: 100, calorias: 40, proteinas: 0.5 }
+                  ]
+                }
+              ]
+            },
+            // Sexta
+            {
+              refeicoes: [
+                {
+                  tipo: 'ALMOCO',
+                  itens: [
+                    { nome: 'Cuscuz de milho', grupo: 'CEREAIS', quantidade: 100, calorias: 112, proteinas: 2.5 },
+                    { nome: 'Carne de sol desfiada', grupo: 'CARNES', quantidade: 80, calorias: 140, proteinas: 24 },
+                    { nome: 'Abóbora cozida', grupo: 'HORTALICAS', quantidade: 60, calorias: 20, proteinas: 0.6 },
+                    { nome: 'Melancia', grupo: 'FRUTAS', quantidade: 120, calorias: 36, proteinas: 0.7 }
+                  ]
+                }
+              ]
+            }
+          ]
+        };
+        
+        document.getElementById('escolaNome').textContent = state.escola.nome;
+        atualizarDataHeader();
+        showLoading(false);
+        renderCardapio();
+        
+      }, 800);
+    }
+    
+    function getSemanaAtual() {
+      var hoje = new Date();
+      var inicio = new Date(hoje.getFullYear(), 0, 1);
+      return Math.ceil(((hoje - inicio) / 86400000 + inicio.getDay() + 1) / 7);
+    }
+    
+    function atualizarDataHeader() {
+      var hoje = new Date();
+      var opcoes = { weekday: 'long', day: 'numeric', month: 'long' };
+      document.getElementById('headerDate').textContent = hoje.toLocaleDateString('pt-BR', opcoes);
+    }
+
+    // ================================================================
+    // RENDERIZAÇÃO
+    // ================================================================
+    
+    function renderCardapio() {
+      var container = document.getElementById('mainContent');
+      
+      if (!state.cardapioSemana || !state.cardapioSemana.dias[state.diaSelecionado]) {
+        container.innerHTML = renderEmptyState('Cardápio não disponível para este dia');
+        return;
+      }
+      
+      var diaCardapio = state.cardapioSemana.dias[state.diaSelecionado];
+      var html = '';
+      
+      // Alertas especiais (se houver)
+      html += renderAlertas(diaCardapio);
+      
+      // Refeições
+      diaCardapio.refeicoes.forEach(function(refeicao) {
+        html += renderRefeicao(refeicao);
+      });
+      
+      container.innerHTML = html;
+    }
+    
+    function renderRefeicao(refeicao) {
+      var config = REFEICOES[refeicao.tipo] || REFEICOES.ALMOCO;
+      var totais = calcularTotais(refeicao.itens);
+      
+      var html = '<div class="meal-card">';
+      
+      // Header
+      html += '<div class="meal-header">' +
+                '<div class="meal-type">' +
+                  '<span class="material-icons-round">' + config.icone + '</span>' +
+                  config.nome +
+                '</div>' +
+                '<div class="meal-time">' + config.horario + '</div>' +
+              '</div>';
+      
+      // Itens
+      html += '<div class="meal-content">';
+      refeicao.itens.forEach(function(item) {
+        html += renderItem(item);
+      });
+      html += '</div>';
+      
+      // Resumo nutricional
+      html += '<div class="nutri-summary">' +
+                '<div class="nutri-item">' +
+                  '<div class="nutri-value">' + totais.calorias + '</div>' +
+                  '<div class="nutri-label">kcal</div>' +
+                '</div>' +
+                '<div class="nutri-item">' +
+                  '<div class="nutri-value">' + totais.proteinas + 'g</div>' +
+                  '<div class="nutri-label">Proteína</div>' +
+                '</div>' +
+                '<div class="nutri-item">' +
+                  '<div class="nutri-value">' + refeicao.itens.length + '</div>' +
+                  '<div class="nutri-label">Itens</div>' +
+                '</div>' +
+                '<div class="nutri-item">' +
+                  '<div class="nutri-value">' + totais.grupos + '</div>' +
+                  '<div class="nutri-label">Grupos</div>' +
+                '</div>' +
+              '</div>';
+      
+      html += '</div>';
+      
+      return html;
+    }
+    
+    function renderItem(item) {
+      var icone = ICONES_GRUPO[item.grupo] || ICONES_GRUPO.default;
+      
+      var html = '<div class="menu-item">' +
+                   '<div class="item-image">' +
+                     '<span class="material-icons-round">' + icone + '</span>' +
+                   '</div>' +
+                   '<div class="item-info">' +
+                     '<div class="item-name">' + item.nome + '</div>' +
+                     '<div class="item-description">' + (item.preparo || 'Porção: ' + item.quantidade + 'g') + '</div>' +
+                     '<div class="item-badges">';
+      
+      // Badge de calorias
+      if (item.calorias) {
+        html += '<span class="badge badge-calories">' + Math.round(item.calorias) + ' kcal</span>';
+      }
+      
+      // Badge de proteína
+      if (item.proteinas) {
+        html += '<span class="badge badge-protein">' + item.proteinas.toFixed(1) + 'g prot</span>';
+      }
+      
+      // Alertas de alergênicos
+      if (item.contemGluten) {
+        html += '<span class="badge badge-allergen">Contém Glúten</span>';
+      }
+      if (item.contemLactose) {
+        html += '<span class="badge badge-allergen">Contém Lactose</span>';
+      }
+      
+      html += '</div></div></div>';
+      
+      return html;
+    }
+    
+    function renderAlertas(diaCardapio) {
+      var html = '';
+      
+      // Verifica alergênicos
+      var temGluten = false;
+      var temLactose = false;
+      
+      diaCardapio.refeicoes.forEach(function(r) {
+        r.itens.forEach(function(i) {
+          if (i.contemGluten) temGluten = true;
+          if (i.contemLactose) temLactose = true;
+        });
+      });
+      
+      if (temGluten || temLactose) {
+        var alertas = [];
+        if (temGluten) alertas.push('GLÚTEN');
+        if (temLactose) alertas.push('LACTOSE');
+        
+        html += '<div class="alert-card alert-danger">' +
+                  '<span class="material-icons-round">warning</span>' +
+                  '<div class="alert-content">' +
+                    '<div class="alert-title">Atenção - Alergênicos</div>' +
+                    '<div class="alert-text">Este cardápio contém: ' + alertas.join(', ') + '</div>' +
+                  '</div>' +
+                '</div>';
+      }
+      
+      return html;
+    }
+    
+    function renderEmptyState(mensagem) {
+      return '<div class="empty-state">' +
+               '<span class="material-icons-round">no_meals</span>' +
+               '<p>' + mensagem + '</p>' +
+             '</div>';
+    }
+    
+    function calcularTotais(itens) {
+      var grupos = {};
+      var totais = { calorias: 0, proteinas: 0, grupos: 0 };
+      
+      itens.forEach(function(item) {
+        totais.calorias += item.calorias || 0;
+        totais.proteinas += item.proteinas || 0;
+        grupos[item.grupo] = true;
+      });
+      
+      totais.calorias = Math.round(totais.calorias);
+      totais.proteinas = totais.proteinas.toFixed(1);
+      totais.grupos = Object.keys(grupos).length;
+      
+      return totais;
+    }
+    
+    // ================================================================
+    // UTILITÁRIOS
+    // ================================================================
+    
+    function showLoading(show) {
+      document.getElementById('loading').style.display = show ? 'flex' : 'none';
+    }
+    
+    function showTab(tab) {
+      state.tabAtiva = tab;
+      
+      document.querySelectorAll('.footer-btn').forEach(function(btn) {
+        btn.classList.remove('active');
+      });
+      event.target.closest('.footer-btn').classList.add('active');
+      
+      // Renderiza conteúdo da tab
+      if (tab === 'cardapio') {
+        renderCardapio();
+      } else if (tab === 'nutricional') {
+        renderNutricional();
+      } else if (tab === 'orientacoes') {
+        renderOrientacoes();
+      }
+    }
+    
+    function renderNutricional() {
+      var container = document.getElementById('mainContent');
+      container.innerHTML = '<div class="orientacoes-card">' +
+        '<div class="orientacoes-header"><span class="material-icons-round">monitoring</span> Informações Nutricionais</div>' +
+        '<div class="orientacoes-content">' +
+          '<p>Valores nutricionais calculados para porção padrão por aluno.</p>' +
+          '<p style="margin-top:12px"><strong>Referência PNAE:</strong></p>' +
+          '<ul>' +
+            '<li>Calorias: 300-370 kcal (6-10 anos)</li>' +
+            '<li>Proteínas: 9-14g</li>' +
+            '<li>Mínimo 3x frutas/semana</li>' +
+            '<li>Mínimo 3x hortaliças/semana</li>' +
+          '</ul>' +
+        '</div>' +
+      '</div>';
+    }
+    
+    function renderOrientacoes() {
+      var container = document.getElementById('mainContent');
+      container.innerHTML = '<div class="orientacoes-card">' +
+        '<div class="orientacoes-header"><span class="material-icons-round">menu_book</span> Orientações de Preparo</div>' +
+        '<div class="orientacoes-content">' +
+          '<ul>' +
+            '<li><strong>Higiene:</strong> Lavar bem frutas e verduras</li>' +
+            '<li><strong>Cocção:</strong> Carnes devem atingir 74°C interno</li>' +
+            '<li><strong>Temperos:</strong> Usar pouco sal, preferir ervas naturais</li>' +
+            '<li><strong>Porcionamento:</strong> Seguir quantidades indicadas</li>' +
+            '<li><strong>Temperatura:</strong> Servir quentes acima de 60°C</li>' +
+          '</ul>' +
+        '</div>' +
+      '</div>';
+    }
+  </script>
+</body>
+</html>

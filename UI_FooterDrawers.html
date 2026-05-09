@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Footer Drawers - Alimentação Escolar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <style>
+    /* ========================================
+       FOOTER DRAWERS - DESIGN SYSTEM
+       ======================================== */
+    :root {
+      --ae-primary: #2E7D32;
+      --ae-primary-light: #4CAF50;
+      --ae-primary-dark: #1B5E20;
+      --ae-secondary: #EF6C00;
+      --ae-secondary-light: #FF9800;
+      --ae-accent: #C62828;
+      --ae-info: #1565C0;
+      --ae-success: #2E7D32;
+      --ae-warning: #F9A825;
+      --ae-bg-main: #F1F8E9;
+      --ae-bg-card: #FFFFFF;
+      --ae-bg-overlay: rgba(0, 0, 0, 0.5);
+      --ae-text-primary: #263238;
+      --ae-text-secondary: #546E7A;
+      --ae-text-light: #FFFFFF;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.15);
+      --transition-fast: 0.2s ease;
+      --transition-normal: 0.3s ease;
+      --footer-height: 64px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--ae-bg-main);
+      color: var(--ae-text-primary);
+      padding-bottom: var(--footer-height);
+    }
+
+    /* ========================================
+       FOOTER FIXO
+       ======================================== */
+    .ae-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--footer-height);
+      background: var(--ae-bg-card);
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ae-footer-nav {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      max-width: 400px;
+      padding: 0 16px;
+    }
+
+    .ae-footer-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 16px;
+      background: transparent;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      color: var(--ae-text-secondary);
+      transition: var(--transition-fast);
+      min-width: 72px;
+    }
+
+    .ae-footer-btn:hover {
+      background: var(--ae-bg-main);
+      color: var(--ae-primary);
+    }
+
+    .ae-footer-btn:active {
+      transform: scale(0.95);
+    }
+
+    .ae-footer-btn.active {
+      color: var(--ae-primary);
+    }
+
+    .ae-footer-btn .material-symbols-outlined {
+      font-size: 24px;
+    }
+
+    .ae-footer-btn span:last-child {
+      font-size: 0.65rem;
+      font-weight: 500;
+    }
+
+    /* ========================================
+       DRAWER BASE (Bottom Sheet)
+       ======================================== */
+    .ae-footer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--ae-bg-overlay);
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition-normal);
+      z-index: 1500;
+    }
+
+    .ae-footer-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .ae-bottom-drawer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-height: 85vh;
+      background: var(--ae-bg-card);
+      border-radius: 20px 20px 0 0;
+      transform: translateY(100%);
+      transition: transform var(--transition-normal);
+      z-index: 1501;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .ae-bottom-drawer.active {
+      transform: translateY(0);
+    }
+
+    /* Handle de arraste */
+    .ae-drawer-handle {
+      width: 40px;
+      height: 4px;
+      background: #DDD;
+      border-radius: 2px;
+      margin: 12px auto;
+    }
+
+    /* Header do Drawer */
+    .ae-bottom-drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px 16px;
+      border-bottom: 1px solid #E8E8E8;
+    }
+
+    .ae-bottom-drawer-head h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ae-bottom-drawer-head h2 .material-symbols-outlined {
+      color: var(--ae-primary);
+    }
+
+    .ae-bottom-drawer-close {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: var(--ae-bg-main);
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ae-text-secondary);
+      transition: var(--transition-fast);
+    }
+
+    .ae-bottom-drawer-close:hover {
+      background: #E0E0E0;
+    }
+
+    /* Body do Drawer */
+    .ae-bottom-drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    /* ========================================
+       1. DRAWER RESUMO FINANCEIRO
+       ======================================== */
+    .ae-finance-period {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .ae-period-btn {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #E0E0E0;
+      background: white;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .ae-period-btn.active {
+      background: var(--ae-primary);
+      color: white;
+      border-color: var(--ae-primary);
+    }
+
+    .ae-finance-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .ae-finance-card {
+      padding: 16px;
+      background: var(--ae-bg-main);
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .ae-finance-card.highlight {
+      background: linear-gradient(135deg, var(--ae-primary) 0%, var(--ae-primary-dark) 100%);
+      color: white;
+      grid-column: span 2;
+    }
+
+    .ae-finance-card-label {
+      font-size: 0.7rem;
+      color: var(--ae-text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .ae-finance-card.highlight .ae-finance-card-label {
+      color: rgba(255,255,255,0.8);
+    }
+
+    .ae-finance-card-value {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--ae-text-primary);
+    }
+
+    .ae-finance-card.highlight .ae-finance-card-value {
+      color: white;
+      font-size: 1.5rem;
+    }
+
+    .ae-finance-card-change {
+      font-size: 0.65rem;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .ae-finance-card-change.positive { color: var(--ae-success); }
+    .ae-finance-card-change.negative { color: var(--ae-accent); }
+
+    /* Mini gráfico de barras */
+    .ae-mini-chart {
+      margin-top: 20px;
+    }
+
+    .ae-mini-chart h4 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--ae-text-secondary);
+    }
+
+    .ae-chart-bar-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .ae-chart-bar-label {
+      font-size: 0.75rem;
+      width: 80px;
+      flex-shrink: 0;
+    }
+
+    .ae-chart-bar-track {
+      flex: 1;
+      height: 8px;
+      background: #E8E8E8;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .ae-chart-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .ae-chart-bar-value {
+      font-size: 0.7rem;
+      font-weight: 600;
+      width: 60px;
+      text-align: right;
+    }
+
+    /* ========================================
+       2. DRAWER SCANNER QR
+       ======================================== */
+    .ae-scanner-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .ae-scanner-preview {
+      width: 100%;
+      max-width: 300px;
+      aspect-ratio: 1;
+      background: #1a1a1a;
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .ae-scanner-frame {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 200px;
+      height: 200px;
+      border: 2px solid var(--ae-primary);
+      border-radius: 12px;
+    }
+
+    .ae-scanner-frame::before,
+    .ae-scanner-frame::after {
+      content: '';
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border-color: var(--ae-primary);
+      border-style: solid;
+    }
+
+    .ae-scanner-frame::before {
+      top: -2px;
+      left: -2px;
+      border-width: 4px 0 0 4px;
+      border-radius: 8px 0 0 0;
+    }
+
+    .ae-scanner-frame::after {
+      bottom: -2px;
+      right: -2px;
+      border-width: 0 4px 4px 0;
+      border-radius: 0 0 8px 0;
+    }
+
+    .ae-scanner-line {
+      position: absolute;
+      top: 0;
+      left: 10%;
+      width: 80%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--ae-primary), transparent);
+      animation: scanLine 2s linear infinite;
+    }
+
+    @keyframes scanLine {
+      0% { top: 10%; }
+      50% { top: 90%; }
+      100% { top: 10%; }
+    }
+
+    .ae-scanner-hint {
+      text-align: center;
+      color: var(--ae-text-secondary);
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+    }
+
+    .ae-scanner-actions {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .ae-scanner-btn {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: var(--transition-fast);
+    }
+
+    .ae-scanner-btn.primary {
+      background: var(--ae-primary);
+      color: white;
+    }
+
+    .ae-scanner-btn.secondary {
+      background: var(--ae-bg-main);
+      color: var(--ae-text-primary);
+    }
+
+    .ae-scanner-btn:hover {
+      transform: scale(1.02);
+    }
+
+    .ae-scanner-result {
+      width: 100%;
+      max-width: 300px;
+      padding: 16px;
+      background: #E8F5E9;
+      border-radius: 12px;
+      border: 1px solid var(--ae-primary-light);
+      margin-top: 16px;
+      display: none;
+    }
+
+    .ae-scanner-result.active {
+      display: block;
+    }
+
+    .ae-scanner-result h4 {
+      font-size: 0.85rem;
+      color: var(--ae-primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ae-scanner-result p {
+      font-size: 0.8rem;
+      color: var(--ae-text-secondary);
+      word-break: break-all;
+    }
+
+    /* ========================================
+       3. DRAWER SUPORTE
+       ======================================== */
+    .ae-support-status {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: #E8F5E9;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .ae-support-status-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--ae-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .ae-support-status-info h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ae-primary);
+    }
+
+    .ae-support-status-info p {
+      font-size: 0.75rem;
+      color: var(--ae-text-secondary);
+    }
+
+    .ae-support-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .ae-support-option {
+      padding: 20px 16px;
+      background: var(--ae-bg-card);
+      border: 1px solid #E8E8E8;
+      border-radius: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .ae-support-option:hover {
+      border-color: var(--ae-primary-light);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .ae-support-option .material-symbols-outlined {
+      font-size: 32px;
+      color: var(--ae-primary);
+      margin-bottom: 8px;
+    }
+
+    .ae-support-option h4 {
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .ae-support-option p {
+      font-size: 0.7rem;
+      color: var(--ae-text-secondary);
+    }
+
+    .ae-support-quick-links {
+      margin-top: 20px;
+    }
+
+    .ae-support-quick-links h4 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--ae-text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .ae-support-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      background: var(--ae-bg-main);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .ae-support-link:hover {
+      background: #E8F5E9;
+    }
+
+    .ae-support-link .material-symbols-outlined {
+      color: var(--ae-primary);
+    }
+
+    .ae-support-link span {
+      flex: 1;
+      font-size: 0.85rem;
+    }
+
+    .ae-support-link .ae-link-arrow {
+      color: var(--ae-text-secondary);
+    }
+
+    /* Chat flutuante */
+    .ae-chat-container {
+      margin-top: 20px;
+      border: 1px solid #E8E8E8;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .ae-chat-header {
+      background: var(--ae-primary);
+      color: white;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ae-chat-header h4 {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .ae-chat-messages {
+      height: 200px;
+      overflow-y: auto;
+      padding: 16px;
+      background: #FAFAFA;
+    }
+
+    .ae-chat-message {
+      max-width: 80%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+    }
+
+    .ae-chat-message.bot {
+      background: white;
+      border: 1px solid #E8E8E8;
+      border-radius: 12px 12px 12px 4px;
+    }
+
+    .ae-chat-message.user {
+      background: var(--ae-primary);
+      color: white;
+      margin-left: auto;
+      border-radius: 12px 12px 4px 12px;
+    }
+
+    .ae-chat-input-wrap {
+      display: flex;
+      gap: 8px;
+      padding: 12px;
+      background: white;
+      border-top: 1px solid #E8E8E8;
+    }
+
+    .ae-chat-input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid #E0E0E0;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-family: inherit;
+    }
+
+    .ae-chat-input:focus {
+      outline: none;
+      border-color: var(--ae-primary);
+    }
+
+    .ae-chat-send {
+      width: 40px;
+      height: 40px;
+      background: var(--ae-primary);
+      border: none;
+      border-radius: 50%;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-fast);
+    }
+
+    .ae-chat-send:hover {
+      background: var(--ae-primary-dark);
+    }
+  </style>
+</head>
+<body>
+  <!-- Footer Fixo -->
+  <footer class="ae-footer">
+    <nav class="ae-footer-nav">
+      <button class="ae-footer-btn" id="btnResumo" onclick="FooterDrawers.open('resumo')">
+        <span class="material-symbols-outlined">monitoring</span>
+        <span>Resumo</span>
+      </button>
+      <button class="ae-footer-btn" id="btnScanner" onclick="FooterDrawers.open('scanner')">
+        <span class="material-symbols-outlined">qr_code_scanner</span>
+        <span>Scanner</span>
+      </button>
+      <button class="ae-footer-btn" id="btnSuporte" onclick="FooterDrawers.open('suporte')">
+        <span class="material-symbols-outlined">support_agent</span>
+        <span>Suporte</span>
+      </button>
+    </nav>
+  </footer>
+
+  <!-- Overlay -->
+  <div class="ae-footer-overlay" id="footerOverlay"></div>
+
+  <!-- ========================================
+       1. DRAWER RESUMO FINANCEIRO
+       ======================================== -->
+  <aside class="ae-bottom-drawer" id="resumoDrawer">
+    <div class="ae-drawer-handle"></div>
+    <div class="ae-bottom-drawer-head">
+      <h2><span class="material-symbols-outlined">monitoring</span> Resumo Financeiro</h2>
+      <button class="ae-bottom-drawer-close" onclick="FooterDrawers.close()">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="ae-bottom-drawer-body">
+      <div class="ae-finance-period">
+        <button class="ae-period-btn active" data-period="mes">Este Mês</button>
+        <button class="ae-period-btn" data-period="trimestre">Trimestre</button>
+        <button class="ae-period-btn" data-period="ano">Ano</button>
+      </div>
+      
+      <div class="ae-finance-cards">
+        <div class="ae-finance-card highlight">
+          <div class="ae-finance-card-label">Total Empenhado</div>
+          <div class="ae-finance-card-value" id="totalEmpenhado">R$ 2.450.000,00</div>
+        </div>
+        <div class="ae-finance-card">
+          <div class="ae-finance-card-label">Pago</div>
+          <div class="ae-finance-card-value" id="totalPago">R$ 1.890.500,00</div>
+          <div class="ae-finance-card-change positive">
+            <span class="material-symbols-outlined" style="font-size:14px">trending_up</span> 77,2%
+          </div>
+        </div>
+        <div class="ae-finance-card">
+          <div class="ae-finance-card-label">A Pagar</div>
+          <div class="ae-finance-card-value" id="totalAPagar">R$ 559.500,00</div>
+          <div class="ae-finance-card-change negative">
+            <span class="material-symbols-outlined" style="font-size:14px">schedule</span> 22,8%
+          </div>
+        </div>
+        <div class="ae-finance-card">
+          <div class="ae-finance-card-label">NFs Pendentes</div>
+          <div class="ae-finance-card-value" id="nfsPendentes">12</div>
+        </div>
+        <div class="ae-finance-card">
+          <div class="ae-finance-card-label">Glosas</div>
+          <div class="ae-finance-card-value" id="totalGlosas">R$ 8.430,00</div>
+        </div>
+      </div>
+      
+      <div class="ae-mini-chart">
+        <h4>Execução por Grupo</h4>
+        <div id="chartBars">
+          <!-- Barras via JS -->
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ========================================
+       2. DRAWER SCANNER QR
+       ======================================== -->
+  <aside class="ae-bottom-drawer" id="scannerDrawer">
+    <div class="ae-drawer-handle"></div>
+    <div class="ae-bottom-drawer-head">
+      <h2><span class="material-symbols-outlined">qr_code_scanner</span> Scanner de NF</h2>
+      <button class="ae-bottom-drawer-close" onclick="FooterDrawers.close()">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="ae-bottom-drawer-body">
+      <div class="ae-scanner-container">
+        <div class="ae-scanner-preview" id="scannerPreview">
+          <div class="ae-scanner-frame">
+            <div class="ae-scanner-line"></div>
+          </div>
+          <video id="scannerVideo" autoplay playsinline style="width:100%;height:100%;object-fit:cover;"></video>
+        </div>
+        
+        <p class="ae-scanner-hint">Posicione o QR Code ou código de barras da NF dentro da área</p>
+        
+        <div class="ae-scanner-actions">
+          <button class="ae-scanner-btn primary" id="btnStartScan" onclick="FooterDrawers.scanner.toggle()">
+            <span class="material-symbols-outlined">photo_camera</span>
+            Iniciar
+          </button>
+          <button class="ae-scanner-btn secondary" onclick="FooterDrawers.scanner.manual()">
+            <span class="material-symbols-outlined">keyboard</span>
+            Digitar
+          </button>
+        </div>
+        
+        <div class="ae-scanner-result" id="scannerResult">
+          <h4><span class="material-symbols-outlined">check_circle</span> Chave Detectada</h4>
+          <p id="scannerResultText"></p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ========================================
+       3. DRAWER SUPORTE
+       ======================================== -->
+  <aside class="ae-bottom-drawer" id="suporteDrawer">
+    <div class="ae-drawer-handle"></div>
+    <div class="ae-bottom-drawer-head">
+      <h2><span class="material-symbols-outlined">support_agent</span> Suporte</h2>
+      <button class="ae-bottom-drawer-close" onclick="FooterDrawers.close()">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="ae-bottom-drawer-body">
+      <div class="ae-support-status">
+        <div class="ae-support-status-icon">
+          <span class="material-symbols-outlined">headset_mic</span>
+        </div>
+        <div class="ae-support-status-info">
+          <h4>Suporte Disponível</h4>
+          <p>Seg a Sex, 8h às 18h • Tempo médio: 5 min</p>
+        </div>
+      </div>
+      
+      <div class="ae-support-options">
+        <div class="ae-support-option" onclick="FooterDrawers.support.openChat()">
+          <span class="material-symbols-outlined">chat</span>
+          <h4>Chat</h4>
+          <p>Fale conosco agora</p>
+        </div>
+        <div class="ae-support-option" onclick="FooterDrawers.support.openPhone()">
+          <span class="material-symbols-outlined">call</span>
+          <h4>Telefone</h4>
+          <p>(61) 3333-4444</p>
+        </div>
+        <div class="ae-support-option" onclick="FooterDrawers.support.openEmail()">
+          <span class="material-symbols-outlined">mail</span>
+          <h4>E-mail</h4>
+          <p>Resposta em 24h</p>
+        </div>
+        <div class="ae-support-option" onclick="FooterDrawers.support.openManual()">
+          <span class="material-symbols-outlined">menu_book</span>
+          <h4>Manual</h4>
+          <p>Documentação</p>
+        </div>
+      </div>
+      
+      <div class="ae-support-quick-links">
+        <h4>Links Rápidos</h4>
+        <div class="ae-support-link" onclick="FooterDrawers.support.openLink('faq')">
+          <span class="material-symbols-outlined">help</span>
+          <span>Perguntas Frequentes</span>
+          <span class="material-symbols-outlined ae-link-arrow">chevron_right</span>
+        </div>
+        <div class="ae-support-link" onclick="FooterDrawers.support.openLink('videos')">
+          <span class="material-symbols-outlined">play_circle</span>
+          <span>Vídeos Tutoriais</span>
+          <span class="material-symbols-outlined ae-link-arrow">chevron_right</span>
+        </div>
+        <div class="ae-support-link" onclick="FooterDrawers.support.openLink('novidades')">
+          <span class="material-symbols-outlined">new_releases</span>
+          <span>Novidades do Sistema</span>
+          <span class="material-symbols-outlined ae-link-arrow">chevron_right</span>
+        </div>
+      </div>
+      
+      <div class="ae-chat-container" id="chatContainer" style="display:none;">
+        <div class="ae-chat-header">
+          <span class="material-symbols-outlined">smart_toy</span>
+          <h4>Assistente AE</h4>
+        </div>
+        <div class="ae-chat-messages" id="chatMessages">
+          <div class="ae-chat-message bot">Olá! Sou o assistente do Sistema AE. Como posso ajudar?</div>
+        </div>
+        <div class="ae-chat-input-wrap">
+          <input type="text" class="ae-chat-input" id="chatInput" placeholder="Digite sua dúvida...">
+          <button class="ae-chat-send" onclick="FooterDrawers.support.sendMessage()">
+            <span class="material-symbols-outlined">send</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <script>
+    /**
+     * ========================================
+     * FOOTER DRAWERS - ALIMENTAÇÃO ESCOLAR
+     * 3 Drawers: Resumo Financeiro, Scanner QR, Suporte
+     * ========================================
+     */
+    const FooterDrawers = {
+      state: {
+        activeDrawer: null,
+        scannerActive: false,
+        videoStream: null
+      },
+
+      elements: {
+        overlay: null,
+        drawers: {}
+      },
+
+      init() {
+        this.cacheElements();
+        this.bindEvents();
+        this.loadFinanceData();
+      },
+
+      cacheElements() {
+        this.elements.overlay = document.getElementById('footerOverlay');
+        this.elements.drawers = {
+          resumo: document.getElementById('resumoDrawer'),
+          scanner: document.getElementById('scannerDrawer'),
+          suporte: document.getElementById('suporteDrawer')
+        };
+      },
+
+      bindEvents() {
+        this.elements.overlay?.addEventListener('click', () => this.close());
+        
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') this.close();
+        });
+
+        // Período financeiro
+        document.querySelectorAll('.ae-period-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => this.finance.setPeriod(e.target.dataset.period));
+        });
+
+        // Chat input
+        document.getElementById('chatInput')?.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') this.support.sendMessage();
+        });
+      },
+
+      open(drawerName) {
+        this.close();
+        
+        const drawer = this.elements.drawers[drawerName];
+        if (!drawer) return;
+
+        this.state.activeDrawer = drawerName;
+        drawer.classList.add('active');
+        this.elements.overlay?.classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+        // Atualiza botão ativo
+        document.querySelectorAll('.ae-footer-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`btn${drawerName.charAt(0).toUpperCase() + drawerName.slice(1)}`)?.classList.add('active');
+      },
+
+      close() {
+        if (!this.state.activeDrawer) return;
+
+        const drawer = this.elements.drawers[this.state.activeDrawer];
+        drawer?.classList.remove('active');
+        this.elements.overlay?.classList.remove('active');
+        document.body.style.overflow = '';
+        
+        // Para scanner se estiver ativo
+        if (this.state.activeDrawer === 'scanner') {
+          this.scanner.stop();
+        }
+
+        document.querySelectorAll('.ae-footer-btn').forEach(btn => btn.classList.remove('active'));
+        this.state.activeDrawer = null;
+      },
+
+      loadFinanceData() {
+        this.finance.renderChart();
+      },
+
+      // ========================================
+      // MÓDULO: RESUMO FINANCEIRO
+      // ========================================
+      finance: {
+        setPeriod(period) {
+          document.querySelectorAll('.ae-period-btn').forEach(btn => btn.classList.remove('active'));
+          document.querySelector(`[data-period="${period}"]`)?.classList.add('active');
+          this.loadData(period);
+        },
+
+        loadData(period) {
+          // Simula dados por período
+          const data = {
+            mes: { empenhado: 2450000, pago: 1890500, aPagar: 559500, nfs: 12, glosas: 8430 },
+            trimestre: { empenhado: 7200000, pago: 6100000, aPagar: 1100000, nfs: 28, glosas: 24500 },
+            ano: { empenhado: 28500000, pago: 25200000, aPagar: 3300000, nfs: 156, glosas: 89000 }
+          };
+
+          const d = data[period] || data.mes;
+          document.getElementById('totalEmpenhado').textContent = this.formatCurrency(d.empenhado);
+          document.getElementById('totalPago').textContent = this.formatCurrency(d.pago);
+          document.getElementById('totalAPagar').textContent = this.formatCurrency(d.aPagar);
+          document.getElementById('nfsPendentes').textContent = d.nfs;
+          document.getElementById('totalGlosas').textContent = this.formatCurrency(d.glosas);
+        },
+
+        formatCurrency(value) {
+          return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+        },
+
+        renderChart() {
+          const container = document.getElementById('chartBars');
+          if (!container) return;
+
+          const groups = [
+            { name: 'Hortifruti', value: 85, amount: 450000, color: '#4CAF50' },
+            { name: 'Carnes', value: 72, amount: 380000, color: '#EF6C00' },
+            { name: 'Laticínios', value: 68, amount: 320000, color: '#1565C0' },
+            { name: 'Grãos', value: 90, amount: 280000, color: '#7B1FA2' },
+            { name: 'Outros', value: 55, amount: 180000, color: '#546E7A' }
+          ];
+
+          container.innerHTML = groups.map(g => `
+            <div class="ae-chart-bar-item">
+              <span class="ae-chart-bar-label">${g.name}</span>
+              <div class="ae-chart-bar-track">
+                <div class="ae-chart-bar-fill" style="width:${g.value}%;background:${g.color}"></div>
+              </div>
+              <span class="ae-chart-bar-value">${g.value}%</span>
+            </div>
+          `).join('');
+        }
+      },
+
+      // ========================================
+      // MÓDULO: SCANNER QR
+      // ========================================
+      scanner: {
+        async toggle() {
+          if (FooterDrawers.state.scannerActive) {
+            this.stop();
+          } else {
+            await this.start();
+          }
+        },
+
+        async start() {
+          try {
+            const video = document.getElementById('scannerVideo');
+            const btn = document.getElementById('btnStartScan');
+            
+            const stream = await navigator.mediaDevices.getUserMedia({
+              video: { facingMode: 'environment' }
+            });
+            
+            video.srcObject = stream;
+            FooterDrawers.state.videoStream = stream;
+            FooterDrawers.state.scannerActive = true;
+            
+            btn.innerHTML = '<span class="material-symbols-outlined">stop</span> Parar';
+            
+            // Simula detecção após 3 segundos
+            setTimeout(() => {
+              if (FooterDrawers.state.scannerActive) {
+                this.onDetect('35241234567890123456789012345678901234567890123');
+              }
+            }, 3000);
+            
+          } catch (err) {
+            console.error('Erro ao acessar câmera:', err);
+            alert('Não foi possível acessar a câmera. Verifique as permissões.');
+          }
+        },
+
+        stop() {
+          const video = document.getElementById('scannerVideo');
+          const btn = document.getElementById('btnStartScan');
+          
+          if (FooterDrawers.state.videoStream) {
+            FooterDrawers.state.videoStream.getTracks().forEach(track => track.stop());
+            FooterDrawers.state.videoStream = null;
+          }
+          
+          video.srcObject = null;
+          FooterDrawers.state.scannerActive = false;
+          btn.innerHTML = '<span class="material-symbols-outlined">photo_camera</span> Iniciar';
+        },
+
+        onDetect(code) {
+          this.stop();
+          
+          const result = document.getElementById('scannerResult');
+          const resultText = document.getElementById('scannerResultText');
+          
+          result.classList.add('active');
+          resultText.textContent = code;
+          
+          // Vibra se disponível
+          if (navigator.vibrate) {
+            navigator.vibrate(200);
+          }
+          
+          // Emite evento para processamento
+          console.log('Chave NF detectada:', code);
+        },
+
+        manual() {
+          const code = prompt('Digite a chave de acesso da NF (44 dígitos):');
+          if (code && code.length === 44) {
+            this.onDetect(code);
+          } else if (code) {
+            alert('Chave inválida. A chave deve ter 44 dígitos.');
+          }
+        }
+      },
+
+      // ========================================
+      // MÓDULO: SUPORTE
+      // ========================================
+      support: {
+        openChat() {
+          const container = document.getElementById('chatContainer');
+          container.style.display = container.style.display === 'none' ? 'block' : 'none';
+          if (container.style.display === 'block') {
+            document.getElementById('chatInput')?.focus();
+          }
+        },
+
+        sendMessage() {
+          const input = document.getElementById('chatInput');
+          const messages = document.getElementById('chatMessages');
+          const text = input.value.trim();
+          
+          if (!text) return;
+          
+          // Adiciona mensagem do usuário
+          messages.innerHTML += `<div class="ae-chat-message user">${text}</div>`;
+          input.value = '';
+          
+          // Simula resposta do bot
+          setTimeout(() => {
+            const responses = [
+              'Entendi sua dúvida. Deixe-me verificar...',
+              'Para isso, você pode acessar o menu "Notas Fiscais" e clicar em "Nova NF".',
+              'Posso ajudar com mais alguma coisa?'
+            ];
+            const response = responses[Math.floor(Math.random() * responses.length)];
+            messages.innerHTML += `<div class="ae-chat-message bot">${response}</div>`;
+            messages.scrollTop = messages.scrollHeight;
+          }, 1000);
+          
+          messages.scrollTop = messages.scrollHeight;
+        },
+
+        openPhone() {
+          window.open('tel:+556133334444', '_self');
+        },
+
+        openEmail() {
+          window.open('mailto:suporte.ae@edu.df.gov.br?subject=Suporte%20Sistema%20AE', '_self');
+        },
+
+        openManual() {
+          console.log('Abrindo manual...');
+          // Abrir página de documentação
+        },
+
+        openLink(type) {
+          console.log('Abrindo link:', type);
+          // Navegar para seção específica
+        }
+      }
+    };
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', () => FooterDrawers.init());
+
+    // Expor globalmente
+    window.FooterDrawers = FooterDrawers;
+  </script>
+</body>
+</html>

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - UNIAE</title>
+  <?!= include('design-system'); ?>
+  <?!= include('Mobile_S20_Adjustments'); ?>
+  <style>
+    /* Handled by DesignSystem */
+
+
+
+    body {
+      /* font-family handled by Design System */
+      background: var(--gradient-primary);
+      /* Use DS gradient */
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      padding-top: calc(env(safe-area-inset-top, 0px) + 20px);
+      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
+    }
+
+    .login-container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 400px;
+      overflow: hidden;
+    }
+
+    .login-header {
+      background: var(--gradient-primary);
+      color: var(--text-inverse);
+      padding: 40px 30px;
+      text-align: center;
+    }
+
+    .login-header h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .login-header p {
+      opacity: 0.9;
+      font-size: 14px;
+    }
+
+    .login-body {
+      padding: 40px 30px;
+    }
+    
+    /* Mobile S20 Specific */
+    @media (max-width: 480px) {
+      body {
+        padding: 16px;
+        align-items: flex-start;
+        padding-top: calc(env(safe-area-inset-top, 24px) + 16px);
+      }
+      
+      .login-container {
+        border-radius: 20px;
+      }
+      
+      .login-header {
+        padding: 28px 20px;
+      }
+      
+      .login-header h1 {
+        font-size: 24px;
+      }
+      
+      .login-body {
+        padding: 24px 20px;
+      }
+    }
+
+    /* Form styles handled by DesignSystem */
+    /* .form-group, .form-label, .form-input defined in included file */
+
+
+    /* Buttons handled by DesignSystem */
+    /* .btn, .btn-primary, .btn-secondary defined in included file */
+    /* .btn styles handled by Design System (use .btn-block) */
+
+    /* Add spacing if needed or rely on DS */
+
+
+    /* Alerts handled by DesignSystem */
+
+    /* .loading handled by Design System */
+
+    /* Spinner handled by DesignSystem */
+
+    /* Tabs handled by Design System */
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .user-type-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    .badge-analista {
+      background: var(--info-light);
+      color: var(--info-dark);
+    }
+
+    .badge-representante {
+      background: var(--warning-light);
+      color: var(--warning-dark);
+    }
+
+    .badge-fornecedor {
+      background: var(--success-light);
+      color: var(--success-dark);
+    }
+
+    .user-type-cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .user-card {
+      border: 2px solid var(--bg-tertiary);
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+      background: white;
+    }
+
+    .user-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(28, 69, 135, 0.15);
+    }
+
+    .user-card.selected {
+      border-color: var(--primary);
+      background: var(--bg-primary);
+      box-shadow: 0 4px 12px rgba(28, 69, 135, 0.2);
+    }
+
+    .user-card .card-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .user-card .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .user-card .card-description {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .user-card .card-features {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .user-card .card-features div {
+      padding: 2px 0;
+    }
+
+    .register-fields {
+      display: none;
+    }
+
+    .register-fields.show {
+      display: block;
+      animation: fadeIn 0.3s;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="login-container">
+    <div class="login-header">
+      <h1>🎓 UNIAE</h1>
+      <p>Sistema de Gestão de Notas Fiscais</p>
+      <p style="font-size: 12px; margin-top: 8px; opacity: 0.8;">
+        Versão 2.0 - Seguro e Otimizado
+      </p>
+    </div>
+
+    <div class="login-body">
+      <div class="tabs tabs-full">
+        <div class="tab active" onclick="switchTab('login')">Login</div>
+        <div class="tab" onclick="switchTab('register')">Cadastro</div>
+      </div>
+
+      <div id="alert"></div>
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Processando...</p>
+      </div>
+
+      <!-- Tab Login -->
+      <div id="tab-login" class="tab-content active">
+        <form id="loginForm" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" required placeholder="seu@email.com" aria-describedby="loginEmailHint">
+          </div>
+
+          <div class="form-group">
+            <label for="loginSenha">Senha</label>
+            <input type="password" id="loginSenha" required placeholder="••••••••" autocomplete="current-password">
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+        </form>
+      </div>
+
+      <!-- Tab Cadastro -->
+      <div id="tab-register" class="tab-content">
+        <form id="registerForm" onsubmit="handleRegister(event)">
+          <div class="form-group">
+            <label style="margin-bottom: 16px;">Selecione o Tipo de Usuário</label>
+            <input type="hidden" id="registerTipo" required>
+
+            <div class="user-type-cards">
+              <div class="user-card" data-type="ANALISTA" onclick="selectUserType('ANALISTA')">
+                <div class="card-icon">🎓</div>
+                <div class="card-title">Analista UNIAE</div>
+                <div class="card-description">Acesso total ao sistema</div>
+                <div class="card-features">
+                  <div>✓ Gerenciar notas fiscais</div>
+                  <div>✓ Administrar usuários</div>
+                  <div>✓ Relatórios completos</div>
+                </div>
+              </div>
+
+              <div class="user-card" data-type="REPRESENTANTE" onclick="selectUserType('REPRESENTANTE')">
+                <div class="card-icon">🏫</div>
+                <div class="card-title">Representante Escolar</div>
+                <div class="card-description">Acesso da escola</div>
+                <div class="card-features">
+                  <div>✓ Consultar notas</div>
+                  <div>✓ Registrar recusas</div>
+                  <div>✓ Acompanhar entregas</div>
+                </div>
+              </div>
+
+              <div class="user-card" data-type="FORNECEDOR" onclick="selectUserType('FORNECEDOR')">
+                <div class="card-icon">📦</div>
+                <div class="card-title">Fornecedor</div>
+                <div class="card-description">Acesso fornecedor</div>
+                <div class="card-features">
+                  <div>✓ Inserir notas fiscais</div>
+                  <div>✓ Consultar entregas</div>
+                  <div>✓ Acompanhar status</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="registerFields" class="register-fields">
+            <div class="form-group">
+              <label class="form-label" for="registerNome">Nome Completo</label>
+              <input class="form-input" type="text" id="registerNome" required placeholder="Seu nome" autocomplete="name">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="registerEmail">Email</label>
+              <input class="form-input" type="email" id="registerEmail" required placeholder="seu@email.com" autocomplete="email">
+            </div>
+
+            <div class="form-group" id="fieldInstituicao" style="display:none;">
+              <label class="form-label" for="registerInstituicao">Instituição/Escola</label>
+              <input class="form-input" type="text" id="registerInstituicao" placeholder="Nome da instituição" autocomplete="organization">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="registerSenha">Senha</label>
+              <input class="form-input" type="password" id="registerSenha" required placeholder="Mínimo 6 caracteres"
+                minlength="6" autocomplete="new-password" aria-describedby="senhaHint">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="registerSenhaConfirm">Confirmar Senha</label>
+              <input class="form-input" type="password" id="registerSenhaConfirm" required
+                placeholder="Digite a senha novamente" minlength="6" autocomplete="new-password">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="registerTelefone">Telefone</label>
+              <input class="form-input" type="tel" id="registerTelefone" placeholder="(00) 00000-0000" autocomplete="tel">
+            </div>
+
+            <div class="form-group" id="fieldCPF" style="display:none;">
+              <label class="form-label" for="registerCPF">CPF</label>
+              <input class="form-input" type="text" id="registerCPF" placeholder="000.000.000-00">
+            </div>
+
+            <div class="form-group" id="fieldCNPJ" style="display:none;">
+              <label class="form-label" for="registerCNPJ">CNPJ</label>
+              <input class="form-input" type="text" id="registerCNPJ" placeholder="00.000.000/0000-00">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Cadastrar</button>
+            <button type="button" class="btn btn-secondary btn-block" onclick="switchTab('login')">
+              Já tenho cadastro
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+      if (tab === 'login') {
+        document.querySelectorAll('.tab')[0].classList.add('active');
+        document.getElementById('tab-login').classList.add('active');
+      } else {
+        document.querySelectorAll('.tab')[1].classList.add('active');
+        document.getElementById('tab-register').classList.add('active');
+      }
+
+      hideAlert();
+    }
+
+    function selectUserType(tipo) {
+      // Remove seleção anterior
+      document.querySelectorAll('.user-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+
+      // Adiciona seleção ao card clicado
+      document.querySelector('.user-card[data-type="' + tipo + '"]').classList.add('selected');
+
+      // Define o tipo
+      document.getElementById('registerTipo').value = tipo;
+
+      // Mostra campos de cadastro
+      document.getElementById('registerFields').classList.add('show');
+
+      // Esconde todos os campos opcionais
+      document.getElementById('fieldInstituicao').style.display = 'none';
+      document.getElementById('fieldCPF').style.display = 'none';
+      document.getElementById('fieldCNPJ').style.display = 'none';
+
+      // Mostra campos específicos
+      if (tipo === 'ANALISTA') {
+        document.getElementById('fieldCPF').style.display = 'block';
+      } else if (tipo === 'REPRESENTANTE') {
+        document.getElementById('fieldInstituicao').style.display = 'block';
+        document.getElementById('fieldCPF').style.display = 'block';
+      } else if (tipo === 'FORNECEDOR') {
+        document.getElementById('fieldCNPJ').style.display = 'block';
+      }
+
+      // Foca no primeiro campo
+      setTimeout(function () {
+        document.getElementById('registerNome').focus();
+      }, 100);
+    }
+
+    function updateRegisterFields() {
+      // Mantido para compatibilidade, mas não mais usado
+    }
+
+    function handleLogin(event) {
+      event.preventDefault();
+
+      var email = document.getElementById('loginEmail').value;
+      var senha = document.getElementById('loginSenha').value;
+
+      showLoading();
+
+      google.script.run
+        .withSuccessHandler(onLoginSuccess)
+        .withFailureHandler(onError)
+        .api_auth_login(email, senha);
+    }
+
+    function handleRegister(event) {
+      event.preventDefault();
+
+      var senha = document.getElementById('registerSenha').value;
+      var senhaConfirm = document.getElementById('registerSenhaConfirm').value;
+
+      // Valida tipo
+      if (!document.getElementById('registerTipo').value) {
+        showAlert('⚠️ Selecione o tipo de usuário', 'error');
+        document.getElementById('registerTipo').focus();
+        return;
+      }
+
+      // Valida senhas
+      if (senha !== senhaConfirm) {
+        showAlert('⚠️ As senhas não coincidem. Digite a mesma senha nos dois campos.', 'error');
+        document.getElementById('registerSenhaConfirm').focus();
+        return;
+      }
+
+      if (senha.length < 6) {
+        showAlert('⚠️ Senha muito curta. Use no mínimo 6 caracteres para maior segurança.', 'error');
+        document.getElementById('registerSenha').focus();
+        return;
+      }
+
+      var userData = {
+        tipo: document.getElementById('registerTipo').value,
+        nome: document.getElementById('registerNome').value,
+        email: document.getElementById('registerEmail').value,
+        senha: senha,
+        telefone: document.getElementById('registerTelefone').value,
+        instituicao: document.getElementById('registerInstituicao').value,
+        cpf: document.getElementById('registerCPF').value,
+        cnpj: document.getElementById('registerCNPJ').value
+      };
+
+      showLoading();
+
+      google.script.run
+        .withSuccessHandler(onRegisterSuccess)
+        .withFailureHandler(onError)
+        .api_auth_register(userData);
+    }
+
+    function onLoginSuccess(result) {
+      hideLoading();
+
+      if (result.success) {
+        showAlert('✅ Login realizado com sucesso! Bem-vindo(a), ' + result.session.nome.split(' ')[0] + '!', 'success');
+        setTimeout(function () {
+          // Se estiver em um modal/sidebar, tenta fechar
+          try {
+            google.script.host.close();
+          } catch (e) {
+            // Não está em modal/sidebar - comportamento esperado em Web App
+            console.debug('Não está em modal/sidebar, continuando com reload');
+          }
+
+          // Se estiver no Web App, recarrega para entrar no Dashboard
+          window.top.location.reload();
+        }, 1500);
+      } else {
+        showAlert(result.error || '❌ Erro ao fazer login. Tente novamente.', 'error');
+      }
+    }
+
+    function onRegisterSuccess(result) {
+      hideLoading();
+
+      if (result.success) {
+        showAlert('✅ Cadastro realizado com sucesso! Agora faça login com seu email e senha.', 'success');
+        setTimeout(function () {
+          switchTab('login');
+          document.getElementById('loginEmail').value = result.user.email;
+          document.getElementById('loginEmail').focus();
+        }, 2000);
+      } else {
+        showAlert(result.error || '❌ Erro ao cadastrar. Verifique os dados e tente novamente.', 'error');
+      }
+    }
+
+    function onError(error) {
+      hideLoading();
+      showAlert('Erro: ' + error.message, 'error');
+    }
+
+    function showAlert(message, type) {
+      var alert = document.getElementById('alert');
+      alert.innerHTML = '<div class="alert alert-' + type + '">' + message + '</div>';
+    }
+
+    function hideAlert() {
+      document.getElementById('alert').innerHTML = '';
+    }
+
+    function showLoading() {
+      document.getElementById('loading').style.display = 'block';
+      document.querySelectorAll('form').forEach(f => f.style.display = 'none');
+    }
+
+    function hideLoading() {
+      document.getElementById('loading').style.display = 'none';
+      document.querySelectorAll('form').forEach(f => f.style.display = 'block');
+    }
+  </script>
+</body>
+
+</html>
