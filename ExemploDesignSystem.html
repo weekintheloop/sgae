@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UNIAE - Premium Design System</title>
+
+  <!-- Incluir Design System -->
+  <?!= include('DesignSystem'); ?>
+</head>
+
+<body>
+  <div class="container" style="padding: var(--space-8) var(--space-4);">
+
+    <!-- Header com Glassmorphism -->
+    <div class="card glass mb-8 text-center">
+      <h1 class="text-4xl font-bold text-primary mb-2 flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined" style="font-size: 40px;">palette</span>
+        UNIAE Design System
+      </h1>
+      <p class="text-secondary text-lg">Sistema de Design Premium para Google Apps Script</p>
+    </div>
+
+    <!-- Seção de Ícones e Tipografia -->
+    <div class="grid grid-cols-2 gap-6 mb-8">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title flex items-center gap-2">
+            <span class="material-symbols-outlined">text_fields</span>
+            Tipografia (Inter)
+          </h2>
+        </div>
+        <div class="card-body">
+          <h1 class="text-3xl font-bold mb-2">Heading 1</h1>
+          <h2 class="text-2xl font-semibold mb-2">Heading 2</h2>
+          <h3 class="text-xl font-medium mb-2">Heading 3</h3>
+          <p class="text-base text-secondary">
+            O sistema agora utiliza a fonte <strong>Inter</strong>, proporcionando excelente legibilidade e um visual
+            moderno em todas as interfaces.
+          </p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title flex items-center gap-2">
+            <span class="material-symbols-outlined">stars</span>
+            Ícones (Material Symbols)
+          </h2>
+        </div>
+        <div class="card-body">
+          <div class="flex flex-wrap gap-4 text-primary">
+            <span class="material-symbols-outlined" style="font-size: 32px;">home</span>
+            <span class="material-symbols-outlined" style="font-size: 32px;">settings</span>
+            <span class="material-symbols-outlined" style="font-size: 32px;">person</span>
+            <span class="material-symbols-outlined" style="font-size: 32px;">favorite</span>
+            <span class="material-symbols-outlined" style="font-size: 32px;">search</span>
+            <span class="material-symbols-outlined" style="font-size: 32px;">notifications</span>
+          </div>
+          <p class="text-sm text-secondary mt-4">
+            Utilize <code>&lt;span class="material-symbols-outlined"&gt;icon_name&lt;/span&gt;</code> para adicionar
+            ícones.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botões Premium -->
+    <div class="card mb-8">
+      <div class="card-header">
+        <h2 class="card-title flex items-center gap-2">
+          <span class="material-symbols-outlined">touch_app</span>
+          Botões & Interações
+        </h2>
+      </div>
+      <div class="card-body">
+        <h3 class="text-sm font-semibold text-secondary mb-3 uppercase tracking-wider">Padrão</h3>
+        <div class="flex flex-wrap gap-3 mb-6">
+          <button class="btn btn-primary">
+            <span class="material-symbols-outlined">save</span> Salvar
+          </button>
+          <button class="btn btn-secondary">
+            <span class="material-symbols-outlined">cancel</span> Cancelar
+          </button>
+          <button class="btn btn-success">
+            <span class="material-symbols-outlined">check_circle</span> Aprovar
+          </button>
+          <button class="btn btn-warning">
+            <span class="material-symbols-outlined">warning</span> Alerta
+          </button>
+          <button class="btn btn-danger">
+            <span class="material-symbols-outlined">delete</span> Excluir
+          </button>
+        </div>
+
+        <h3 class="text-sm font-semibold text-secondary mb-3 uppercase tracking-wider">Gradientes (Novo)</h3>
+        <div class="flex flex-wrap gap-3 mb-6">
+          <button class="btn btn-gradient-primary">
+            <span class="material-symbols-outlined">rocket_launch</span> Ação Principal
+          </button>
+          <button class="btn btn-gradient-success">
+            <span class="material-symbols-outlined">payments</span> Finalizar
+          </button>
+        </div>
+
+        <h3 class="text-sm font-semibold text-secondary mb-3 uppercase tracking-wider">Tamanhos</h3>
+        <div class="flex flex-wrap items-center gap-3">
+          <button class="btn btn-primary btn-xs">XS</button>
+          <button class="btn btn-primary btn-sm">Small</button>
+          <button class="btn btn-primary">Normal</button>
+          <button class="btn btn-primary btn-lg">Large</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alertas e Toasts -->
+    <div class="card mb-8">
+      <div class="card-header">
+        <h2 class="card-title flex items-center gap-2">
+          <span class="material-symbols-outlined">notifications_active</span>
+          Feedback Visual
+        </h2>
+      </div>
+      <div class="card-body">
+        <div class="grid grid-cols-2 gap-6">
+          <div>
+            <h3 class="text-sm font-semibold text-secondary mb-3">Alertas Estáticos</h3>
+            <div class="alert alert-success">
+              <span class="material-symbols-outlined">check_circle</span>
+              <div>
+                <strong>Sucesso!</strong> Operação realizada com sucesso.
+              </div>
+            </div>
+
+            <div class="alert alert-warning">
+              <span class="material-symbols-outlined">warning</span>
+              <div>
+                <strong>Atenção!</strong> Verifique os dados.
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-sm font-semibold text-secondary mb-3">Toasts (Notificações Flutuantes)</h3>
+            <div class="toast toast-success mb-3" style="position: static; transform: none;">
+              <span class="material-symbols-outlined text-success">check_circle</span>
+              <div>
+                <h4 class="font-semibold">Salvo com sucesso</h4>
+                <p class="text-sm text-secondary">As alterações foram aplicadas.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulários Modernos -->
+    <div class="card mb-8">
+      <div class="card-header">
+        <h2 class="card-title flex items-center gap-2">
+          <span class="material-symbols-outlined">input</span>
+          Formulários
+        </h2>
+      </div>
+      <div class="card-body">
+        <div class="grid grid-cols-2 gap-6">
+          <div class="form-group">
+            <label class="form-label">Nome Completo</label>
+            <div style="position: relative;">
+              <span class="material-symbols-outlined"
+                style="position: absolute; left: 12px; top: 10px; color: var(--text-tertiary);">person</span>
+              <input type="text" class="form-input" placeholder="Digite seu nome" style="padding-left: 40px;">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <div style="position: relative;">
+              <span class="material-symbols-outlined"
+                style="position: absolute; left: 12px; top: 10px; color: var(--text-tertiary);">toggle_on</span>
+              <select class="form-select" style="padding-left: 40px;">
+                <option>Ativo</option>
+                <option>Inativo</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center text-secondary text-sm mt-8 mb-8">
+      <p>UNIAE Design System v1.1.0 | Premium Edition</p>
+    </div>
+
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,229 @@
+<!--
+  @fileoverview Proteção contra XSS - Sanitização de HTML
+  @version 1.0.0
+  @description Funções para sanitizar conteúdo antes de usar innerHTML
+  
+  INTERVENÇÃO 10/16: Segurança - Proteção XSS
+  - Sanitização de strings antes de innerHTML
+  - Escape de caracteres especiais
+  - Validação de URLs
+  
+  @author UNIAE CRE Team
+  @created 2025-12-26
+-->
+
+<script>
+/**
+ * Proteção contra XSS
+ */
+var XSSProtection = (function() {
+  
+  /**
+   * Escapa caracteres HTML especiais
+   * @param {string} str - String a escapar
+   * @returns {string} String escapada
+   */
+  function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    if (typeof str !== 'string') str = String(str);
+    
+    var map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;',
+      '/': '&#x2F;',
+      '`': '&#x60;',
+      '=': '&#x3D;'
+    };
+    
+    return str.replace(/[&<>"'`=\/]/g, function(s) {
+      return map[s];
+    });
+  }
+  
+  /**
+   * Sanitiza HTML removendo tags perigosas
+   * @param {string} html - HTML a sanitizar
+   * @returns {string} HTML sanitizado
+   */
+  function sanitizeHtml(html) {
+    if (!html) return '';
+    
+    // Remove scripts
+    html = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+    
+    // Remove event handlers
+    html = html.replace(/\s*on\w+\s*=\s*["'][^"']*["']/gi, '');
+    html = html.replace(/\s*on\w+\s*=\s*[^\s>]+/gi, '');
+    
+    // Remove javascript: URLs
+    html = html.replace(/javascript\s*:/gi, '');
+    
+    // Remove data: URLs (podem conter scripts)
+    html = html.replace(/data\s*:[^"'\s>]*/gi, '');
+    
+    // Remove tags perigosas
+    var dangerousTags = ['iframe', 'object', 'embed', 'form', 'input', 'button', 'textarea', 'select'];
+    dangerousTags.forEach(function(tag) {
+      var regex = new RegExp('<' + tag + '\\b[^>]*>.*?</' + tag + '>', 'gi');
+      html = html.replace(regex, '');
+      // Self-closing
+      regex = new RegExp('<' + tag + '\\b[^>]*/>', 'gi');
+      html = html.replace(regex, '');
+    });
+    
+    return html;
+  }
+  
+  /**
+   * Valida e sanitiza URL
+   * @param {string} url - URL a validar
+   * @returns {string} URL sanitizada ou string vazia se inválida
+   */
+  function sanitizeUrl(url) {
+    if (!url) return '';
+    
+    url = url.trim();
+    
+    // Bloqueia protocolos perigosos
+    var dangerousProtocols = ['javascript:', 'data:', 'vbscript:', 'file:'];
+    var lowerUrl = url.toLowerCase();
+    
+    for (var i = 0; i < dangerousProtocols.length; i++) {
+      if (lowerUrl.indexOf(dangerousProtocols[i]) === 0) {
+        return '';
+      }
+    }
+    
+    // Permite apenas http, https, mailto, tel e URLs relativas
+    if (url.indexOf('http://') === 0 || 
+        url.indexOf('https://') === 0 || 
+        url.indexOf('mailto:') === 0 ||
+        url.indexOf('tel:') === 0 ||
+        url.indexOf('/') === 0 ||
+        url.indexOf('#') === 0 ||
+        url.indexOf('?') === 0) {
+      return url;
+    }
+    
+    // Se não tem protocolo, assume relativo
+    if (url.indexOf(':') === -1) {
+      return url;
+    }
+    
+    return '';
+  }
+  
+  /**
+   * Cria elemento de texto seguro (sem innerHTML)
+   * @param {string} tag - Tag do elemento
+   * @param {string} text - Texto do elemento
+   * @param {Object} [attrs] - Atributos opcionais
+   * @returns {HTMLElement}
+   */
+  function createTextElement(tag, text, attrs) {
+    var el = document.createElement(tag);
+    el.textContent = text;
+    
+    if (attrs) {
+      for (var key in attrs) {
+        if (attrs.hasOwnProperty(key)) {
+          if (key === 'class') {
+            el.className = attrs[key];
+          } else if (key === 'style') {
+            el.style.cssText = attrs[key];
+          } else {
+            el.setAttribute(key, attrs[key]);
+          }
+        }
+      }
+    }
+    
+    return el;
+  }
+  
+  /**
+   * Define innerHTML de forma segura
+   * @param {HTMLElement} element - Elemento alvo
+   * @param {string} html - HTML a inserir
+   * @param {boolean} [allowHtml=false] - Se permite HTML (sanitizado) ou só texto
+   */
+  function safeSetHtml(element, html, allowHtml) {
+    if (!element) return;
+    
+    if (allowHtml) {
+      element.innerHTML = sanitizeHtml(html);
+    } else {
+      element.textContent = html;
+    }
+  }
+  
+  /**
+   * Template literal seguro - escapa variáveis automaticamente
+   * @param {Array} strings - Partes estáticas do template
+   * @param {...*} values - Valores a interpolar
+   * @returns {string} HTML com valores escapados
+   */
+  function safeTemplate(strings) {
+    var values = Array.prototype.slice.call(arguments, 1);
+    var result = strings[0];
+    
+    for (var i = 0; i < values.length; i++) {
+      result += escapeHtml(values[i]) + strings[i + 1];
+    }
+    
+    return result;
+  }
+  
+  /**
+   * Wrapper para innerHTML que sanitiza automaticamente
+   * Uso: XSSProtection.html(element, '<div>${nome}</div>', {nome: userInput})
+   * @param {HTMLElement} element - Elemento alvo
+   * @param {string} template - Template HTML
+   * @param {Object} data - Dados a interpolar (serão escapados)
+   */
+  function html(element, template, data) {
+    if (!element) return;
+    
+    var result = template;
+    
+    if (data) {
+      for (var key in data) {
+        if (data.hasOwnProperty(key)) {
+          var regex = new RegExp('\\$\\{' + key + '\\}', 'g');
+          result = result.replace(regex, escapeHtml(data[key]));
+        }
+      }
+    }
+    
+    element.innerHTML = sanitizeHtml(result);
+  }
+  
+  // API Pública
+  return {
+    escapeHtml: escapeHtml,
+    sanitizeHtml: sanitizeHtml,
+    sanitizeUrl: sanitizeUrl,
+    createTextElement: createTextElement,
+    safeSetHtml: safeSetHtml,
+    safeTemplate: safeTemplate,
+    html: html
+  };
+})();
+
+// Aliases globais para conveniência
+var escapeHtml = XSSProtection.escapeHtml;
+var sanitizeHtml = XSSProtection.sanitizeHtml;
+var sanitizeUrl = XSSProtection.sanitizeUrl;
+
+/**
+ * Tagged template literal para HTML seguro
+ * Uso: safeHtml`<div>${userInput}</div>`
+ */
+function safeHtml(strings) {
+  var values = Array.prototype.slice.call(arguments, 1);
+  return XSSProtection.safeTemplate.apply(null, [strings].concat(values));
+}
+</script>
